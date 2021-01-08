@@ -57,8 +57,8 @@ const steps = [
         <Row>
           <Col flex="100%">
             <Form.Item
-              label="Birthday"
-              name="birthday"
+              label="Birthday Date"
+              name="birthdayDate"
               rules={[
                 { required: true, message: 'Please, pick your birthday!' },
               ]}
@@ -130,14 +130,15 @@ const Register = () => {
         <Form.Item>
           <Row>
             <Col flex="auto">
-              <Button
-                className={styles.previousBtn}
-                type="primary"
-                disabled={currentStep === 0}
-                onClick={() => setCurrentStep(currentStep - 1)}
-              >
-                Previous
-              </Button>
+              {currentStep !== 0 && (
+                <Button
+                  className={styles.previousBtn}
+                  type="primary"
+                  onClick={() => setCurrentStep(currentStep - 1)}
+                >
+                  Previous
+                </Button>
+              )}
             </Col>
             <Col flex="auto">
               <Button
