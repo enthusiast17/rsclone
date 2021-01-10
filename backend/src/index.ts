@@ -13,7 +13,7 @@ mongoose.connect(
   { useUnifiedTopology: true, useNewUrlParser: true },
 ).catch((error) => console.log(error));
 
-app.use(cors());
+app.use(cors({ origin: true, credentials: true }));
 
 app.use(express.json());
 
@@ -24,6 +24,4 @@ app.use((err: Error, _:Request, res: Response, next: NextFunction) => {
 
 app.use('/api/user', authRoute);
 
-app.listen(3000, () => {
-  console.log('Server Started at Port, 8000');
-});
+app.listen(8000, () => console.log('Server is running on http://localhost:8000/'));
