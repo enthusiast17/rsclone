@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import passwordJoiComplexity from 'joi-password-complexity';
 import { ILoginJoi, IRegisterJoi } from './interfaces';
 
 const registerJoi: IRegisterJoi = {
@@ -7,15 +8,14 @@ const registerJoi: IRegisterJoi = {
   email: Joi.string().min(3).max(255).email()
     .required(),
   birthdayDate: Joi.date().required(),
-  password: Joi.string().min(6).required(),
+  password: passwordJoiComplexity(),
 };
 
 const registerValidator = Joi.object<IRegisterJoi>(registerJoi);
 
 const loginJoi: ILoginJoi = {
-  email: Joi.string().min(3).max(255).email()
-    .required(),
-  password: Joi.string().min(6).required(),
+  email: Joi.string().email().required(),
+  password: Joi.string().required(),
 };
 
 const loginValidator = Joi.object<ILoginJoi>(loginJoi);

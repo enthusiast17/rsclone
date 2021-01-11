@@ -2,7 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
-import authRoute from './routes/auth';
+import auth from './routes/auth';
 
 const app = express();
 
@@ -22,6 +22,6 @@ app.use((err: Error, _:Request, res: Response, next: NextFunction) => {
   return next();
 });
 
-app.use('/api/user', authRoute);
+app.use('/api/user', auth);
 
 app.listen(8000, () => console.log('Server is running on http://localhost:8000/'));
