@@ -1,15 +1,30 @@
 import React from 'react';
 import {
-  Typography, Form, Input, Button,
+  Typography, Form, Input, Button, notification,
 } from 'antd';
+import { AxiosError } from 'axios';
 import styles from './index.module.scss';
+import api from '../../utils/api';
 
 const { Title } = Typography;
 
 const Login = () => {
   const [form] = Form.useForm();
 
-  const onFinish = (values: { email: string, password: string }) => console.log(values);
+  const onFinish = (values: { email: string, password: string }) => api.post(
+    '/user/login',
+    values,
+  ).then(() => {
+    notification.success({
+      message: 'Success',
+      description: 'Successfully logged in',
+    });
+  }).catch((reason: AxiosError) => {
+    notification.error({
+      message: 'Error',
+      description: reason.message,
+    });
+  });
 
   return (
     <div className={styles.container}>

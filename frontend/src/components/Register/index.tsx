@@ -116,7 +116,10 @@ const Register = () => {
     const copyArr = formList;
     copyArr[currentStep] = values;
     setFormList(copyArr);
-    if (currentStep === MAX_STEP) console.log(formList);
+    if (currentStep === MAX_STEP) {
+      console.log(formList);
+      form.resetFields();
+    }
     if (currentStep < MAX_STEP) setCurrentStep(currentStep + 1);
   };
 
@@ -133,7 +136,7 @@ const Register = () => {
               {currentStep !== 0 && (
                 <Button
                   className={styles.previousBtn}
-                  type="primary"
+                  type="default"
                   onClick={() => setCurrentStep(currentStep - 1)}
                 >
                   Previous
