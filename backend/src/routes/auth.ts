@@ -5,6 +5,7 @@ import * as dotenv from 'dotenv';
 import User from '../model/User';
 import { loginValidator, registerValidator } from '../helpers/validators';
 import { ErrorJSON, handleError } from '../helpers/error';
+import authMiddleware from '../middlewares/auth';
 
 const router = Router();
 dotenv.config({ path: '.env' });
@@ -49,6 +50,11 @@ router.post('/register', async (req, res) => {
       );
     }
   } catch (error) {
+    if (!error.statusCode && !error.message && !error.description) {
+      return handleError(new ErrorJSON(
+        500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.',
+      ), req, res);
+    }
     return handleError(error, req, res);
   }
 });
@@ -117,9 +123,19 @@ router.post('/login', async (req, res) => {
       message: 'Logged in successfully.',
       discription: 'Please, wait a little bit.',
     });
-  } catch (error) {
+  } catch (error: any) {
+    if (!error.statusCode && !error.message && !error.description) {
+      return handleError(new ErrorJSON(
+        500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.',
+      ), req, res);
+    }
     return handleError(error, req, res);
   }
 });
+
+// Example
+router.get('/protected', authMiddleware, async (req, res) => res.status(200).json({
+  message: 'Your in!',
+}));
 
 export default router;

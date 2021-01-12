@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 import auth from './routes/auth';
 
 const app = express();
@@ -16,6 +17,8 @@ mongoose.connect(
 app.use(cors({ origin: true, credentials: true }));
 
 app.use(express.json());
+
+app.use(cookieParser());
 
 app.use((err: Error, _:Request, res: Response, next: NextFunction) => {
   if (err) return res.status(400).send('400 Bad Request');
