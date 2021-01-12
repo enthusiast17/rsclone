@@ -1,13 +1,12 @@
 import React from 'react';
 import './App.css';
-import Welcome from './pages/Welcome';
-// import Register from './pages/Register';
-// import Login from './pages/Login';
+import Home from './pages/Home';
+// import Welcome from './pages/Welcome';
 
 function App() {
   return (
-    <Welcome />
-    // <Register />
+    <Home />
+    // <Welcome />
   );
 }
 
