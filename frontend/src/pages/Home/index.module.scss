@@ -1,3 +1,16 @@
-// .layout {
-//   padding: 0px calc(calc(100% - 1024px) / 2) 0px calc(calc(100% - 1024px) / 2);
-// }
+.container {
+  padding: 15px calc(calc(100% - 1024px) / 2) 15px calc(calc(100% - 1024px) / 2);
+  background-color: #F4F4F4;
+
+  .navigation {
+    background-color: #ffffff;
+    border: 0.5px solid #BFBFBF;
+  }
+}
+
+
+@media (max-width: 1044px) {
+  .container {
+    padding: 10px 10px;
+  }
+}
