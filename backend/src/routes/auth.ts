@@ -5,7 +5,6 @@ import * as dotenv from 'dotenv';
 import User from '../model/User';
 import { loginValidator, registerValidator } from '../helpers/validators';
 import { ErrorJSON, handleError } from '../helpers/error';
-import authMiddleware from '../middlewares/auth';
 
 const router = Router();
 dotenv.config({ path: '.env' });
@@ -133,9 +132,45 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Example
-router.get('/protected', authMiddleware, async (req, res) => res.status(200).json({
-  message: 'Your in!',
-}));
+router.get('/logout', async (req, res) => {
+  try {
+    res.clearCookie('access-token');
+    res.clearCookie('refresh-token');
+    return res.status(200).send({
+      status: 'success',
+      statusCode: 200,
+      message: 'Logged out successfully.',
+      discription: 'Please, wait a little bit.',
+    });
+  } catch (error) {
+    return handleError(new ErrorJSON(
+      500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.',
+    ), req, res);
+  }
+});
+
+router.get('/me', async (req, res) => {
+  const refreshToken = req.cookies['refresh-token'];
+
+  if (!process.env.REFRESH_TOKEN_SECRET_CODE) {
+    return handleError(new ErrorJSON(
+      500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.',
+    ), req, res);
+  }
+
+  try {
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET_CODE);
+    return res.status(200).send({
+      status: 'success',
+      statusCode: 200,
+      message: 'Logged in successfully.',
+      discription: 'Please, wait a little bit.',
+    });
+  } catch (error) {
+    return handleError(new ErrorJSON(
+      403, 'Forbidden.', 'Please, try to log in again.',
+    ), req, res);
+  }
+});
 
 export default router;

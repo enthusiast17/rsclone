@@ -25,6 +25,6 @@ app.use((err: Error, _:Request, res: Response, next: NextFunction) => {
   return next();
 });
 
-app.use('/api/user', auth);
+app.use('/api/auth', auth);
 
 app.listen(8000, () => console.log('Server is running on http://localhost:8000/'));
