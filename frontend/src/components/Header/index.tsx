@@ -1,20 +1,31 @@
 import React from 'react';
 import {
-  Layout, Input, Avatar, Dropdown, Menu, Typography, Button,
+  Layout, Input, Avatar, Dropdown, Menu, Typography, Button, notification,
 } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
+import { AxiosError } from 'axios';
 import styles from './index.module.scss';
+import api from '../../utils/api';
 
 const { Search } = Input;
 const { Text } = Typography;
+
+const logOut = () => api.get('auth/logout')
+  .then(() => window.location.reload())
+  .catch((reason: AxiosError) => {
+    notification.error({
+      message: reason.response?.data.message,
+      description: reason.response?.data.description,
+    });
+  });
 
 const menu = (
   <Menu>
     <Menu.Item key="0">
       <a href="/settings">Settings</a>
     </Menu.Item>
-    <Menu.Item key="1">
-      <a href="/logout">Log out</a>
+    <Menu.Item key="1" onClick={logOut}>
+      <a href="/">Log out</a>
     </Menu.Item>
   </Menu>
 );

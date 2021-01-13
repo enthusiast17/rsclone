@@ -25,16 +25,15 @@ router.post('/register', async (req, res) => {
       );
     }
 
-    if (!process.env.SALT_NUMBER) {
-      throw new ErrorJSON(
-        500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.',
-      );
-    }
-
-    const salt = await bcrypt.genSalt(parseFloat(process.env.SALT_NUMBER));
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    const user = new User({ ...req.body, password: hashedPassword });
     try {
+      if (!process.env.SALT_NUMBER) {
+        throw new ErrorJSON(
+          500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.',
+        );
+      }
+      const salt = await bcrypt.genSalt(parseFloat(process.env.SALT_NUMBER));
+      const hashedPassword = await bcrypt.hash(req.body.password, salt);
+      const user = new User({ ...req.body, password: hashedPassword });
       await user.save();
       // eslint-disable-next-line no-underscore-dangle
       return res.status(200).send({
@@ -43,7 +42,8 @@ router.post('/register', async (req, res) => {
         message: 'Registration completed successfully.',
         discription: 'Check your email.',
       });
-    } catch (_) {
+    } catch (error) {
+      console.log(error);
       throw new ErrorJSON(
         500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.',
       );

@@ -12,17 +12,18 @@ const Login = () => {
   const [form] = Form.useForm();
 
   const onFinish = (values: { email: string, password: string }) => api.post(
-    '/user/login',
+    '/auth/login',
     values,
-  ).then(() => {
+  ).then((response) => {
     notification.success({
-      message: 'Success',
-      description: 'Successfully logged in',
+      message: response.data.message,
+      description: response.data.description,
     });
+    setTimeout(() => window.location.reload(), 1000);
   }).catch((reason: AxiosError) => {
     notification.error({
-      message: 'Error',
-      description: reason.message,
+      message: reason.response?.data.message,
+      description: reason.response?.data.description,
     });
   });
 
