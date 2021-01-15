@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv';
 import User from '../model/User';
 import { loginValidator, registerValidator } from '../utils/validators';
 import { ErrorJSON, handleError } from '../utils/error';
-import { IJWTSign } from '../utils/interfaces';
+import { IJWTSign, IUser } from '../utils/interfaces';
 
 const router = Router();
 dotenv.config({ path: '.env' });
@@ -196,12 +196,17 @@ router.get('/me', async (req, res) => {
   }
 
   try {
-    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET_CODE);
+    const verifiedUser = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET_CODE);
+    const user: IUser = await User.findOne({ _id: (verifiedUser as IJWTSign).userId });
+
     return res.status(200).send({
       status: 'success',
       statusCode: 200,
       message: 'Logged in successfully.',
       description: 'Please, wait a little bit.',
+      data: {
+        fullName: user.fullName,
+      },
     });
   } catch (error) {
     return handleError(new ErrorJSON(
