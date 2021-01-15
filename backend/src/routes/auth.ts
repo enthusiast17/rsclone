@@ -158,6 +158,7 @@ router.get('/newaccesstoken', async (req, res) => {
       500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.',
     ), req, res);
   }
+
   try {
     const user: string | object = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET_CODE);
     const accessToken = jwt.sign(
@@ -180,7 +181,7 @@ router.get('/newaccesstoken', async (req, res) => {
     });
   } catch (error) {
     return handleError(new ErrorJSON(
-      500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.',
+      403, 'Forbidden.', 'Please, try to log in again.',
     ), req, res);
   }
 });
