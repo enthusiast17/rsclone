@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter, Redirect } from 'react-router-dom';
+import {
+  BrowserRouter,
+} from 'react-router-dom';
 import './App.css';
 import Home from './pages/Home';
 import api from './utils/api';
@@ -27,13 +29,15 @@ function App() {
         <Loading />
       )}
       {!isLoading && isUserLogged && (
-        <Home />
+        <>
+          {/* {!routes.some((route) => route.pathname === location.pathname) && (
+            <Redirect to="/feed" />
+          )} */}
+          <Home />
+        </>
       )}
       {!isLoading && !isUserLogged && (
-        <>
-          <Redirect to="/" />
-          <Welcome />
-        </>
+        <Welcome />
       )}
     </BrowserRouter>
   );

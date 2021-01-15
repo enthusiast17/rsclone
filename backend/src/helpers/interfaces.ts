@@ -11,8 +11,7 @@ interface IUser extends Document {
 }
 
 interface IRegisterJoi {
-  firstName: Joi.StringSchema,
-  lastName: Joi.StringSchema,
+  fullName: Joi.StringSchema,
   email: Joi.StringSchema,
   birthdayDate: Joi.DateSchema,
   password: Joi.StringSchema,

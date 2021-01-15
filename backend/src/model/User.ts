@@ -2,13 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 import { IUser } from '../helpers/interfaces';
 
 const userSchema: Schema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    required: true,
-    min: 3,
-    max: 50,
-  },
-  lastName: {
+  fullName: {
     type: String,
     required: true,
     min: 3,
@@ -22,7 +16,6 @@ const userSchema: Schema = new mongoose.Schema({
   },
   birthdayDate: {
     type: Date,
-    required: true,
   },
   password: {
     type: String,

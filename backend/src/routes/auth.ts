@@ -33,17 +33,16 @@ router.post('/register', async (req, res) => {
       }
       const salt = await bcrypt.genSalt(parseFloat(process.env.SALT_NUMBER));
       const hashedPassword = await bcrypt.hash(req.body.password, salt);
-      const user = new User({ ...req.body, password: hashedPassword });
+      const user = new User({ ...req.body, password: hashedPassword, birthdayDate: null });
       await user.save();
       // eslint-disable-next-line no-underscore-dangle
       return res.status(200).send({
         status: 'success',
         statusCode: 200,
         message: 'Registration completed successfully.',
-        discription: 'Check your email.',
+        description: 'Now, try to log in.',
       });
     } catch (error) {
-      console.log(error);
       throw new ErrorJSON(
         500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.',
       );
@@ -120,7 +119,7 @@ router.post('/login', async (req, res) => {
       status: 'success',
       statusCode: 200,
       message: 'Logged in successfully.',
-      discription: 'Please, wait a little bit.',
+      description: 'Please, wait a little bit.',
     });
   } catch (error: any) {
     if (!error.statusCode && !error.message && !error.description) {
@@ -140,7 +139,7 @@ router.get('/logout', async (req, res) => {
       status: 'success',
       statusCode: 200,
       message: 'Logged out successfully.',
-      discription: 'Please, wait a little bit.',
+      description: 'Please, wait a little bit.',
     });
   } catch (error) {
     return handleError(new ErrorJSON(
@@ -164,7 +163,7 @@ router.get('/me', async (req, res) => {
       status: 'success',
       statusCode: 200,
       message: 'Logged in successfully.',
-      discription: 'Please, wait a little bit.',
+      description: 'Please, wait a little bit.',
     });
   } catch (error) {
     return handleError(new ErrorJSON(
