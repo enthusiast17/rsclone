@@ -33,7 +33,7 @@ router.post('/register', async (req, res) => {
       }
       const salt = await bcrypt.genSalt(parseFloat(process.env.SALT_NUMBER));
       const hashedPassword = await bcrypt.hash(req.body.password, salt);
-      const user = new User({ ...req.body, password: hashedPassword });
+      const user = new User({ ...req.body, password: hashedPassword, birthdayDate: null });
       await user.save();
       // eslint-disable-next-line no-underscore-dangle
       return res.status(200).send({
