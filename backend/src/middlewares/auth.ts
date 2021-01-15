@@ -1,11 +1,12 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import * as dotenv from 'dotenv';
-import { ErrorJSON, handleError } from '../helpers/error';
+import { ErrorJSON, handleError } from '../utils/error';
+import { IUserRequest } from '../utils/interfaces';
 
 dotenv.config({ path: '.env' });
 
-const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+const authMiddleware = async (req: IUserRequest, res: Response, next: NextFunction) => {
   const accessToken = req.cookies['access-token'];
 
   if (!process.env.ACCESS_TOKEN_SECRET_CODE) {
@@ -15,8 +16,9 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   }
 
   try {
-    jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET_CODE);
-    next();
+    const user = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET_CODE);
+    req.user = user;
+    next(req);
   } catch (error) {
     return handleError(new ErrorJSON(
       403, 'Forbidden.', 'Please, try to log in again.',
