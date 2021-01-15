@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  BrowserRouter,
+  BrowserRouter, Redirect,
 } from 'react-router-dom';
 import './App.css';
 import Home from './pages/Home';
@@ -30,14 +30,14 @@ function App() {
       )}
       {!isLoading && isUserLogged && (
         <>
-          {/* {!routes.some((route) => route.pathname === location.pathname) && (
-            <Redirect to="/feed" />
-          )} */}
           <Home />
         </>
       )}
       {!isLoading && !isUserLogged && (
-        <Welcome />
+        <>
+          <Redirect to="/welcome" />
+          <Welcome />
+        </>
       )}
     </BrowserRouter>
   );
