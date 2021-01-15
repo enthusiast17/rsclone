@@ -13,7 +13,7 @@ const Login = () => {
   const onFinish = (values: ILoginForm) => api.post(
     '/auth/login',
     values,
-  ).then((response) => {
+  ).then((response: { data: IResponse }) => {
     notification.success({
       message: response.data.message,
       description: response.data.description,
