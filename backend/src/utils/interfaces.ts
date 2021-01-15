@@ -1,9 +1,9 @@
 import { Document } from 'mongoose';
 import Joi from 'joi';
+import { Request } from 'express';
 
 interface IUser extends Document {
-  firstName: string,
-  lastName: string,
+  fullName: string,
   email: string,
   birthdayDate: Date,
   password: string,
@@ -22,8 +22,20 @@ interface ILoginJoi {
   password: Joi.StringSchema,
 }
 
+interface IUserRequest extends Request {
+  user: string | object,
+}
+
+interface IJWTSign {
+  userId: number,
+  iat: number,
+  exp: number
+}
+
 export {
   IUser,
   IRegisterJoi,
   ILoginJoi,
+  IUserRequest,
+  IJWTSign,
 };

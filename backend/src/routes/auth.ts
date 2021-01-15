@@ -3,8 +3,9 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import * as dotenv from 'dotenv';
 import User from '../model/User';
-import { loginValidator, registerValidator } from '../helpers/validators';
-import { ErrorJSON, handleError } from '../helpers/error';
+import { loginValidator, registerValidator } from '../utils/validators';
+import { ErrorJSON, handleError } from '../utils/error';
+import { IJWTSign } from '../utils/interfaces';
 
 const router = Router();
 dotenv.config({ path: '.env' });
@@ -140,6 +141,42 @@ router.get('/logout', async (req, res) => {
       statusCode: 200,
       message: 'Logged out successfully.',
       description: 'Please, wait a little bit.',
+    });
+  } catch (error) {
+    return handleError(new ErrorJSON(
+      500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.',
+    ), req, res);
+  }
+});
+
+router.get('/newaccesstoken', async (req, res) => {
+  const refreshToken = req.cookies['refresh-token'];
+  if (!process.env.REFRESH_TOKEN_SECRET_CODE
+    || !process.env.ACCESS_TOKEN_SECRET_CODE
+    || !process.env.ACCESS_TOKEN_MAX_AGE) {
+    return handleError(new ErrorJSON(
+      500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.',
+    ), req, res);
+  }
+  try {
+    const user: string | object = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET_CODE);
+    const accessToken = jwt.sign(
+      { userId: (user as IJWTSign).userId },
+      process.env.ACCESS_TOKEN_SECRET_CODE,
+      { expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN },
+    );
+    res.cookie('access-token', accessToken, {
+      httpOnly: true,
+      // secure: true,
+      // sameSite: 'strict',
+      expires: new Date(Number(new Date()) + parseFloat(process.env.ACCESS_TOKEN_MAX_AGE)),
+    });
+
+    return res.status(200).send({
+      status: 'success',
+      statusCode: 200,
+      message: 'Your access token updated successfully.',
+      description: '',
     });
   } catch (error) {
     return handleError(new ErrorJSON(
