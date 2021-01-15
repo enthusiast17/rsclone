@@ -2,16 +2,12 @@ import React from 'react';
 import {
   Layout, Input, Avatar, Dropdown, Menu, Typography, Button, notification,
 } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import { AxiosError } from 'axios';
 import styles from './index.module.scss';
 import api from '../../utils/api';
 
-const { Search } = Input;
-const { Text } = Typography;
-
 const logOut = () => api.get('auth/logout')
-  .then(() => window.location.reload())
   .catch((reason: AxiosError) => {
     notification.error({
       message: reason.response?.data.message,
@@ -32,15 +28,15 @@ const menu = (
 
 const Header = () => (
   <Layout.Header className={styles.container}>
-    <Search className={styles.search} allowClear />
+    <Input.Search className={styles.search} allowClear />
 
     <Dropdown overlay={menu}>
       <Button className={styles.dropdown} type="default" size="large">
-        <Text className={styles.title}>Ulan</Text>
+        <Typography.Text className={styles.title}>Ulan</Typography.Text>
         <Avatar
           className={styles.avatar}
           size={30}
-          src="https://avatars1.githubusercontent.com/u/52827869?s=460&u=fa49f4c32f3db4a377bbd4dbf9a49099d3f9a34d&v=4"
+          icon={<UserOutlined />}
         />
         <DownOutlined />
       </Button>

@@ -2,16 +2,15 @@ import React from 'react';
 import {
   Typography, Form, Input, Button, notification,
 } from 'antd';
-import { AxiosError } from 'axios';
+import { useHistory } from 'react-router-dom';
 import styles from './index.module.scss';
 import api from '../../utils/api';
-
-const { Title } = Typography;
+import { ILoginForm, IResponse } from '../../utils/interfaces';
 
 const Login = () => {
   const [form] = Form.useForm();
-
-  const onFinish = (values: { email: string, password: string }) => api.post(
+  const history = useHistory();
+  const onFinish = (values: ILoginForm) => api.post(
     '/auth/login',
     values,
   ).then((response) => {
@@ -19,17 +18,25 @@ const Login = () => {
       message: response.data.message,
       description: response.data.description,
     });
-    setTimeout(() => window.location.reload(), 1000);
-  }).catch((reason: AxiosError) => {
+    form.resetFields();
+    history.go(0);
+  }).catch((reason: { response: { data: IResponse } }) => {
+    if (!reason.response || !reason.response.data) {
+      notification.error({
+        message: 'Internal Error.',
+        description: 'Upps! Sorry, something went wrong in internal server.',
+      });
+      return;
+    }
     notification.error({
-      message: reason.response?.data.message,
-      description: reason.response?.data.description,
+      message: reason.response.data.message,
+      description: reason.response.data.description,
     });
   });
 
   return (
     <div className={styles.container}>
-      <Title level={2}>Log in</Title>
+      <Typography.Title level={3}>Log in</Typography.Title>
       <Form form={form} name="login" layout="vertical" scrollToFirstError onFinish={onFinish}>
         <Form.Item
           label="E-mail Address"

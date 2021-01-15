@@ -5,9 +5,8 @@ import {
 } from 'react-router-dom';
 import Header from '../../components/Header';
 import styles from './index.module.scss';
-import Navigation from '../../components/Navigation';
 
-const { Content, Sider } = Layout;
+const { Content } = Layout;
 
 const Home = () => (
   <Layout>
@@ -18,14 +17,11 @@ const Home = () => (
           <Route path="/profile">
             <Typography.Text>MY PROFILE</Typography.Text>
           </Route>
-          <Route path="/">
-            <Typography.Text>Home</Typography.Text>
+          <Route path="/feed">
+            <Typography.Text>Feed</Typography.Text>
           </Route>
         </Switch>
       </Content>
-      <Sider className={styles.navigation} width={250}>
-        <Navigation />
-      </Sider>
     </Layout>
   </Layout>
 );
