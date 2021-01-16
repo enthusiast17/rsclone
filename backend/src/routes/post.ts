@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
     cb(null, './uploads/');
   },
   filename: (req, file, cb) => {
-    cb(null, `${new Date().toISOString()}-${uuidv4()}-${file.originalname}`);
+    cb(null, `${new Date().toISOString().replace(/:|\./g, '')}-${uuidv4()}-${file.originalname}`);
   },
 });
 
@@ -57,9 +57,10 @@ router.post('/', upload.single('contentImage'), async (req, res) => {
     await post.save();
 
     return res.status(200).send({
-      userId: post.userId,
-      contentText: post.contentText,
-      contentImage: post.contentImage,
+      status: 'success',
+      statusCode: 200,
+      message: 'Post created successfully.',
+      description: 'Please, wait a little bit.',
     });
   } catch (error) {
     if (!error.statusCode && !error.message && !error.description) {
