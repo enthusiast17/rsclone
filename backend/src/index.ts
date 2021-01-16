@@ -3,7 +3,11 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
-import auth from './routes/auth';
+import { MulterError } from 'multer';
+import authRouter from './routes/auth';
+import postRouter from './routes/post';
+import authMiddleware from './middlewares/auth';
+import { ErrorJSON, handleError } from './utils/error';
 
 const app = express();
 
@@ -16,15 +20,30 @@ mongoose.connect(
 
 app.use(cors({ origin: true, credentials: true }));
 
-app.use(express.json());
-
 app.use(cookieParser());
 
-app.use((err: Error, _:Request, res: Response, next: NextFunction) => {
-  if (err) return res.status(400).send('400 Bad Request');
+app.use('/uploads', authMiddleware, express.static('uploads'));
+
+app.use('/api/auth', express.json(), authRouter);
+
+app.use((err: Error, req :Request, res: Response, next: NextFunction) => {
+  if (err) {
+    return handleError(new ErrorJSON(
+      400, '400 Bad Request', 'Please, correct your JSON data.',
+    ), req, res);
+  }
   return next();
 });
 
-app.use('/api/auth', auth);
+app.use('/api/post', authMiddleware, postRouter);
+
+app.use((err: MulterError, req: Request, res: Response, next: NextFunction) => {
+  if (err.code === 'LIMIT_FILE_SIZE') {
+    return handleError(new ErrorJSON(
+      400, 'Bad Request', 'Your file size exceeds 5 MiB.',
+    ), req, res);
+  }
+  return next();
+});
 
 app.listen(8000, () => console.log('Server is running on http://localhost:8000/'));

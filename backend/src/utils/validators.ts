@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import passwordJoiComplexity from 'joi-password-complexity';
-import { ILoginJoi, IRegisterJoi } from './interfaces';
+import { ILoginJoi, IPostJoi, IRegisterJoi } from './interfaces';
 
 const registerJoi: IRegisterJoi = {
   fullName: Joi.string().min(3).max(50).required(),
@@ -19,7 +19,14 @@ const loginJoi: ILoginJoi = {
 
 const loginValidator = Joi.object<ILoginJoi>(loginJoi);
 
+const postJoi: IPostJoi = {
+  contentText: Joi.string().min(1).max(1000).required(),
+};
+
+const postValidator = Joi.object<IPostJoi>(postJoi);
+
 export {
   registerValidator,
   loginValidator,
+  postValidator,
 };
