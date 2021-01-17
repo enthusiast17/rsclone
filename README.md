@@ -6,15 +6,15 @@
 
 **Deploy:** In progress
 
-**Frontend Stack:**
+**Frontend technologies:**
 - React (React Hooks)
 - Redux
 - TypeScript
 
-**Backend Stack:**
+**Backend technologies:**
 - Node.js
 - Express.js
-- Mongo/MySQL/ or something
+- Mongo
 - TypeScript
 
 **Configs:**
