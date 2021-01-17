@@ -1,0 +1,21 @@
+.container {
+  padding:  10px;
+  border: 1px solid #D9D9D9;
+  border-radius: 2px;
+  
+  .row {
+    position: relative;
+
+    .upload {
+      margin: 0px;
+      width: 100%;
+    }
+
+    .postBtn {
+      margin: 0px;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+  }
+}

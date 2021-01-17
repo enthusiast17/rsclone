@@ -7,21 +7,19 @@ import {
   LogoutOutlined, ProfileOutlined, SettingOutlined, UserOutlined,
 } from '@ant-design/icons';
 import { AxiosError } from 'axios';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styles from './index.module.scss';
 import api from '../../utils/api';
 import { IResponse } from '../../utils/interfaces';
 
 const Header = () => {
-  const history = useHistory();
-
   const logOut = () => api.get('auth/logout')
     .then((response: { data: IResponse }) => {
       notification.success({
         message: response.data.message,
         description: response.data.description,
       });
-      history.go(0);
+      window.location.reload();
     })
     .catch((reason: AxiosError) => {
       notification.error({

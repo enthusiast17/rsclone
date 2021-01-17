@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom';
 import Header from '../../components/Header';
 import styles from './index.module.scss';
+import Post from '../Post';
 
 const { Content } = Layout;
 
@@ -12,13 +13,11 @@ const Home = () => (
   <Layout>
     <Header />
     <Layout className={styles.container}>
-      <Content>
+      <Content className={styles.content}>
         <Switch>
-          <Route path="/profile">
+          <Route exact path="/" component={Post} />
+          <Route exact path="/profile">
             <Typography.Text>MY PROFILE</Typography.Text>
-          </Route>
-          <Route path="/feed">
-            <Typography.Text>Feed</Typography.Text>
           </Route>
         </Switch>
       </Content>
