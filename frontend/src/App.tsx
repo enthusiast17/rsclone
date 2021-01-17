@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  BrowserRouter, Redirect,
+  useHistory,
 } from 'react-router-dom';
 import './App.css';
 import Home from './pages/Home';
@@ -11,6 +11,7 @@ import Loading from './components/Loading';
 function App() {
   const [isUserLogged, setIsUserLogged] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const history = useHistory();
 
   useEffect(() => {
     api.get('/auth/me')
@@ -20,26 +21,22 @@ function App() {
       })
       .catch(() => {
         setIsLoading(false);
+        history.push('/welcome');
       });
   }, []);
 
   return (
-    <BrowserRouter>
+    <>
       {isLoading && (
         <Loading />
       )}
       {!isLoading && isUserLogged && (
-        <>
-          <Home />
-        </>
+        <Home />
       )}
       {!isLoading && !isUserLogged && (
-        <>
-          <Redirect to="/welcome" />
-          <Welcome />
-        </>
+        <Welcome />
       )}
-    </BrowserRouter>
+    </>
   );
 }
 

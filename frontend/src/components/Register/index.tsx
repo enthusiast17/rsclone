@@ -89,7 +89,7 @@ const Register = () => {
                 { pattern: /(?=.*[@#$%^&+=])/, message: 'Password should contain at least 1 symbol.' },
               ]}
             >
-              <Input.Password />
+              <Input.Password placeholder="********" />
             </Form.Item>
           </Col>
         </Row>
@@ -115,7 +115,7 @@ const Register = () => {
                 }),
               ]}
             >
-              <Input.Password />
+              <Input.Password placeholder="********" />
             </Form.Item>
           </Col>
         </Row>
