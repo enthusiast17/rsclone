@@ -5,7 +5,8 @@ import { Request } from 'express';
 interface IUser extends Document {
   fullName: string,
   email: string,
-  birthdayDate: Date,
+  birthdayDate: Date | null,
+  avatar: string | null,
   password: string,
   createdDate: Date,
 }

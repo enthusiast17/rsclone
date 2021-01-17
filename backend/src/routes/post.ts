@@ -89,10 +89,10 @@ router.get('/:page', async (req, res) => {
     const posts = await Promise.all(
       modelPosts.map(async (post: IPost) => {
         const user: IUser = await User.findById(post.userId);
-        const { fullName } = user;
+        const { fullName, avatar } = user;
         const { contentText, contentImage, createdDate } = post;
         return {
-          user: { fullName },
+          user: { fullName, avatar },
           contentText,
           contentImage,
           createdDate,
