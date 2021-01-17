@@ -17,7 +17,7 @@ class ErrorJSON extends Error {
 
 const handleError = (error: ErrorJSON, _: Request, res: Response) => {
   const { statusCode, message, description } = error;
-  res.status(statusCode).json({
+  return res.status(statusCode).send({
     status: 'error',
     statusCode,
     message,
