@@ -34,7 +34,12 @@ router.post('/register', async (req, res) => {
       }
       const salt = await bcrypt.genSalt(parseFloat(process.env.SALT_NUMBER));
       const hashedPassword = await bcrypt.hash(req.body.password, salt);
-      const user = new User({ ...req.body, password: hashedPassword, birthdayDate: null });
+      const user = new User({
+        ...req.body,
+        password: hashedPassword,
+        birthdayDate: null,
+        avatar: null,
+      });
       await user.save();
       // eslint-disable-next-line no-underscore-dangle
       return res.status(200).send({
@@ -198,14 +203,15 @@ router.get('/me', async (req, res) => {
   try {
     const verifiedUser = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET_CODE);
     const user: IUser = await User.findOne({ _id: (verifiedUser as IJWTSign).userId });
-
+    const { fullName, avatar } = user;
     return res.status(200).send({
       status: 'success',
       statusCode: 200,
       message: 'Logged in successfully.',
       description: 'Please, wait a little bit.',
       data: {
-        fullName: user.fullName,
+        fullName,
+        avatar,
       },
     });
   } catch (error) {
