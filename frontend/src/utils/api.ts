@@ -5,9 +5,9 @@ const api = axios.create({
   withCredentials: true,
 });
 
-api.interceptors.response.use(undefined, (err: AxiosError) => {
-  if (err.response?.status === 403) {
-    api.get(
+api.interceptors.response.use(undefined, (error: AxiosError) => {
+  if (error.response?.status === 401) {
+    return api.get(
       '/auth/newaccesstoken',
       {
         headers: {
@@ -15,10 +15,9 @@ api.interceptors.response.use(undefined, (err: AxiosError) => {
         },
       },
     )
-      .then(() => axios.request(err.config));
-    return axios;
+      .then(() => api.request(error.config));
   }
-  return axios;
+  return Promise.reject(error);
 });
 
 export default api;
