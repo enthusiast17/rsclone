@@ -18,6 +18,11 @@ const Register = () => {
         Object.entries(values)
           .filter(([k]) => k !== 'confirm'),
       ),
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
     ).then((response: { data: IResponse }) => {
       notification.success({
         message: response.data.message,

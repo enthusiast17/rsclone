@@ -1,13 +1,43 @@
 import React from 'react';
 import {
-  Button, Card, Form, Row, Upload,
+  Button, Card, Form, notification, Row, Upload,
 } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import { UploadOutlined } from '@ant-design/icons';
 import styles from './index.module.scss';
+import api from '../../utils/api';
+import { IResponse } from '../../utils/interfaces';
 
 const PostForm = () => {
   const [form] = Form.useForm();
+
+  const onFinish = (values: { contentText: string, contentImage: any }) => {
+    const formData = new FormData();
+    formData.append('contentText', values.contentText);
+    formData.append('contentImage', values.contentImage.file.originFileObj);
+    api.post(
+      '/post',
+      formData,
+    ).then((response: { data: IResponse }) => {
+      notification.success({
+        message: response.data.message,
+        description: response.data.description,
+      });
+      form.resetFields();
+    }).catch((reason: { response: { data: IResponse } }) => {
+      if (!reason.response || !reason.response.data) {
+        notification.error({
+          message: 'Internal Error.',
+          description: 'Upps! Sorry, something went wrong in internal server.',
+        });
+        return;
+      }
+      notification.error({
+        message: reason.response.data.message,
+        description: reason.response.data.description,
+      });
+    });
+  };
 
   return (
     <Card
@@ -19,6 +49,7 @@ const PostForm = () => {
         name="postform"
         layout="vertical"
         scrollToFirstError
+        onFinish={onFinish}
       >
         <Form.Item
           name="contentText"
@@ -31,7 +62,6 @@ const PostForm = () => {
             name="contentImage"
           >
             <Upload
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
               listType="picture"
               maxCount={1}
             >
