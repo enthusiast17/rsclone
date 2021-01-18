@@ -37,16 +37,18 @@ const upload = multer({
 router.post('/', upload.single('contentImage'), async (req, res) => {
   try {
     if (req.file && !fileFormats.includes(req.file.mimetype)) {
-      return handleError(new ErrorJSON(
+      throw new ErrorJSON(
         415, 'Unsupported Media Type.', 'Please, load only jpeg or png.',
-      ), req, res);
+      );
     }
+
+    delete req.body?.contentImage;
 
     const validate = postValidator.validate(req.body);
     if (validate.error) {
-      throw (new ErrorJSON(
+      throw new ErrorJSON(
         400, validate.error?.details[0].message, 'Please, correct your post form.',
-      ));
+      );
     }
 
     const post = new Post({
@@ -83,6 +85,7 @@ router.get('/:page', async (req, res) => {
     const nextPage = endIdx < totalPostCount ? currentPage + 1 : null;
     const pageCount = Math.ceil(totalPostCount / limit);
     const modelPosts = await Post.find()
+      .sort({ _id: -1 })
       .limit(limit)
       .skip(startIdx);
 
