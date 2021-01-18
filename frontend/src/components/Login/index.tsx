@@ -2,21 +2,29 @@ import React from 'react';
 import {
   Typography, Form, Input, Button, notification,
 } from 'antd';
+import { useHistory } from 'react-router-dom';
 import styles from './index.module.scss';
 import api from '../../utils/api';
 import { ILoginForm, IResponse } from '../../utils/interfaces';
 
 const Login = () => {
   const [form] = Form.useForm();
+  const history = useHistory();
   const onFinish = (values: ILoginForm) => api.post(
     '/auth/login',
     values,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
   ).then((response: { data: IResponse }) => {
     notification.success({
       message: response.data.message,
       description: response.data.description,
     });
     form.resetFields();
+    history.push('/');
     window.location.reload();
   }).catch((reason: { response: { data: IResponse } }) => {
     if (!reason.response || !reason.response.data) {
