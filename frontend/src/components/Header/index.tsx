@@ -8,11 +8,15 @@ import {
 } from '@ant-design/icons';
 import { AxiosError } from 'axios';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import styles from './index.module.scss';
 import api from '../../utils/api';
 import { IResponse } from '../../utils/interfaces';
+import { RootState } from '../../store/rootReducer';
 
 const Header = () => {
+  const { authState } = useSelector((state: RootState) => state);
+
   const logOut = () => api.get('auth/logout')
     .then((response: { data: IResponse }) => {
       notification.success({
@@ -62,14 +66,15 @@ const Header = () => {
       <Input.Search className={styles.search} allowClear />
 
       <Space>
-        <Typography.Text className={styles.title}>Full Name</Typography.Text>
+        <Typography.Text className={styles.title}>{authState.fullName}</Typography.Text>
 
         <Dropdown overlay={menu} trigger={['click']} arrow>
           <Button className={styles.dropdown} shape="circle" type="default" size="middle">
             <Avatar
               className={styles.avatar}
               size={30}
-              icon={<UserOutlined />}
+              src={authState.avatar ? authState.avatar : ''}
+              icon={authState.avatar ? '' : <UserOutlined />}
             />
           </Button>
         </Dropdown>
