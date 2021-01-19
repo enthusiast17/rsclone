@@ -14,7 +14,9 @@ const PostForm = () => {
   const onFinish = (values: { contentText: string, contentImage: any }) => {
     const formData = new FormData();
     formData.append('contentText', values.contentText);
-    formData.append('contentImage', values.contentImage.file.originFileObj);
+    if (values.contentImage) {
+      formData.append('contentImage', values.contentImage.file.originFileObj);
+    }
     api.post(
       '/post',
       formData,
