@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Avatar, Divider, List, notification, Space, Typography,
+  Avatar, List, notification, Typography, Image, Card, Space, Divider,
 } from 'antd';
 import { CommentOutlined, HeartOutlined, UserOutlined } from '@ant-design/icons';
+import { format } from 'timeago.js';
 import api from '../../utils/api';
 import {
   IPost, IPostPagination, IPostResponse, IResponse,
@@ -35,10 +36,10 @@ const PostList = () => {
 
   return (
     <List
-      className={styles.container}
+      className={styles.list}
+      grid={{ gutter: 10, column: 1 }}
       itemLayout="vertical"
       size="small"
-      bordered
       dataSource={data?.posts}
       pagination={{
         onChange: (selectedPage: number) => {
@@ -49,34 +50,45 @@ const PostList = () => {
       }}
       renderItem={(item: IPost, index: number) => (
         <List.Item
-          key={index}
-          actions={[
-            <Space>
-              <HeartOutlined />
-              0
-            </Space>,
-            <Space>
-              <CommentOutlined />
-              0
-            </Space>,
-          ]}
+          className={styles.listItem}
         >
-          <List.Item.Meta
-            avatar={<Avatar src={item.user.avatar} icon={!item.user.avatar ? <UserOutlined /> : ''} />}
-            title={<a href="/">{item.user.fullName}</a>}
-            description={`${new Date(item.createdDate).toDateString()}`}
-          />
-          <Typography.Text>{item.contentText}</Typography.Text>
-          {item.contentImage && (
-            <>
-              <Divider dashed />
-              <img
-                className={styles.img}
-                alt="logo"
-                src={`http://localhost:8000/${item.contentImage}`}
-              />
-            </>
-          )}
+          <Card
+            key={index}
+            className={styles.card}
+            size="small"
+            bordered={false}
+          >
+            <div className={styles.meta}>
+              <div className={styles.avatar}>
+                <Avatar className={styles.img} src={item.user.avatar} icon={!item.user.avatar ? <UserOutlined /> : ''} />
+              </div>
+              <div className={styles.metaContent}>
+                <Typography.Text strong>{item.user.fullName}</Typography.Text>
+                <Typography.Text type="secondary">{`${format(new Date(item.createdDate))}`}</Typography.Text>
+              </div>
+            </div>
+            <div className={styles.content}>
+              <Typography.Text>{item.contentText}</Typography.Text>
+              {item.contentImage && (
+                <Image
+                  className={styles.img}
+                  alt="logo"
+                  src={`http://localhost:8000/${item.contentImage}`}
+                />
+              )}
+            </div>
+            <Divider className={styles.divider} />
+            <Space split={<Divider type="vertical" />}>
+              <Space>
+                <HeartOutlined />
+                <Typography.Text>0</Typography.Text>
+              </Space>
+              <Space>
+                <CommentOutlined />
+                <Typography.Text>0</Typography.Text>
+              </Space>
+            </Space>
+          </Card>
         </List.Item>
       )}
     />

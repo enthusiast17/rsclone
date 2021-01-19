@@ -21,7 +21,7 @@ const authMiddleware = async (req: IUserRequest, res: Response, next: NextFuncti
     next();
   } catch (error) {
     return handleError(new ErrorJSON(
-      403, 'Forbidden.', 'Please, try to log in again.',
+      401, 'Unauthorized.', 'Please, try to reload.',
     ), req, res);
   }
   return res;
