@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux';
 import styles from './index.module.scss';
 import api from '../../utils/api';
 import { IResponse } from '../../utils/interfaces';
-import { RootState } from '../../store/rootReducer';
+import { RootState } from '../../store/root';
 
 const Header = () => {
   const { authState } = useSelector((state: RootState) => state);

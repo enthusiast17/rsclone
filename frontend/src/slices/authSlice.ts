@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IAuth } from './utils/interfaces';
+import { IAuth } from '../utils/interfaces';
 
 const initialState: IAuth = {
   fullName: null,

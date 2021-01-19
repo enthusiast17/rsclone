@@ -1,23 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Avatar, List, notification, Typography, Image, Card, Space, Divider,
+  Avatar, List, notification, Typography, Image, Card, Space, Divider, Button,
 } from 'antd';
 import { CommentOutlined, HeartOutlined, UserOutlined } from '@ant-design/icons';
 import { format } from 'timeago.js';
+import { useDispatch, useSelector } from 'react-redux';
 import api from '../../utils/api';
 import {
-  IPost, IPostPagination, IPostResponse, IResponse,
+  IPost, IPostResponse, IResponse,
 } from '../../utils/interfaces';
 import styles from './index.module.scss';
+import {
+  setCurrentPage, setNextPage, setPageCount, setPosts, setTotalPostCount,
+} from '../../slices/postListSlice';
+import { RootState } from '../../store/root';
 
 const PostList = () => {
-  const [data, setData] = useState<IPostPagination>();
-  const [page, setPage] = useState(1);
+  const dispatch = useDispatch();
+  const { postListState } = useSelector((state: RootState) => state);
+  const [page, setPage] = useState<string | null>('/post/1');
 
   useEffect(() => {
-    api.get(`/post/${page}`)
+    if (!page) return;
+    api.get(page)
       .then((response: { data: IPostResponse }) => {
-        setData(response.data.data);
+        const {
+          posts, currentPage, nextPage, totalPostCount, pageCount,
+        } = response.data.data;
+        dispatch(setPosts(posts));
+        dispatch(setCurrentPage(currentPage));
+        dispatch(setNextPage(nextPage));
+        dispatch(setTotalPostCount(totalPostCount));
+        dispatch(setPageCount(pageCount));
       })
       .catch((reason: { response: { data: IResponse } }) => {
         if (!reason.response || !reason.response.data) {
@@ -40,14 +54,10 @@ const PostList = () => {
       grid={{ gutter: 10, column: 1 }}
       itemLayout="vertical"
       size="small"
-      dataSource={data?.posts}
-      pagination={{
-        onChange: (selectedPage: number) => {
-          setPage(selectedPage);
-        },
-        pageSize: 5,
-        total: data?.totalPostCount,
-      }}
+      loadMore={postListState.nextPage && (
+        <Button type="primary" onClick={() => setPage(postListState.nextPage)} block>Load more</Button>
+      )}
+      dataSource={postListState.posts}
       renderItem={(item: IPost, index: number) => (
         <List.Item
           className={styles.listItem}

@@ -1,5 +1,5 @@
 import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
-import rootReducer, { RootState } from './rootReducer';
+import rootReducer, { RootState } from './root';
 
 const store = configureStore({
   reducer: rootReducer,

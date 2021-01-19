@@ -20,7 +20,7 @@ interface IPost {
   createdDate: Date,
 }
 
-interface IPostPagination {
+interface IPostList {
   posts: IPost[],
   currentPage: number,
   nextPage: string | null,
@@ -39,7 +39,7 @@ interface IResponse {
 }
 
 interface IPostResponse extends IResponse {
-  data: IPostPagination
+  data: IPostList
 }
 
 interface IAuthResponse extends IResponse {
@@ -50,7 +50,7 @@ export type {
   ILoginForm,
   IRegisterForm,
   IPost,
-  IPostPagination,
+  IPostList,
   IAuth,
   IResponse,
   IPostResponse,

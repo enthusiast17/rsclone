@@ -8,7 +8,7 @@ import Home from './pages/Home';
 import api from './utils/api';
 import Welcome from './pages/Welcome';
 import Loading from './components/Loading';
-import { setFullName, setAvatar } from './AuthSlice';
+import { setFullName, setAvatar } from './slices/authSlice';
 import { IAuthResponse } from './utils/interfaces';
 
 function App() {
