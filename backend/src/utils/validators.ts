@@ -3,7 +3,8 @@ import passwordJoiComplexity from 'joi-password-complexity';
 import { ILoginJoi, IPostJoi, IRegisterJoi } from './interfaces';
 
 const registerJoi: IRegisterJoi = {
-  fullName: Joi.string().min(3).max(50).required(),
+  fullName: Joi.string().trim().min(3).max(50)
+    .required(),
   email: Joi.string().min(3).max(255).email()
     .required(),
   birthdayDate: Joi.date(),
@@ -20,7 +21,8 @@ const loginJoi: ILoginJoi = {
 const loginValidator = Joi.object<ILoginJoi>(loginJoi);
 
 const postJoi: IPostJoi = {
-  contentText: Joi.string().min(1).max(1000).required(),
+  contentText: Joi.string().trim().min(1).max(1000)
+    .required(),
 };
 
 const postValidator = Joi.object<IPostJoi>(postJoi);

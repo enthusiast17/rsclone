@@ -54,7 +54,7 @@ router.post('/register', async (req, res) => {
       );
     }
   } catch (error) {
-    if (!error.statusCode && !error.message && !error.description) {
+    if (error.name !== 'ErrorJSON') {
       return handleError(new ErrorJSON(
         500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.',
       ), req, res);
@@ -128,7 +128,7 @@ router.post('/login', async (req, res) => {
       description: 'Please, wait a little bit.',
     });
   } catch (error: any) {
-    if (!error.statusCode && !error.message && !error.description) {
+    if (error.name !== 'ErrorJSON') {
       return handleError(new ErrorJSON(
         500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.',
       ), req, res);
@@ -185,9 +185,13 @@ router.get('/newaccesstoken', async (req, res) => {
       description: '',
     });
   } catch (error) {
-    return handleError(new ErrorJSON(
-      403, 'Forbidden.', 'Please, try to log in again.',
-    ), req, res);
+    if (error.name !== 'ErrorJSON') {
+      return handleError(new ErrorJSON(
+        403, 'Forbidden.', 'Please, try to log in again.',
+      ), req, res);
+    }
+
+    return handleError(error, req, res);
   }
 });
 

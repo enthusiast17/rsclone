@@ -3,6 +3,7 @@ import Joi from 'joi';
 import { Request } from 'express';
 
 interface IUser extends Document {
+  _id: string,
   fullName: string,
   email: string,
   birthdayDate: Date | null,
@@ -17,6 +18,7 @@ interface IRefer {
 }
 
 interface IPost extends Document {
+  _id: string
   userId: IRefer,
   contentText: string,
   contentImage: string,
