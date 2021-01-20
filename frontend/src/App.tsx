@@ -4,9 +4,10 @@ import {
 } from 'react-router-dom';
 import './App.css';
 import { useDispatch } from 'react-redux';
-import Home from './pages/Home';
+import { BackTop } from 'antd';
+import HomePage from './pages/HomePage';
 import api from './utils/api';
-import Welcome from './pages/Welcome';
+import WelcomePage from './pages/WelcomePage';
 import Loading from './components/Loading';
 import { setFullName, setAvatar } from './slices/authSlice';
 import { IAuthResponse } from './utils/interfaces';
@@ -37,11 +38,12 @@ function App() {
         <Loading />
       )}
       {!isLoading && isUserLogged && (
-        <Home />
+        <HomePage />
       )}
       {!isLoading && !isUserLogged && (
-        <Welcome />
+        <WelcomePage />
       )}
+      <BackTop />
     </>
   );
 }

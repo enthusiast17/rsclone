@@ -3,11 +3,11 @@ import PostForm from '../../components/PostForm';
 import PostList from '../../components/PostList';
 import styles from './index.module.scss';
 
-const Post = () => (
+const PostListPage = () => (
   <div className={styles.container}>
     <PostForm />
     <PostList />
   </div>
 );
 
-export default Post;
+export default PostListPage;

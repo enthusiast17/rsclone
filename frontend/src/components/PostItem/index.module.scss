@@ -1,0 +1,33 @@
+.card {
+  border: 1px solid #D9D9D9;
+  
+  .meta {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 10px;
+
+    .avatar {
+      height: 100%;
+      width: 35px;
+    }
+    
+    .metaContent {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    .img {
+      margin: 10px 0px 0px;
+      max-width: 100%;
+    }
+  }
+}
+.divider {
+  margin: 10px 0px 10px 0px;
+}

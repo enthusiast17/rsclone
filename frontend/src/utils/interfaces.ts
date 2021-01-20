@@ -15,6 +15,7 @@ interface IPost {
     fullName: string,
     avatar: string | null,
   }
+  id: string,
   contentText: string,
   contentImage: string | null,
   createdDate: Date,
@@ -23,7 +24,15 @@ interface IPost {
 interface IPostList {
   posts: IPost[],
   currentPage: number,
-  nextPage: string | null,
+  nextPage: number | null,
+  totalPostCount: number,
+  pageCount: number
+}
+
+interface IPostListState {
+  posts: IPost[][],
+  currentPage: number,
+  nextPage: number | null,
   totalPostCount: number,
   pageCount: number
 }
@@ -38,12 +47,20 @@ interface IResponse {
   description: string,
 }
 
-interface IPostResponse extends IResponse {
+interface IPostListResponse extends IResponse {
   data: IPostList
+}
+
+interface IPostResponse extends IResponse {
+  data: IPost
 }
 
 interface IAuthResponse extends IResponse {
   data: IAuth,
+}
+
+interface IRouteInfo {
+  id: string;
 }
 
 export type {
@@ -51,8 +68,11 @@ export type {
   IRegisterForm,
   IPost,
   IPostList,
+  IPostListState,
   IAuth,
   IResponse,
+  IPostListResponse,
   IPostResponse,
   IAuthResponse,
+  IRouteInfo,
 };

@@ -62,6 +62,7 @@ const PostForm = () => {
           <Form.Item
             className={styles.upload}
             name="contentImage"
+            valuePropName="contentImage"
           >
             <Upload
               listType="picture"
