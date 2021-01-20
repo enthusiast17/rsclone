@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Router } from 'express';
 import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
@@ -66,7 +67,7 @@ router.post('/', upload.single('contentImage'), async (req, res) => {
       description: 'Please, wait a little bit.',
     });
   } catch (error) {
-    if (!error.statusCode && !error.message && !error.description) {
+    if (error.name !== 'ErrorJSON') {
       return handleError(new ErrorJSON(
         500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.',
       ), req, res);
@@ -75,7 +76,7 @@ router.post('/', upload.single('contentImage'), async (req, res) => {
   }
 });
 
-router.get('/:page', async (req, res) => {
+router.get('/page/:page', async (req, res) => {
   try {
     const currentPage = parseFloat(req.params.page);
     const limit = 5;
@@ -93,9 +94,12 @@ router.get('/:page', async (req, res) => {
       modelPosts.map(async (post: IPost) => {
         const user: IUser = await User.findById(post.userId);
         const { fullName, avatar } = user;
-        const { contentText, contentImage, createdDate } = post;
+        const {
+          _id, contentText, contentImage, createdDate,
+        } = post;
         return {
           user: { fullName, avatar },
+          id: _id,
           contentText,
           contentImage,
           createdDate,
@@ -106,22 +110,47 @@ router.get('/:page', async (req, res) => {
     return res.status(200).send({
       status: 200,
       message: 'Posts received successfully.',
-      description: '',
+      description: 'Please, wait a little bit.',
       data: {
         posts,
         currentPage,
-        nextPage: !nextPage ? nextPage : `/post/${nextPage}`,
+        nextPage: !nextPage ? nextPage : `/post/page/${nextPage}`,
         totalPostCount,
         pageCount,
       },
     });
   } catch (error) {
-    if (!error.statusCode && !error.message && !error.description) {
-      return handleError(new ErrorJSON(
-        500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.',
-      ), req, res);
-    }
-    return handleError(error, req, res);
+    return handleError(new ErrorJSON(
+      400, 'Post page not found.', 'Please, try another post page.',
+    ), req, res);
+  }
+});
+
+router.get('/id/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const post: IPost = await Post.findById(id);
+    const user: IUser = await User.findById(post.userId);
+    const { fullName, avatar } = user;
+    const {
+      _id, contentText, contentImage, createdDate,
+    } = post;
+    return res.status(200).send({
+      status: 200,
+      message: 'Post received successfully.',
+      description: 'Please, wait a little bit.',
+      data: {
+        user: { fullName, avatar },
+        id: _id,
+        contentText,
+        contentImage,
+        createdDate,
+      },
+    });
+  } catch (error) {
+    return handleError(new ErrorJSON(
+      400, 'Post not found.', 'Please, try another post id.',
+    ), req, res);
   }
 });
 
