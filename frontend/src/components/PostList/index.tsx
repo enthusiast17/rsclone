@@ -1,37 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Avatar, List, notification, Typography, Image, Card, Space, Divider, Button,
-} from 'antd';
-import { CommentOutlined, HeartOutlined, UserOutlined } from '@ant-design/icons';
-import { format } from 'timeago.js';
+import { List, notification, Button } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import api from '../../utils/api';
-import {
-  IPost, IPostResponse, IResponse,
-} from '../../utils/interfaces';
+import { IPost, IPostListResponse, IResponse } from '../../utils/interfaces';
 import styles from './index.module.scss';
 import {
-  setCurrentPage, setNextPage, setPageCount, setPosts, setTotalPostCount,
+  setCurrentPage, setNextPage, setPosts,
 } from '../../slices/postListSlice';
 import { RootState } from '../../store/root';
+import PostItem from '../PostItem';
 
 const PostList = () => {
   const dispatch = useDispatch();
   const { postListState } = useSelector((state: RootState) => state);
-  const [page, setPage] = useState<string | null>('/post/1');
+  const [page, setPage] = useState<number>(1);
+  const history = useHistory();
 
   useEffect(() => {
-    if (!page) return;
-    api.get(page)
-      .then((response: { data: IPostResponse }) => {
+    dispatch(setCurrentPage(page));
+    api.get(`post/page/${page}`)
+      .then((response: { data: IPostListResponse }) => {
         const {
-          posts, currentPage, nextPage, totalPostCount, pageCount,
+          posts, nextPage,
         } = response.data.data;
         dispatch(setPosts(posts));
-        dispatch(setCurrentPage(currentPage));
         dispatch(setNextPage(nextPage));
-        dispatch(setTotalPostCount(totalPostCount));
-        dispatch(setPageCount(pageCount));
       })
       .catch((reason: { response: { data: IResponse } }) => {
         if (!reason.response || !reason.response.data) {
@@ -55,50 +49,15 @@ const PostList = () => {
       itemLayout="vertical"
       size="small"
       loadMore={postListState.nextPage && (
-        <Button type="primary" onClick={() => setPage(postListState.nextPage)} block>Load more</Button>
+        <Button type="primary" onClick={() => setPage(page + 1)} block>Load more</Button>
       )}
-      dataSource={postListState.posts}
+      dataSource={postListState.posts.slice(0, page).reduce((acc, posts) => [...acc, ...posts], [])}
       renderItem={(item: IPost, index: number) => (
         <List.Item
+          key={index}
           className={styles.listItem}
         >
-          <Card
-            key={index}
-            className={styles.card}
-            size="small"
-            bordered={false}
-          >
-            <div className={styles.meta}>
-              <div className={styles.avatar}>
-                <Avatar className={styles.img} src={item.user.avatar} icon={!item.user.avatar ? <UserOutlined /> : ''} />
-              </div>
-              <div className={styles.metaContent}>
-                <Typography.Text strong>{item.user.fullName}</Typography.Text>
-                <Typography.Text type="secondary">{`${format(new Date(item.createdDate))}`}</Typography.Text>
-              </div>
-            </div>
-            <div className={styles.content}>
-              <Typography.Text>{item.contentText}</Typography.Text>
-              {item.contentImage && (
-                <Image
-                  className={styles.img}
-                  alt="logo"
-                  src={`http://localhost:8000/${item.contentImage}`}
-                />
-              )}
-            </div>
-            <Divider className={styles.divider} />
-            <Space split={<Divider type="vertical" />}>
-              <Space>
-                <HeartOutlined />
-                <Typography.Text>0</Typography.Text>
-              </Space>
-              <Space>
-                <CommentOutlined />
-                <Typography.Text>0</Typography.Text>
-              </Space>
-            </Space>
-          </Card>
+          <PostItem item={item} hoverable handleClick={() => history.push(`/post/${item.id}`)} />
         </List.Item>
       )}
     />

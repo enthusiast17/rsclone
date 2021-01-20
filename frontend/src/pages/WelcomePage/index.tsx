@@ -6,7 +6,7 @@ import Login from '../../components/Login';
 import Register from '../../components/Register';
 import styles from './index.module.scss';
 
-const Welcome = () => {
+const WelcomePage = () => {
   const [isLoginVisible, setIsLoginVisible] = useState(false);
   const [isRegisterVisible, setIsRegisterVisible] = useState(false);
 
@@ -65,4 +65,4 @@ const Welcome = () => {
   );
 };
 
-export default Welcome;
+export default WelcomePage;

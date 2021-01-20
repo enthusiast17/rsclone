@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IPost, IPostList } from '../utils/interfaces';
+import { IPost, IPostListState } from '../utils/interfaces';
 
-const initialState: IPostList = {
+const initialState: IPostListState = {
   posts: [],
-  currentPage: 0,
+  currentPage: 1,
   nextPage: null,
   totalPostCount: 0,
   pageCount: 0,
@@ -13,19 +13,22 @@ const postListSlice = createSlice({
   name: 'postList',
   initialState,
   reducers: {
-    setPosts(state: IPostList, action: PayloadAction<IPost[]>) {
-      return { ...state, posts: [...state.posts, ...action.payload] };
+    setPosts(state: IPostListState, action: PayloadAction<IPost[]>) {
+      if (state.posts[state.currentPage - 1]) {
+        return { ...state, posts: [action.payload] };
+      }
+      return { ...state, posts: [...state.posts, action.payload] };
     },
-    setCurrentPage(state: IPostList, action: PayloadAction<number>) {
+    setCurrentPage(state: IPostListState, action: PayloadAction<number>) {
       return { ...state, currentPage: action.payload };
     },
-    setNextPage(state: IPostList, action: PayloadAction<string | null>) {
+    setNextPage(state: IPostListState, action: PayloadAction<number | null>) {
       return { ...state, nextPage: action.payload };
     },
-    setTotalPostCount(state: IPostList, action: PayloadAction<number>) {
+    setTotalPostCount(state: IPostListState, action: PayloadAction<number>) {
       return { ...state, totalPostCount: action.payload };
     },
-    setPageCount(state: IPostList, action: PayloadAction<number>) {
+    setPageCount(state: IPostListState, action: PayloadAction<number>) {
       return { ...state, pageCount: action.payload };
     },
   },
