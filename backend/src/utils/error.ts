@@ -1,6 +1,8 @@
 import { Response, Request } from 'express';
 
 class ErrorJSON extends Error {
+  public name: string = 'ErrorJSON';
+
   public statusCode: number;
 
   public message: string;
