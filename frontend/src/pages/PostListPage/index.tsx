@@ -1,13 +1,80 @@
-import React from 'react';
+import { notification } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import Loading from '../../components/Loading';
 import PostForm from '../../components/PostForm';
 import PostList from '../../components/PostList';
+import {
+  resetPostListSlice, setCurrentPage, setNextPage, setPosts, setTotalPostCount,
+} from '../../slices/postListSlice';
+import { RootState } from '../../store/root';
+import api from '../../utils/api';
+import { IPostListResponse, IResponse } from '../../utils/interfaces';
 import styles from './index.module.scss';
 
-const PostListPage = () => (
-  <div className={styles.container}>
-    <PostForm />
-    <PostList />
-  </div>
-);
+const PostListPage = () => {
+  const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { postListState } = useSelector((state: RootState) => state);
+
+  const fetchPosts = () => {
+    const url = postListState.currentPage === 1 ? `/posts/?page=${postListState.currentPage}` : `/posts/?page=${postListState.currentPage}&total=${postListState.totalPostCount}`;
+    api.get(url)
+      .then((response: { data: IPostListResponse }) => {
+        const {
+          posts, nextPage, totalPostCount,
+        } = response.data.data;
+        dispatch(setPosts([...postListState.posts, ...posts]));
+        dispatch(setNextPage(nextPage));
+        if (postListState.currentPage === 1) dispatch(setTotalPostCount(totalPostCount));
+        setIsLoading(false);
+      })
+      .catch((reason: { response: { data: IResponse } }) => {
+        setIsLoading(false);
+        if (!reason.response || !reason.response.data) {
+          notification.error({
+            message: 'Internal Error.',
+            description: 'Upps! Sorry, something went wrong in internal server.',
+          });
+          return;
+        }
+        notification.error({
+          message: reason.response.data.message,
+          description: reason.response.data.description,
+        });
+      });
+  };
+
+  useEffect(() => {
+    if (postListState.currentPage < 1) {
+      dispatch(setCurrentPage(1));
+      setIsLoading(true);
+      return;
+    }
+    fetchPosts();
+  }, [postListState.currentPage]);
+
+  useEffect(() => () => {
+    dispatch(resetPostListSlice());
+  }, []);
+
+  return (
+    <>
+      {isLoading && (
+        <Loading />
+      )}
+
+      <div className={styles.container}>
+        <PostForm />
+        {isLoading && (
+          <Loading />
+        )}
+        {!isLoading && (
+          <PostList posts={postListState.posts} />
+        )}
+      </div>
+    </>
+  );
+};
 
 export default PostListPage;

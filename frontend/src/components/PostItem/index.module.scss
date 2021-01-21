@@ -7,11 +7,6 @@
     align-items: center;
     column-gap: 10px;
 
-    .avatar {
-      height: 100%;
-      width: 35px;
-    }
-    
     .metaContent {
       display: flex;
       flex-direction: column;
@@ -21,10 +16,25 @@
   .content {
     display: flex;
     flex-direction: column;
-    align-items: start;
-    .img {
-      margin: 10px 0px 0px;
+    word-wrap: break-all;
+    overflow: auto;
+
+    .contentText {
+      word-wrap: break-all;
+    }
+
+    .contentImage {
       max-width: 100%;
+    }
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  .footer {
+    &:hover {
+      cursor: pointer;
     }
   }
 }

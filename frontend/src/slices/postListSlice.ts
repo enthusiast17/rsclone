@@ -1,5 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IPost, IPostListState } from '../utils/interfaces';
+import { IPost } from '../utils/interfaces';
+
+interface IPostListState {
+  posts: IPost[],
+  currentPage: number,
+  nextPage: number | null,
+  totalPostCount: number,
+  pageCount: number
+}
 
 const initialState: IPostListState = {
   posts: [],
@@ -13,11 +21,11 @@ const postListSlice = createSlice({
   name: 'postList',
   initialState,
   reducers: {
+    resetPostListSlice() {
+      return initialState;
+    },
     setPosts(state: IPostListState, action: PayloadAction<IPost[]>) {
-      if (state.posts[state.currentPage - 1]) {
-        return { ...state, posts: [action.payload] };
-      }
-      return { ...state, posts: [...state.posts, action.payload] };
+      return { ...state, posts: action.payload };
     },
     setCurrentPage(state: IPostListState, action: PayloadAction<number>) {
       return { ...state, currentPage: action.payload };
@@ -35,6 +43,7 @@ const postListSlice = createSlice({
 });
 
 export const {
+  resetPostListSlice,
   setPosts,
   setCurrentPage,
   setNextPage,
