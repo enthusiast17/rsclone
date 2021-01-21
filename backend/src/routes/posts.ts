@@ -88,19 +88,25 @@ router.post('/', upload.single('contentImage'), async (req, res) => {
   }
 });
 
-router.get('/page/:page', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const currentPage = parseFloat(req.params.page);
+    const { page } = req.query;
+    const currentPage = parseFloat(page as string);
     const limit = 5;
-    const startIdx = (currentPage - 1) * limit;
+    const totalPostCount: number = await Post.countDocuments();
+    const total = req.query.total ? parseFloat(req.query.total as string) : totalPostCount;
+    const startIdx = ((currentPage - 1) * limit) + (totalPostCount - total);
     const endIdx = currentPage * limit;
-    const totalPostCount = await Post.countDocuments();
     const nextPage = endIdx < totalPostCount ? currentPage + 1 : null;
     const pageCount = Math.ceil(totalPostCount / limit);
     const modelPosts = await Post.find()
       .sort({ _id: -1 })
       .limit(limit)
       .skip(startIdx);
+
+    const modelNewPosts = totalPostCount === total ? null : await Post.find()
+      .sort({ _id: -1 })
+      .limit(totalPostCount - total);
 
     const posts = await Promise.all(
       modelPosts.map(async (post: any) => {
@@ -129,6 +135,7 @@ router.get('/page/:page', async (req, res) => {
         nextPage,
         totalPostCount,
         pageCount,
+        newPosts: modelNewPosts,
       },
     });
   } catch (error) {
@@ -201,6 +208,33 @@ router.put('/id/:id', upload.single('contentImage'), async (req, res) => {
     return res.send(200).send({
       status: 200,
       message: 'Post edited successfully.',
+      description: 'Please, wait a little bit',
+    });
+  } catch (error) {
+    if (error.name !== 'ErrorJSON') {
+      return handleError(new ErrorJSON(
+        500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.',
+      ), req, res);
+    }
+    return handleError(error, req, res);
+  }
+});
+
+router.delete('/id/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const post = await Post.findById(id);
+
+    if (post.userId !== (req as IUserRequest).userId) {
+      throw new ErrorJSON(
+        403, 'Forbidden', 'You have no access to edit this post.',
+      );
+    }
+
+    await post.remove();
+    return res.send(200).send({
+      status: 200,
+      message: 'Post deleted successfully.',
       description: 'Please, wait a little bit',
     });
   } catch (error) {
