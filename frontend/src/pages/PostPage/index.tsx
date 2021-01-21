@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import Loading from '../../components/Loading';
 import NotFound from '../../components/NotFound';
-import PostItem from '../../components/PostItem';
+// import PostItem from '../../components/PostItem';
 import api from '../../utils/api';
 import { IPost, IPostResponse, IRouteInfo } from '../../utils/interfaces';
 
@@ -13,7 +13,7 @@ const PostPage = ({ match }: RouteComponentProps<IRouteInfo>) => {
   useEffect(() => {
     const { id } = match.params;
     api.get(
-      `/post/id/${id}`,
+      `/posts/id/${id}`,
     )
       .then((response: { data: IPostResponse }) => {
         const { data } = response.data;
@@ -31,9 +31,13 @@ const PostPage = ({ match }: RouteComponentProps<IRouteInfo>) => {
         <Loading />
       )}
 
-      {!isLoading && post !== null && (
-        <PostItem item={post} hoverable={false} handleClick={() => {}} />
-      )}
+      {/* {!isLoading && post !== null && (
+        <PostItem
+          item={post}
+          handleClick={() => {}}
+          setRefreshList=(() => {})
+        />
+      )} */}
 
       {!isLoading && !post && (
         <NotFound />

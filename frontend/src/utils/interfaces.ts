@@ -27,14 +27,7 @@ interface IPostList {
   nextPage: number | null,
   totalPostCount: number,
   pageCount: number
-}
-
-interface IPostListState {
-  posts: IPost[][],
-  currentPage: number,
-  nextPage: number | null,
-  totalPostCount: number,
-  pageCount: number
+  newPosts: IPost[],
 }
 
 interface IAuth {
@@ -68,7 +61,6 @@ export type {
   IRegisterForm,
   IPost,
   IPostList,
-  IPostListState,
   IAuth,
   IResponse,
   IPostListResponse,

@@ -4,13 +4,15 @@ import {
 } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import { UploadOutlined } from '@ant-design/icons';
+import { useDispatch } from 'react-redux';
 import styles from './index.module.scss';
 import api from '../../utils/api';
 import { IResponse } from '../../utils/interfaces';
+import { resetPostListSlice, setCurrentPage } from '../../slices/postListSlice';
 
 const PostForm = () => {
   const [form] = Form.useForm();
-
+  const dispatch = useDispatch();
   const onFinish = (values: { contentText: string, contentImage: any }) => {
     const formData = new FormData();
     formData.append('contentText', values.contentText);
@@ -18,7 +20,7 @@ const PostForm = () => {
       formData.append('contentImage', values.contentImage.file.originFileObj);
     }
     api.post(
-      '/post',
+      '/posts',
       formData,
     ).then((response: { data: IResponse }) => {
       notification.success({
@@ -26,6 +28,8 @@ const PostForm = () => {
         description: response.data.description,
       });
       form.resetFields();
+      dispatch(resetPostListSlice());
+      dispatch(setCurrentPage(-1));
     }).catch((reason: { response: { data: IResponse } }) => {
       if (!reason.response || !reason.response.data) {
         notification.error({
