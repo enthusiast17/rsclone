@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import { MulterError } from 'multer';
 import authRouter from './routes/auth';
-import postRouter from './routes/post';
+import postsRouter from './routes/posts';
 import authMiddleware from './middlewares/auth';
 import { ErrorJSON, handleError } from './utils/error';
 
@@ -35,7 +35,7 @@ app.use((err: Error, req :Request, res: Response, next: NextFunction) => {
   return next();
 });
 
-app.use('/api/post', authMiddleware, postRouter);
+app.use('/api/posts', authMiddleware, postsRouter);
 
 app.use((err: MulterError, req: Request, res: Response, next: NextFunction) => {
   if (err.code === 'LIMIT_FILE_SIZE') {

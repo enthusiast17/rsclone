@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Post from '../model/Post';
 import User from '../model/User';
 import { ErrorJSON, handleError } from '../utils/error';
-import { IPost, IUser, IUserRequest } from '../utils/interfaces';
+import { IUserRequest } from '../utils/interfaces';
 import { postValidator } from '../utils/validators';
 
 const router = Router();
@@ -58,13 +58,25 @@ router.post('/', upload.single('contentImage'), async (req, res) => {
       contentImage: req.file ? req.file.path : null,
     });
 
-    await post.save();
+    const savedPost = await post.save();
+    const user = await User.findById(savedPost.userId);
+    const { fullName, avatar } = user;
+    const {
+      _id, contentText, contentImage, createdDate,
+    } = savedPost;
 
     return res.status(200).send({
       status: 'success',
       statusCode: 200,
       message: 'Post created successfully.',
       description: 'Please, wait a little bit.',
+      data: {
+        user: { fullName, avatar },
+        id: _id,
+        contentText,
+        contentImage,
+        createdDate,
+      },
     });
   } catch (error) {
     if (error.name !== 'ErrorJSON') {
@@ -91,8 +103,8 @@ router.get('/page/:page', async (req, res) => {
       .skip(startIdx);
 
     const posts = await Promise.all(
-      modelPosts.map(async (post: IPost) => {
-        const user: IUser = await User.findById(post.userId);
+      modelPosts.map(async (post: any) => {
+        const user = await User.findById(post.userId);
         const { fullName, avatar } = user;
         const {
           _id, contentText, contentImage, createdDate,
@@ -114,7 +126,7 @@ router.get('/page/:page', async (req, res) => {
       data: {
         posts,
         currentPage,
-        nextPage: !nextPage ? nextPage : `/post/page/${nextPage}`,
+        nextPage,
         totalPostCount,
         pageCount,
       },
@@ -129,8 +141,8 @@ router.get('/page/:page', async (req, res) => {
 router.get('/id/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const post: IPost = await Post.findById(id);
-    const user: IUser = await User.findById(post.userId);
+    const post = await Post.findById(id);
+    const user = await User.findById(post.userId);
     const { fullName, avatar } = user;
     const {
       _id, contentText, contentImage, createdDate,
@@ -151,6 +163,53 @@ router.get('/id/:id', async (req, res) => {
     return handleError(new ErrorJSON(
       400, 'Post not found.', 'Please, try another post id.',
     ), req, res);
+  }
+});
+
+router.put('/id/:id', upload.single('contentImage'), async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (req.file && !fileFormats.includes(req.file.mimetype)) {
+      throw new ErrorJSON(
+        415, 'Unsupported Media Type.', 'Please, load only jpeg or png.',
+      );
+    }
+
+    delete req.body?.contentImage;
+
+    const validate = postValidator.validate(req.body);
+    if (validate.error) {
+      throw new ErrorJSON(
+        400, validate.error?.details[0].message, 'Please, correct your post form.',
+      );
+    }
+
+    const post = await Post.findById(id);
+
+    if (post.userId !== (req as IUserRequest).userId) {
+      throw new ErrorJSON(
+        403, 'Forbidden', 'You have no access to edit this post.',
+      );
+    }
+
+    await post.update({
+      contentText: req.body.contentText,
+      contentImage: req.file ? req.file.path : null,
+    });
+
+    return res.send(200).send({
+      status: 200,
+      message: 'Post edited successfully.',
+      description: 'Please, wait a little bit',
+    });
+  } catch (error) {
+    if (error.name !== 'ErrorJSON') {
+      return handleError(new ErrorJSON(
+        500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.',
+      ), req, res);
+    }
+    return handleError(error, req, res);
   }
 });
 
