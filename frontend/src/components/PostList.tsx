@@ -2,11 +2,10 @@ import React from 'react';
 import { List, Button } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import styles from './index.module.scss';
-import { RootState } from '../../store/root';
-import PostItem from '../PostItem';
-import { IPost } from '../../utils/interfaces';
-import { setCurrentPage } from '../../slices/postListSlice';
+import { RootState } from '../store/root';
+import PostItem from './PostItem';
+import { IPost } from '../utils/interfaces';
+import { setCurrentPage } from '../slices/postListSlice';
 
 const PostList = (props: { posts: IPost[] }) => {
   const { posts } = props;
@@ -16,7 +15,7 @@ const PostList = (props: { posts: IPost[] }) => {
 
   return (
     <List
-      className={styles.list}
+      style={{ padding: 0 }}
       grid={{ gutter: 10, column: 1 }}
       itemLayout="vertical"
       size="small"
@@ -26,8 +25,8 @@ const PostList = (props: { posts: IPost[] }) => {
       dataSource={posts}
       renderItem={(item: IPost, index: number) => (
         <List.Item
+          style={{ padding: 0, margin: '0px 0px 10px 0px' }}
           key={index}
-          className={styles.listItem}
         >
           <PostItem item={item} handleClick={() => history.push(`/post/${item.id}`)} />
         </List.Item>

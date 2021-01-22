@@ -8,10 +8,9 @@ import {
 import Avatar from 'antd/lib/avatar/avatar';
 import { format } from 'timeago.js';
 import { useDispatch } from 'react-redux';
-import styles from './index.module.scss';
-import { IPost } from '../../utils/interfaces';
-import { setPost } from '../../slices/postListSlice';
-import api from '../../utils/api';
+import { IPost } from '../utils/interfaces';
+import { setPost } from '../slices/postListSlice';
+import api from '../utils/api';
 
 const PostItem = (props: {
   item: IPost,
@@ -35,44 +34,42 @@ const PostItem = (props: {
 
   return (
     <Card
-      className={styles.card}
+      style={{ border: '1px solid #D9D9D9' }}
       size="small"
     >
-      <Row className={styles.meta}>
-        <Col flex="35px" className={styles.avatar}>
-          <Avatar className={styles.img} src={item.user.avatar} icon={!item.user.avatar ? <UserOutlined /> : ''} />
+      <Row>
+        <Col style={{ marginRight: 10 }} flex="35px">
+          <Avatar src={item.user.avatar} icon={!item.user.avatar ? <UserOutlined /> : ''} />
         </Col>
         <Col flex="auto">
           <Row>
             <Typography.Text strong ellipsis>{item.user.fullName}</Typography.Text>
           </Row>
           <Row>
-            <Typography.Text type="secondary">{`${format(new Date(item.createdDate))}`}</Typography.Text>
+            <Typography.Text type="secondary">{`${format(item.createdDate)}`}</Typography.Text>
           </Row>
         </Col>
       </Row>
-      <Row
-        className={styles.content}
-      >
-        <Row onClick={handleClick}>
+      <Row style={{ overflow: 'auto' }}>
+        <Row style={{ width: '100%', cursor: 'pointer' }} onClick={handleClick}>
           <Typography.Text>{item.contentText}</Typography.Text>
         </Row>
         {item.contentImage && (
           <Row>
             <Image
-              className={styles.contentImage}
+              style={{ maxWidth: '100%' }}
               alt="logo"
               src={`http://localhost:8000/${item.contentImage}`}
             />
           </Row>
         )}
       </Row>
-      <Divider className={styles.divider} />
-      <Row className={styles.footer}>
+      <Divider style={{ margin: '10px 0px 10px 0px' }} />
+      <Row>
         <Space split={<Divider type="vertical" />}>
           <Space>
             <Col
-              className={styles.likes}
+              style={{ cursor: 'pointer' }}
               onClick={handleLike}
             >
               { item.isUserLiked ? <HeartFilled /> : <HeartOutlined /> }
@@ -83,13 +80,13 @@ const PostItem = (props: {
           </Space>
           <Space>
             <Col
-              className={styles.comments}
+              style={{ cursor: 'pointer' }}
               onClick={handleClick}
             >
               <CommentOutlined />
             </Col>
             <Col
-              className={styles.comments}
+              style={{ cursor: 'pointer' }}
               onClick={handleClick}
             >
               <Typography.Text>0</Typography.Text>

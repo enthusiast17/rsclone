@@ -5,10 +5,9 @@ import {
 import TextArea from 'antd/lib/input/TextArea';
 import { UploadOutlined } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
-import styles from './index.module.scss';
-import api from '../../utils/api';
-import { IResponse } from '../../utils/interfaces';
-import { resetPostListSlice, setCurrentPage } from '../../slices/postListSlice';
+import { IResponse } from '../utils/interfaces';
+import { resetPostListSlice, setCurrentPage } from '../slices/postListSlice';
+import api from '../utils/api';
 
 const PostForm = () => {
   const [form] = Form.useForm();
@@ -47,8 +46,8 @@ const PostForm = () => {
 
   return (
     <Card
-      className={styles.container}
-      bodyStyle={{ padding: 0 }}
+      style={{ border: '1px solid #D9D9D9', borderRadius: 2 }}
+      bodyStyle={{ padding: 10 }}
     >
       <Form
         form={form}
@@ -62,9 +61,9 @@ const PostForm = () => {
         >
           <TextArea showCount maxLength={1000} />
         </Form.Item>
-        <Row className={styles.row}>
+        <Row style={{ position: 'relative' }}>
           <Form.Item
-            className={styles.upload}
+            style={{ margin: 0, width: '100%' }}
             name="contentImage"
             valuePropName="contentImage"
           >
@@ -75,8 +74,12 @@ const PostForm = () => {
               <Button icon={<UploadOutlined />}>Upload image (Max: 1)</Button>
             </Upload>
           </Form.Item>
-          <Form.Item
-            className={styles.postBtn}
+          <Form.Item style={{
+            margin: 0,
+            position: 'absolute',
+            top: 0,
+            right: 0,
+          }}
           >
             <Button
               type="primary"
