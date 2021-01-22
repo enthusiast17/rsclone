@@ -19,6 +19,8 @@ interface IPost {
   contentText: string,
   contentImage: string | null,
   createdDate: Date,
+  likesCount: number,
+  isUserLiked: boolean,
 }
 
 interface IPostList {

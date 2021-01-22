@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import Loading from '../../components/Loading';
 import NotFound from '../../components/NotFound';
-// import PostItem from '../../components/PostItem';
-import api from '../../utils/api';
+import PostInfo from '../../components/PostInfo';
 import { IPost, IPostResponse, IRouteInfo } from '../../utils/interfaces';
+import api from '../../utils/api';
 
 const PostPage = ({ match }: RouteComponentProps<IRouteInfo>) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -31,13 +31,11 @@ const PostPage = ({ match }: RouteComponentProps<IRouteInfo>) => {
         <Loading />
       )}
 
-      {/* {!isLoading && post !== null && (
-        <PostItem
+      {!isLoading && post !== null && (
+        <PostInfo
           item={post}
-          handleClick={() => {}}
-          setRefreshList=(() => {})
         />
-      )} */}
+      )}
 
       {!isLoading && !post && (
         <NotFound />

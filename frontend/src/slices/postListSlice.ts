@@ -27,6 +27,12 @@ const postListSlice = createSlice({
     setPosts(state: IPostListState, action: PayloadAction<IPost[]>) {
       return { ...state, posts: action.payload };
     },
+    setPost(state: IPostListState, action: PayloadAction<IPost>) {
+      const posts = [...state.posts];
+      const index = posts.findIndex((post) => post.id === action.payload.id);
+      if (index !== -1) posts[index] = action.payload;
+      return { ...state, posts };
+    },
     setCurrentPage(state: IPostListState, action: PayloadAction<number>) {
       return { ...state, currentPage: action.payload };
     },
@@ -45,6 +51,7 @@ const postListSlice = createSlice({
 export const {
   resetPostListSlice,
   setPosts,
+  setPost,
   setCurrentPage,
   setNextPage,
   setTotalPostCount,
