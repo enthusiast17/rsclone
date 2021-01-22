@@ -3,9 +3,8 @@ import {
   Typography, Form, Row, Col, Input, notification, Button,
 } from 'antd';
 import { useHistory } from 'react-router-dom';
-import styles from './index.module.scss';
-import api from '../../utils/api';
-import { IRegisterForm, IResponse } from '../../utils/interfaces';
+import { IRegisterForm, IResponse } from '../utils/interfaces';
+import api from '../utils/api';
 
 const Register = () => {
   const [form] = Form.useForm();
@@ -46,7 +45,7 @@ const Register = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <div style={{ width: '100%' }}>
       <Typography.Title level={3}>Register</Typography.Title>
       <Form form={form} layout="vertical" onFinish={onFinish} scrollToFirstError>
         <Row>

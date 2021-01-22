@@ -3,9 +3,8 @@ import {
   Typography, Form, Input, Button, notification,
 } from 'antd';
 import { useHistory } from 'react-router-dom';
-import styles from './index.module.scss';
-import api from '../../utils/api';
-import { ILoginForm, IResponse } from '../../utils/interfaces';
+import { ILoginForm, IResponse } from '../utils/interfaces';
+import api from '../utils/api';
 
 const Login = () => {
   const [form] = Form.useForm();
@@ -41,7 +40,7 @@ const Login = () => {
   });
 
   return (
-    <div className={styles.container}>
+    <div style={{ width: '100%' }}>
       <Typography.Title level={3}>Log in</Typography.Title>
       <Form form={form} name="login" layout="vertical" scrollToFirstError onFinish={onFinish}>
         <Form.Item

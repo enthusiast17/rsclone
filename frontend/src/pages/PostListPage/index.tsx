@@ -1,9 +1,9 @@
 import { notification } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Loading from '../../components/Loading';
 import PostForm from '../../components/PostForm';
 import PostList from '../../components/PostList';
+import PostListSkeleton from '../../components/PostListSkeleton';
 import {
   resetPostListSlice, setCurrentPage, setNextPage, setPosts, setTotalPostCount,
 } from '../../slices/postListSlice';
@@ -59,21 +59,15 @@ const PostListPage = () => {
   }, []);
 
   return (
-    <>
+    <div className={styles.container}>
+      <PostForm />
       {isLoading && (
-        <Loading />
+        <PostListSkeleton />
       )}
-
-      <div className={styles.container}>
-        <PostForm />
-        {isLoading && (
-          <Loading />
-        )}
-        {!isLoading && (
-          <PostList posts={postListState.posts} />
-        )}
-      </div>
-    </>
+      {!isLoading && (
+        <PostList posts={postListState.posts} />
+      )}
+    </div>
   );
 };
 
