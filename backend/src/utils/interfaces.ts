@@ -1,4 +1,4 @@
-import { Document, Schema } from 'mongoose';
+import { Document } from 'mongoose';
 import Joi from 'joi';
 import { Request } from 'express';
 
@@ -12,17 +12,19 @@ interface IUser extends Document {
   createdDate: Date,
 }
 
-interface IRefer {
-  type: Schema.Types.ObjectId,
-  ref: string,
-}
-
 interface IPost extends Document {
   _id: string
-  userId: IRefer,
+  userId: string,
   contentText: string,
   contentImage: string,
   createdDate: Date,
+}
+
+interface ILike extends Document {
+  _id: string,
+  userId: string,
+  postId: string | null,
+  commentId: string | null,
 }
 
 interface IRegisterJoi {
@@ -54,6 +56,7 @@ interface IJWTSign {
 export {
   IUser,
   IPost,
+  ILike,
   IRegisterJoi,
   ILoginJoi,
   IPostJoi,

@@ -1,7 +1,10 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Router } from 'express';
 import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
+import Like from '../model/Like';
+// import Like from '../model/Like';
 import Post from '../model/Post';
 import User from '../model/User';
 import { ErrorJSON, handleError } from '../utils/error';
@@ -111,6 +114,10 @@ router.get('/', async (req, res) => {
     const posts = await Promise.all(
       modelPosts.map(async (post: any) => {
         const user = await User.findById(post.userId);
+        const isLiked = await Like
+          .findOne({})
+          .and([{ userId: (req as IUserRequest).userId, postId: post._id }]);
+        const likes = await Like.find({ postId: post._id });
         const { fullName, avatar } = user;
         const {
           _id, contentText, contentImage, createdDate,
@@ -121,6 +128,8 @@ router.get('/', async (req, res) => {
           contentText,
           contentImage,
           createdDate,
+          likesCount: likes.length || 0,
+          isUserLiked: !!isLiked,
         };
       }),
     );
@@ -150,6 +159,10 @@ router.get('/id/:id', async (req, res) => {
     const { id } = req.params;
     const post = await Post.findById(id);
     const user = await User.findById(post.userId);
+    const isLiked = await Like
+      .findOne({})
+      .and([{ userId: (req as IUserRequest).userId, postId: post._id }]);
+    const likes = await Like.find({ postId: post._id });
     const { fullName, avatar } = user;
     const {
       _id, contentText, contentImage, createdDate,
@@ -164,6 +177,8 @@ router.get('/id/:id', async (req, res) => {
         contentText,
         contentImage,
         createdDate,
+        likesCount: likes.length || 0,
+        isUserLiked: !!isLiked,
       },
     });
   } catch (error) {
