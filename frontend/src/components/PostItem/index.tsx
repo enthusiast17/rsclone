@@ -1,20 +1,37 @@
 import React from 'react';
 import {
-  UserOutlined, HeartOutlined, CommentOutlined,
+  UserOutlined, HeartOutlined, CommentOutlined, HeartFilled,
 } from '@ant-design/icons';
 import {
   Card, Divider, Space, Image, Typography, Row, Col,
 } from 'antd';
 import Avatar from 'antd/lib/avatar/avatar';
 import { format } from 'timeago.js';
+import { useDispatch } from 'react-redux';
 import styles from './index.module.scss';
 import { IPost } from '../../utils/interfaces';
+import { setPost } from '../../slices/postListSlice';
+import api from '../../utils/api';
 
 const PostItem = (props: {
   item: IPost,
   handleClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void,
 }) => {
   const { item, handleClick } = props;
+  const dispatch = useDispatch();
+
+  const handleLike = () => {
+    api.post(
+      `/likes/?post=${item.id}`,
+    )
+      .then(() => {
+        dispatch(setPost({
+          ...item,
+          isUserLiked: !item.isUserLiked,
+          likesCount: item.isUserLiked ? item.likesCount - 1 : item.likesCount + 1,
+        }));
+      });
+  };
 
   return (
     <Card
@@ -51,17 +68,30 @@ const PostItem = (props: {
         )}
       </Row>
       <Divider className={styles.divider} />
-      <Row className={styles.footer} onClick={handleClick}>
+      <Row className={styles.footer}>
         <Space split={<Divider type="vertical" />}>
           <Space>
-            <HeartOutlined />
+            <Col
+              className={styles.likes}
+              onClick={handleLike}
+            >
+              { item.isUserLiked ? <HeartFilled /> : <HeartOutlined /> }
+            </Col>
             <Col>
-              <Typography.Text>0</Typography.Text>
+              <Typography.Text>{ item.likesCount }</Typography.Text>
             </Col>
           </Space>
           <Space>
-            <CommentOutlined />
-            <Col>
+            <Col
+              className={styles.comments}
+              onClick={handleClick}
+            >
+              <CommentOutlined />
+            </Col>
+            <Col
+              className={styles.comments}
+              onClick={handleClick}
+            >
               <Typography.Text>0</Typography.Text>
             </Col>
           </Space>

@@ -26,26 +26,9 @@
     .contentImage {
       max-width: 100%;
     }
-
-    &:hover {
-      cursor: pointer;
-    }
   }
 
-  .footer {
-    .likes {
-      &:hover {
-        cursor: pointer;
-      }
-    }
-    
-    .comments {
-      &:hover {
-        cursor: pointer;
-      }
-    }
+  .divider {
+    margin: 10px 0px 10px 0px;
   }
-}
-.divider {
-  margin: 10px 0px 10px 0px;
 }
