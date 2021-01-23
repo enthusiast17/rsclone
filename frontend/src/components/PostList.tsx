@@ -1,7 +1,6 @@
 import React from 'react';
 import { List, Button } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import { RootState } from '../store/root';
 import PostItem from './PostItem';
 import { IPost } from '../utils/interfaces';
@@ -11,7 +10,6 @@ const PostList = (props: { posts: IPost[] }) => {
   const { posts } = props;
   const dispatch = useDispatch();
   const { postListState } = useSelector((state: RootState) => state);
-  const history = useHistory();
 
   return (
     <List
@@ -28,7 +26,7 @@ const PostList = (props: { posts: IPost[] }) => {
           style={{ padding: 0, margin: '0px 0px 10px 0px' }}
           key={index}
         >
-          <PostItem item={item} handleClick={() => history.push(`/post/${item.id}`)} />
+          <PostItem item={item} />
         </List.Item>
       )}
     />

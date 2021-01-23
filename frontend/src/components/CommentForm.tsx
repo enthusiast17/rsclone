@@ -17,7 +17,7 @@ const CommentForm = () => (
         </Col>
         <Col flex="auto">
           <Row>
-            <TextArea style={{ width: '100%' }} showCount maxLength={1000} />
+            <TextArea style={{ width: '100%' }} showCount maxLength={500} />
           </Row>
           <Row style={{ position: 'relative' }}>
             <Form.Item
