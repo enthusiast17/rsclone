@@ -3,6 +3,7 @@ import { IAuth } from '../utils/interfaces';
 
 const initialState: IAuth = {
   fullName: null,
+  email: null,
   avatar: null,
 };
 
@@ -13,6 +14,9 @@ const authSlice = createSlice({
     setFullName(state: IAuth, action: PayloadAction<string | null>) {
       return { ...state, fullName: action.payload };
     },
+    setEmail(state: IAuth, action: PayloadAction<string | null>) {
+      return { ...state, email: action.payload };
+    },
     setAvatar(state: IAuth, action: PayloadAction<string | null>) {
       return { ...state, avatar: action.payload };
     },
@@ -21,6 +25,7 @@ const authSlice = createSlice({
 
 export const {
   setFullName,
+  setEmail,
   setAvatar,
 } = authSlice.actions;
 

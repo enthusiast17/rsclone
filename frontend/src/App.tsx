@@ -9,7 +9,7 @@ import HomePage from './pages/HomePage';
 import api from './utils/api';
 import WelcomePage from './pages/WelcomePage';
 import Loading from './components/Loading';
-import { setFullName, setAvatar } from './slices/authSlice';
+import { setFullName, setEmail, setAvatar } from './slices/authSlice';
 import { IAuthResponse } from './utils/interfaces';
 
 function App() {
@@ -21,10 +21,12 @@ function App() {
   useEffect(() => {
     api.get('/auth/me')
       .then((response: { data: IAuthResponse }) => {
+        const { fullName, email, avatar } = response.data.data;
         setIsLoading(false);
         setIsUserLogged(true);
-        dispatch(setFullName(response.data.data.fullName));
-        dispatch(setAvatar(response.data.data.avatar));
+        dispatch(setFullName(fullName));
+        dispatch(setEmail(email));
+        dispatch(setAvatar(avatar));
       })
       .catch(() => {
         setIsLoading(false);
