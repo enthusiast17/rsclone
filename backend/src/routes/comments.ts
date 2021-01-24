@@ -127,4 +127,34 @@ router.put('/id/:id', async (req, res) => {
   }
 });
 
+router.delete('/id/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const comment = await Comment.findById(id);
+
+    if (comment.userId.toString() !== (req as IUserRequest).userId) {
+      throw new ErrorJSON(
+        403, 'Forbidden', 'You have no access to delete this comment.',
+      );
+    }
+
+    await Comment.deleteOne({ _id: id });
+
+    return res.status(200).send({
+      status: 200,
+      message: 'Comment deleted successfully.',
+      description: 'Please, wait a little bit.',
+      data: null,
+    });
+  } catch (error) {
+    if (error.name !== 'ErrorJSON') {
+      return handleError(new ErrorJSON(
+        500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.',
+      ), req, res);
+    }
+    return handleError(error, req, res);
+  }
+});
+
 export default router;
