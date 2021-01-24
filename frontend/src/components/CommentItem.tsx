@@ -8,8 +8,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import TextArea from 'antd/lib/input/TextArea';
 import { IComment, ICommentResponse, IResponse } from '../utils/interfaces';
 import { RootState } from '../store/root';
+import { setComment, setComments, setCommentsCount } from '../slices/postPageSlice';
 import api from '../utils/api';
-import { setComment, setComments } from '../slices/postPageSlice';
 
 const CommentItem = (props: { item: IComment }) => {
   const { item } = props;
@@ -62,6 +62,7 @@ const CommentItem = (props: { item: IComment }) => {
       description: response.data.description,
     });
     dispatch(setComments(postPageState.comments.filter((comment) => comment.id !== item.id)));
+    dispatch(setCommentsCount(postPageState.commentsCount - 1));
   }).catch((reason: { response: { data: IResponse } }) => {
     if (!reason.response || !reason.response.data) {
       notification.error({
@@ -80,13 +81,14 @@ const CommentItem = (props: { item: IComment }) => {
     <Form
       form={form}
       onFinish={handleEdit}
+      initialValues={{ contentText: item.contentText }}
     >
       <Row>
         <Form.Item
           style={{ width: '100%' }}
           name="contentText"
         >
-          <TextArea defaultValue={item.contentText} showCount maxLength={500} />
+          <TextArea showCount maxLength={500} />
         </Form.Item>
       </Row>
       <Row style={{ position: 'relative' }}>

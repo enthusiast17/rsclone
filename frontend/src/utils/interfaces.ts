@@ -34,6 +34,7 @@ interface IPost {
   createdDate: string,
   likesCount: number,
   isUserLiked: boolean,
+  commentsCount: number,
   comments: IComment[],
 }
 

@@ -7,6 +7,7 @@ import Like from '../model/Like';
 // import Like from '../model/Like';
 import Post from '../model/Post';
 import User from '../model/User';
+import Comment from '../model/Comment';
 import { ErrorJSON, handleError } from '../utils/error';
 import { IUserRequest } from '../utils/interfaces';
 import { postValidator } from '../utils/validators';
@@ -118,6 +119,7 @@ router.get('/', async (req, res) => {
           .findOne({})
           .and([{ userId: (req as IUserRequest).userId, postId: post._id }]);
         const likes = await Like.find({ postId: post._id });
+        const comments = await Comment.find({ postId: post._id });
         const { fullName, avatar } = user;
         const {
           _id, contentText, contentImage, createdDate,
@@ -130,6 +132,7 @@ router.get('/', async (req, res) => {
           createdDate,
           likesCount: likes.length || 0,
           isUserLiked: !!isLiked,
+          commentsCount: comments.length || 0,
         };
       }),
     );
@@ -163,6 +166,7 @@ router.get('/id/:id', async (req, res) => {
       .findOne({})
       .and([{ userId: (req as IUserRequest).userId, postId: post._id }]);
     const likes = await Like.find({ postId: post._id });
+    const comments = await Comment.find({ postId: post._id });
     const { fullName, avatar } = user;
     const {
       _id, contentText, contentImage, createdDate,
@@ -179,6 +183,7 @@ router.get('/id/:id', async (req, res) => {
         createdDate,
         likesCount: likes.length || 0,
         isUserLiked: !!isLiked,
+        commentsCount: comments.length || 0,
       },
     });
   } catch (error) {

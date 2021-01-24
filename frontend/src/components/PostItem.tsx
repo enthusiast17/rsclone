@@ -92,7 +92,7 @@ const PostItem = (props: {
               style={{ cursor: 'pointer' }}
               onClick={redirectPage}
             >
-              <Typography.Text>0</Typography.Text>
+              <Typography.Text>{ item.commentsCount }</Typography.Text>
             </Col>
           </Space>
         </Space>

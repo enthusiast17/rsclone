@@ -9,7 +9,7 @@ import CommentList from '../../components/CommentList';
 import PostInfo from '../../components/PostInfo';
 import { ICommentListResponse, IPostResponse, IRouteInfo } from '../../utils/interfaces';
 import {
-  resetPostPageSlice, setComments, setContentImage,
+  resetPostPageSlice, setComments, setCommentsCount, setContentImage,
   setContentText, setCreatedDate, setId,
   setIsUserLiked, setLikesCount, setRefreshComments, setUser,
 } from '../../slices/postPageSlice';
@@ -35,6 +35,7 @@ const PostPage = ({ match }: RouteComponentProps<IRouteInfo>) => {
           createdDate,
           likesCount,
           isUserLiked,
+          commentsCount,
         } = response.data.data;
         dispatch(setUser(user));
         dispatch(setId(id));
@@ -43,6 +44,7 @@ const PostPage = ({ match }: RouteComponentProps<IRouteInfo>) => {
         dispatch(setCreatedDate(createdDate));
         dispatch(setLikesCount(likesCount));
         dispatch(setIsUserLiked(isUserLiked));
+        dispatch(setCommentsCount(commentsCount));
         setIsLoading(false);
       })
       .catch(() => {

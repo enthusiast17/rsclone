@@ -19,6 +19,7 @@ const initialState: IPostPageState = {
   createdDate: '',
   likesCount: 0,
   isUserLiked: false,
+  commentsCount: 0,
   comments: [],
   refreshComments: true,
 };
@@ -48,6 +49,9 @@ const postPageSlice = createSlice({
     setIsUserLiked(state: IPostPageState, action: PayloadAction<boolean>) {
       return { ...state, isUserLiked: action.payload };
     },
+    setCommentsCount(state: IPostPageState, action: PayloadAction<number>) {
+      return { ...state, commentsCount: action.payload };
+    },
     setComments(state: IPostPageState, action: PayloadAction<IComment[]>) {
       return { ...state, comments: action.payload };
     },
@@ -74,6 +78,7 @@ export const {
   setCreatedDate,
   setLikesCount,
   setIsUserLiked,
+  setCommentsCount,
   setComments,
   setComment,
   setRefreshComments,
