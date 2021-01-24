@@ -9,14 +9,14 @@ import TextArea from 'antd/lib/input/TextArea';
 import { IComment, ICommentResponse, IResponse } from '../utils/interfaces';
 import { RootState } from '../store/root';
 import api from '../utils/api';
-import { setComment } from '../slices/postPageSlice';
+import { setComment, setComments } from '../slices/postPageSlice';
 
 const CommentItem = (props: { item: IComment }) => {
   const { item } = props;
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [form] = Form.useForm();
   const dispatch = useDispatch();
-  const { authState } = useSelector((state: RootState) => state);
+  const { authState, postPageState } = useSelector((state: RootState) => state);
 
   const handleEdit = (values: { contentText: string }) => {
     api.put(
@@ -48,6 +48,33 @@ const CommentItem = (props: { item: IComment }) => {
       });
     });
   };
+
+  const handleDelete = () => api.delete(
+    `/comments/id/${item.id}`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  ).then((response: { data: ICommentResponse }) => {
+    notification.success({
+      message: response.data.message,
+      description: response.data.description,
+    });
+    dispatch(setComments(postPageState.comments.filter((comment) => comment.id !== item.id)));
+  }).catch((reason: { response: { data: IResponse } }) => {
+    if (!reason.response || !reason.response.data) {
+      notification.error({
+        message: 'Internal Error.',
+        description: 'Upps! Sorry, something went wrong in internal server.',
+      });
+      return;
+    }
+    notification.error({
+      message: reason.response.data.message,
+      description: reason.response.data.description,
+    });
+  });
 
   const content = isEdit ? (
     <Form
@@ -98,7 +125,7 @@ const CommentItem = (props: { item: IComment }) => {
       actions={(!isEdit && authState.email === item.user.email && [
         <Space split={<Divider type="vertical" />}>
           <EditOutlined onClick={() => setIsEdit(true)} />
-          <DeleteOutlined />
+          <DeleteOutlined onClick={handleDelete} />
         </Space>,
       ]) || []}
       author={<Typography.Text strong>{item.user.fullName}</Typography.Text>}
