@@ -6,6 +6,7 @@ interface IUser extends Document {
   _id: string,
   fullName: string,
   email: string,
+  nickname: string,
   birthdayDate: Date | null,
   avatar: string | null,
   password: string,

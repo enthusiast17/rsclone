@@ -55,7 +55,7 @@ const PostItem = (props: {
       </Row>
       <Row style={{ overflow: 'auto' }}>
         <Row style={{ width: '100%', cursor: 'pointer' }} onClick={redirectPage}>
-          <Typography.Text>{item.contentText}</Typography.Text>
+          <Typography.Text style={{ width: '100%' }}>{item.contentText}</Typography.Text>
         </Row>
         {item.contentImage && (
           <Row>

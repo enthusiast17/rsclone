@@ -1,45 +1,116 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  Comment, Avatar, Col, Space, Typography,
+  Comment, Avatar, Typography, Divider, Space, Form, Button, Row, notification,
 } from 'antd';
-import { HeartOutlined } from '@ant-design/icons';
+import { format } from 'timeago.js';
+import { DeleteOutlined, EditOutlined, UserOutlined } from '@ant-design/icons';
+import { useDispatch, useSelector } from 'react-redux';
+import TextArea from 'antd/lib/input/TextArea';
+import { IComment, ICommentResponse, IResponse } from '../utils/interfaces';
+import { RootState } from '../store/root';
+import api from '../utils/api';
+import { setComment } from '../slices/postPageSlice';
 
-const CommentItem = () => (
-  <Comment
-    style={{
-      paddingLeft: 10,
-      paddingRight: 10,
-      backgroundColor: '#ffffff',
-      border: '1px solid #D9D9D9',
-      borderRadius: 2,
-    }}
-    actions={[(
-      <Space>
-        <Col
-          style={{ cursor: 'pointer' }}
+const CommentItem = (props: { item: IComment }) => {
+  const { item } = props;
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [form] = Form.useForm();
+  const dispatch = useDispatch();
+  const { authState } = useSelector((state: RootState) => state);
+
+  const handleEdit = (values: { contentText: string }) => {
+    api.put(
+      `/comments/id/${item.id}`,
+      { ...values, postId: item.postId },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    ).then((response: { data: ICommentResponse }) => {
+      notification.success({
+        message: response.data.message,
+        description: response.data.description,
+      });
+      dispatch(setComment({ ...item, ...values }));
+      setIsEdit(false);
+    }).catch((reason: { response: { data: IResponse } }) => {
+      if (!reason.response || !reason.response.data) {
+        notification.error({
+          message: 'Internal Error.',
+          description: 'Upps! Sorry, something went wrong in internal server.',
+        });
+        return;
+      }
+      notification.error({
+        message: reason.response.data.message,
+        description: reason.response.data.description,
+      });
+    });
+  };
+
+  const content = isEdit ? (
+    <Form
+      form={form}
+      onFinish={handleEdit}
+    >
+      <Row>
+        <Form.Item
+          style={{ width: '100%' }}
+          name="contentText"
         >
-          <HeartOutlined />
-        </Col>
-        <Col>
-          <Typography.Text>0</Typography.Text>
-        </Col>
-      </Space>
-    )]}
-    author="Han Solo"
-    avatar={(
-      <Avatar
-        src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-        alt="Han Solo"
-      />
-    )}
-    content={(
-      <p>
-        We supply a series of design principles, practical patterns and high quality design
-        resources (Sketch and Axure), to help people create their product prototypes beautifully
-        and efficiently.
-      </p>
-    )}
-  />
-);
+          <TextArea defaultValue={item.contentText} showCount maxLength={500} />
+        </Form.Item>
+      </Row>
+      <Row style={{ position: 'relative' }}>
+        <Form.Item
+          style={{ margin: '0px 0px 0px auto' }}
+        >
+          <Button
+            style={{ marginRight: 10 }}
+            type="default"
+            onClick={() => setIsEdit(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="primary"
+            htmlType="submit"
+          >
+            Save
+          </Button>
+        </Form.Item>
+      </Row>
+    </Form>
+  ) : (
+    <Typography.Text>{item.contentText}</Typography.Text>
+  );
+
+  return (
+    <Comment
+      style={{
+        paddingLeft: 10,
+        paddingRight: 10,
+        backgroundColor: '#ffffff',
+        border: '1px solid #D9D9D9',
+        borderRadius: 2,
+      }}
+      actions={(!isEdit && authState.email === item.user.email && [
+        <Space split={<Divider type="vertical" />}>
+          <EditOutlined onClick={() => setIsEdit(true)} />
+          <DeleteOutlined />
+        </Space>,
+      ]) || []}
+      author={<Typography.Text strong>{item.user.fullName}</Typography.Text>}
+      avatar={(
+        <Avatar src={item.user.avatar} icon={!item.user.avatar ? <UserOutlined /> : ''} />
+      )}
+      content={content}
+      datetime={(
+        <Typography.Text type="secondary">{`${format(item.createdDate)}`}</Typography.Text>
+      )}
+    />
+  );
+};
 
 export default CommentItem;

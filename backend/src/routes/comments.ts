@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { Router } from 'express';
 import { ErrorJSON, handleError } from '../utils/error';
 import { commentValidator } from '../utils/validators';
@@ -23,14 +24,14 @@ router.post('/', async (req, res) => {
     }).save();
 
     const user = await User.findById(comment.userId);
-    const { fullName, avatar } = user;
+    const { fullName, email, avatar } = user;
     const { postId, contentText, createdDate } = comment;
     return res.status(200).send({
       status: 200,
       message: 'Comment created successfully.',
       description: 'Please, wait a little bit.',
       data: {
-        user: { fullName, avatar },
+        user: { fullName, email, avatar },
         postId,
         contentText,
         createdDate,
@@ -61,10 +62,11 @@ router.get('/', async (req, res) => {
     const comments = await Promise.all(
       modelComments.map(async (comment: any) => {
         const user = await User.findById(comment.userId);
-        const { fullName, avatar } = user;
+        const { fullName, email, avatar } = user;
         const { postId, contentText, createdDate } = comment;
         return {
-          user: { fullName, avatar },
+          user: { fullName, email, avatar },
+          id: comment._id,
           postId,
           contentText,
           createdDate,
@@ -77,6 +79,43 @@ router.get('/', async (req, res) => {
       message: 'Comments received successfully.',
       description: 'Please, wait a little bit.',
       data: comments,
+    });
+  } catch (error) {
+    if (error.name !== 'ErrorJSON') {
+      return handleError(new ErrorJSON(
+        500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.',
+      ), req, res);
+    }
+    return handleError(error, req, res);
+  }
+});
+
+router.put('/id/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const validate = commentValidator.validate(req.body);
+    if (validate.error) {
+      throw (new ErrorJSON(
+        400, validate.error?.details[0].message, 'Please, correct your comment form.',
+      ));
+    }
+    const comment = await Comment.findById(id);
+
+    if (comment.userId.toString() !== (req as IUserRequest).userId) {
+      throw new ErrorJSON(
+        403, 'Forbidden', 'You have no access to edit this comment.',
+      );
+    }
+
+    await comment.update({
+      contentText: req.body.contentText,
+    });
+
+    return res.status(200).send({
+      status: 200,
+      message: 'Comment edited successfully.',
+      description: 'Please, wait a little bit.',
+      data: null,
     });
   } catch (error) {
     if (error.name !== 'ErrorJSON') {

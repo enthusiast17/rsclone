@@ -5,24 +5,25 @@ import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../../components/Loading';
 import NotFound from '../../components/NotFound';
 import CommentForm from '../../components/CommentForm';
-import CommentItem from '../../components/CommentItem';
+import CommentList from '../../components/CommentList';
 import PostInfo from '../../components/PostInfo';
-import { IPostResponse, IRouteInfo } from '../../utils/interfaces';
+import { ICommentListResponse, IPostResponse, IRouteInfo } from '../../utils/interfaces';
 import {
-  resetPostPageSlice,
-  setContentImage, setContentText, setCreatedDate, setId, setIsUserLiked, setLikesCount, setUser,
+  resetPostPageSlice, setComments, setContentImage,
+  setContentText, setCreatedDate, setId,
+  setIsUserLiked, setLikesCount, setRefreshComments, setUser,
 } from '../../slices/postPageSlice';
 import { RootState } from '../../store/root';
 import api from '../../utils/api';
 import styles from './index.module.scss';
 
 const PostPage = ({ match }: RouteComponentProps<IRouteInfo>) => {
+  const { id } = match.params;
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const dispatch = useDispatch();
   const { postPageState } = useSelector((state: RootState) => state);
 
   useEffect(() => {
-    const { id } = match.params;
     api.get(
       `/posts/id/${id}`,
     )
@@ -47,11 +48,26 @@ const PostPage = ({ match }: RouteComponentProps<IRouteInfo>) => {
       .catch(() => {
         setIsLoading(false);
       });
-
     return () => {
       dispatch(resetPostPageSlice());
     };
   }, []);
+
+  useEffect(() => {
+    if (!postPageState.refreshComments) return;
+    api.get(
+      `/comments/?post=${id}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    ).then((response: { data: ICommentListResponse }) => {
+      const { data } = response.data;
+      dispatch(setComments([...data]));
+      dispatch(setRefreshComments(false));
+    });
+  }, [postPageState.refreshComments]);
 
   return (
     <div className={styles.container}>
@@ -68,8 +84,8 @@ const PostPage = ({ match }: RouteComponentProps<IRouteInfo>) => {
             </Breadcrumb.Item>
           </Breadcrumb>
           <PostInfo item={postPageState} />
-          <CommentForm />
-          <CommentItem />
+          <CommentForm postId={id} />
+          <CommentList comments={postPageState.comments} />
         </>
       )}
 

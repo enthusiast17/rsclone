@@ -207,7 +207,7 @@ router.get('/me', async (req, res) => {
   try {
     const verifiedUser = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET_CODE);
     const user: IUser = await User.findOne({ _id: (verifiedUser as IJWTSign).userId });
-    const { fullName, avatar } = user;
+    const { fullName, email, avatar } = user;
     return res.status(200).send({
       status: 'success',
       statusCode: 200,
@@ -215,6 +215,7 @@ router.get('/me', async (req, res) => {
       description: 'Please, wait a little bit.',
       data: {
         fullName,
+        email,
         avatar,
       },
     });

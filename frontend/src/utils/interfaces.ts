@@ -10,17 +10,31 @@ interface IRegisterForm {
   confirmPassword: string,
 }
 
+interface IComment {
+  user: {
+    fullName: string,
+    email: string,
+    avatar: string | null,
+  },
+  id: string,
+  postId: string,
+  contentText: string,
+  createdDate: string,
+}
+
 interface IPost {
   user: {
     fullName: string,
+    email: string,
     avatar: string | null,
   }
   id: string,
   contentText: string,
   contentImage: string | null,
-  createdDate: Date,
+  createdDate: string,
   likesCount: number,
   isUserLiked: boolean,
+  comments: IComment[],
 }
 
 interface IPostList {
@@ -28,12 +42,13 @@ interface IPostList {
   currentPage: number,
   nextPage: number | null,
   totalPostCount: number,
-  pageCount: number
+  pageCount: number,
   newPosts: IPost[],
 }
 
 interface IAuth {
   fullName: string | null,
+  email: string | null,
   avatar: string | null,
 }
 
@@ -43,15 +58,23 @@ interface IResponse {
 }
 
 interface IPostListResponse extends IResponse {
-  data: IPostList
+  data: IPostList,
 }
 
 interface IPostResponse extends IResponse {
-  data: IPost
+  data: IPost,
 }
 
 interface IAuthResponse extends IResponse {
   data: IAuth,
+}
+
+interface ICommentListResponse extends IResponse {
+  data: IComment[],
+}
+
+interface ICommentResponse extends IResponse {
+  data: IComment,
 }
 
 interface IRouteInfo {
@@ -61,6 +84,7 @@ interface IRouteInfo {
 export type {
   ILoginForm,
   IRegisterForm,
+  IComment,
   IPost,
   IPostList,
   IAuth,
@@ -68,5 +92,7 @@ export type {
   IPostListResponse,
   IPostResponse,
   IAuthResponse,
+  ICommentListResponse,
+  ICommentResponse,
   IRouteInfo,
 };
