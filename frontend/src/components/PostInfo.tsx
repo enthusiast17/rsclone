@@ -1,37 +1,26 @@
 import React from 'react';
 import {
-  UserOutlined, HeartOutlined, CommentOutlined, HeartFilled,
-} from '@ant-design/icons';
-import {
-  Card, Divider, Space, Image, Typography, Row, Col,
+  Avatar, Card, Col, Divider, Row, Space, Typography, Image,
 } from 'antd';
-import Avatar from 'antd/lib/avatar/avatar';
+import {
+  CommentOutlined, HeartFilled, HeartOutlined, UserOutlined,
+} from '@ant-design/icons';
 import { format } from 'timeago.js';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import { IPost } from '../utils/interfaces';
-import { setPost } from '../slices/postListSlice';
+import { setIsUserLiked, setLikesCount } from '../slices/postPageSlice';
 import api from '../utils/api';
 
-const PostItem = (props: {
-  item: IPost,
-}) => {
-  const { item } = props;
-  const history = useHistory();
+const PostInfo = ({ item }: {item: IPost}) => {
   const dispatch = useDispatch();
-
-  const redirectPage = () => history.push(`/post/${item.id}`);
 
   const handleLike = () => {
     api.post(
       `/likes/?post=${item.id}`,
     )
       .then(() => {
-        dispatch(setPost({
-          ...item,
-          isUserLiked: !item.isUserLiked,
-          likesCount: item.isUserLiked ? item.likesCount - 1 : item.likesCount + 1,
-        }));
+        dispatch(setIsUserLiked(!item.isUserLiked));
+        dispatch(setLikesCount(item.isUserLiked ? item.likesCount - 1 : item.likesCount + 1));
       });
   };
 
@@ -54,7 +43,7 @@ const PostItem = (props: {
         </Col>
       </Row>
       <Row style={{ overflow: 'auto' }}>
-        <Row style={{ width: '100%', cursor: 'pointer' }} onClick={redirectPage}>
+        <Row style={{ width: '100%' }}>
           <Typography.Text>{item.contentText}</Typography.Text>
         </Row>
         {item.contentImage && (
@@ -82,16 +71,10 @@ const PostItem = (props: {
             </Col>
           </Space>
           <Space>
-            <Col
-              style={{ cursor: 'pointer' }}
-              onClick={redirectPage}
-            >
+            <Col>
               <CommentOutlined />
             </Col>
-            <Col
-              style={{ cursor: 'pointer' }}
-              onClick={redirectPage}
-            >
+            <Col>
               <Typography.Text>0</Typography.Text>
             </Col>
           </Space>
@@ -101,4 +84,4 @@ const PostItem = (props: {
   );
 };
 
-export default PostItem;
+export default PostInfo;

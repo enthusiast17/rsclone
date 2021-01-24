@@ -7,6 +7,7 @@ import { MulterError } from 'multer';
 import authRouter from './routes/auth';
 import postsRouter from './routes/posts';
 import likesRouter from './routes/likes';
+import commentsRouter from './routes/comments';
 import authMiddleware from './middlewares/auth';
 import { ErrorJSON, handleError } from './utils/error';
 
@@ -48,5 +49,16 @@ app.use((err: MulterError, req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use('/api/likes', authMiddleware, likesRouter);
+
+app.use('/api/comments', [authMiddleware, express.json()], commentsRouter);
+
+app.use((err: Error, req :Request, res: Response, next: NextFunction) => {
+  if (err) {
+    return handleError(new ErrorJSON(
+      400, '400 Bad Request', 'Please, correct your JSON data.',
+    ), req, res);
+  }
+  return next();
+});
 
 app.listen(8000, () => console.log('Server is running on http://localhost:8000/'));

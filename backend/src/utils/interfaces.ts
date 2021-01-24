@@ -27,6 +27,14 @@ interface ILike extends Document {
   commentId: string | null,
 }
 
+interface IComment extends Document {
+  _id: string,
+  userId: string,
+  postId: string,
+  contentText: string,
+  createdDate: Date,
+}
+
 interface IRegisterJoi {
   fullName: Joi.StringSchema,
   email: Joi.StringSchema,
@@ -40,6 +48,11 @@ interface ILoginJoi {
 }
 
 interface IPostJoi {
+  contentText: Joi.StringSchema,
+}
+
+interface ICommentJoi {
+  postId: Joi.StringSchema,
   contentText: Joi.StringSchema,
 }
 
@@ -57,9 +70,11 @@ export {
   IUser,
   IPost,
   ILike,
+  IComment,
   IRegisterJoi,
   ILoginJoi,
   IPostJoi,
+  ICommentJoi,
   IUserRequest,
   IJWTSign,
 };
