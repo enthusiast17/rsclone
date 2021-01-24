@@ -3,9 +3,10 @@ import {
   Card, Row, Col, Avatar, Button, Form, notification, Input,
 } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ICommentResponse, IResponse } from '../utils/interfaces';
-import { setRefreshComments } from '../slices/postPageSlice';
+import { setCommentsCount, setRefreshComments } from '../slices/postPageSlice';
+import { RootState } from '../store/root';
 import api from '../utils/api';
 
 const { TextArea } = Input;
@@ -14,6 +15,7 @@ const CommentForm = (props: { postId: string }) => {
   const { postId } = props;
   const [form] = Form.useForm();
   const dispatch = useDispatch();
+  const { postPageState } = useSelector((state: RootState) => state);
 
   const onFinish = (values: { contentText: string }) => {
     api.post(
@@ -29,6 +31,7 @@ const CommentForm = (props: { postId: string }) => {
         message: response.data.message,
         description: response.data.description,
       });
+      dispatch(setCommentsCount(postPageState.commentsCount + 1));
       dispatch(setRefreshComments(true));
       form.resetFields();
     }).catch((reason: { response: { data: IResponse } }) => {

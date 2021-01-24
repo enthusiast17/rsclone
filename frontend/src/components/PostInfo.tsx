@@ -75,7 +75,7 @@ const PostInfo = ({ item }: {item: IPost}) => {
               <CommentOutlined />
             </Col>
             <Col>
-              <Typography.Text>0</Typography.Text>
+              <Typography.Text>{ item.commentsCount }</Typography.Text>
             </Col>
           </Space>
         </Space>
