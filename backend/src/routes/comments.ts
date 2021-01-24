@@ -107,7 +107,7 @@ router.put('/id/:id', async (req, res) => {
       );
     }
 
-    await comment.update({
+    await comment.updateOne({
       contentText: req.body.contentText,
     });
 
@@ -139,7 +139,7 @@ router.delete('/id/:id', async (req, res) => {
       );
     }
 
-    await Comment.deleteOne({ _id: id });
+    await comment.deleteOne();
 
     return res.status(200).send({
       status: 200,

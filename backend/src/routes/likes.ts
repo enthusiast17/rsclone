@@ -28,7 +28,7 @@ router.post('/', async (req, res) => {
         commentId,
       }).save();
     } else {
-      await Like.deleteOne({ _id: like.id });
+      await like.deleteOne();
     }
 
     return res.status(200).send({
