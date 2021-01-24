@@ -3,16 +3,18 @@ import {
   Avatar, Card, Col, Divider, Row, Space, Typography, Image,
 } from 'antd';
 import {
-  CommentOutlined, HeartFilled, HeartOutlined, UserOutlined,
+  CommentOutlined, DeleteOutlined, EditOutlined, HeartFilled, HeartOutlined, UserOutlined,
 } from '@ant-design/icons';
 import { format } from 'timeago.js';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { IPost } from '../utils/interfaces';
 import { setIsUserLiked, setLikesCount } from '../slices/postPageSlice';
+import { RootState } from '../store/root';
 import api from '../utils/api';
 
 const PostInfo = ({ item }: {item: IPost}) => {
   const dispatch = useDispatch();
+  const { authState } = useSelector((state: RootState) => state);
 
   const handleLike = () => {
     api.post(
@@ -78,6 +80,16 @@ const PostInfo = ({ item }: {item: IPost}) => {
               <Typography.Text>{ item.commentsCount }</Typography.Text>
             </Col>
           </Space>
+          {authState.email === item.user.email && (
+            <>
+              <Col>
+                <EditOutlined />
+              </Col>
+              <Col>
+                <DeleteOutlined />
+              </Col>
+            </>
+          )}
         </Space>
       </Row>
     </Card>

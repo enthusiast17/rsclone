@@ -120,12 +120,12 @@ router.get('/', async (req, res) => {
           .and([{ userId: (req as IUserRequest).userId, postId: post._id }]);
         const likes = await Like.find({ postId: post._id });
         const comments = await Comment.find({ postId: post._id });
-        const { fullName, avatar } = user;
+        const { fullName, email, avatar } = user;
         const {
           _id, contentText, contentImage, createdDate,
         } = post;
         return {
-          user: { fullName, avatar },
+          user: { fullName, email, avatar },
           id: _id,
           contentText,
           contentImage,
@@ -167,7 +167,7 @@ router.get('/id/:id', async (req, res) => {
       .and([{ userId: (req as IUserRequest).userId, postId: post._id }]);
     const likes = await Like.find({ postId: post._id });
     const comments = await Comment.find({ postId: post._id });
-    const { fullName, avatar } = user;
+    const { fullName, email, avatar } = user;
     const {
       _id, contentText, contentImage, createdDate,
     } = post;
@@ -176,7 +176,7 @@ router.get('/id/:id', async (req, res) => {
       message: 'Post received successfully.',
       description: 'Please, wait a little bit.',
       data: {
-        user: { fullName, avatar },
+        user: { fullName, email, avatar },
         id: _id,
         contentText,
         contentImage,
