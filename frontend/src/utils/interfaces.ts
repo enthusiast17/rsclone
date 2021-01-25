@@ -66,6 +66,10 @@ interface IPostResponse extends IResponse {
   data: IPost,
 }
 
+interface IPostEditedResponse extends IResponse {
+  data: { contentText: string, contentImage: string | null }
+}
+
 interface IAuthResponse extends IResponse {
   data: IAuth,
 }
@@ -92,6 +96,7 @@ export type {
   IResponse,
   IPostListResponse,
   IPostResponse,
+  IPostEditedResponse,
   IAuthResponse,
   ICommentListResponse,
   ICommentResponse,

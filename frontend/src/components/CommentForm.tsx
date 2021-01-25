@@ -71,7 +71,7 @@ const CommentForm = (props: { postId: string }) => {
                 style={{ width: '100%' }}
                 name="contentText"
               >
-                <TextArea showCount maxLength={500} />
+                <TextArea showCount autoSize maxLength={500} />
               </Form.Item>
             </Row>
             <Row style={{ position: 'relative' }}>
