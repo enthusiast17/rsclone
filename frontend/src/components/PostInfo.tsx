@@ -87,7 +87,7 @@ const PostInfo = ({ item }: {item: IPost}) => {
                   <Typography.Text>{ item.commentsCount }</Typography.Text>
                 </Col>
               </Space>
-              {authState.email !== item.user.email && (
+              {authState.email === item.user.email && (
               <>
                 <Col>
                   <EditOutlined onClick={() => setIsEdit(true)} />
