@@ -59,7 +59,7 @@ const PostForm = () => {
         <Form.Item
           name="contentText"
         >
-          <TextArea showCount maxLength={1000} />
+          <TextArea showCount autoSize maxLength={1000} />
         </Form.Item>
         <Row style={{ position: 'relative' }}>
           <Form.Item

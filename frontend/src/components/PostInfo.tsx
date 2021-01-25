@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Avatar, Card, Col, Divider, Row, Space, Typography, Image,
 } from 'antd';
@@ -11,8 +11,10 @@ import { IPost } from '../utils/interfaces';
 import { setIsUserLiked, setLikesCount } from '../slices/postPageSlice';
 import { RootState } from '../store/root';
 import api from '../utils/api';
+import PostEditForm from './PostEditForm';
 
 const PostInfo = ({ item }: {item: IPost}) => {
+  const [isEdit, setIsEdit] = useState<boolean>(false);
   const dispatch = useDispatch();
   const { authState } = useSelector((state: RootState) => state);
 
@@ -44,54 +46,61 @@ const PostInfo = ({ item }: {item: IPost}) => {
           </Row>
         </Col>
       </Row>
-      <Row style={{ overflow: 'auto' }}>
-        <Row style={{ width: '100%' }}>
-          <Typography.Text>{item.contentText}</Typography.Text>
-        </Row>
-        {item.contentImage && (
-          <Row>
-            <Image
-              style={{ maxWidth: '100%' }}
-              alt="logo"
-              src={`http://localhost:8000/${item.contentImage}`}
-            />
+      {isEdit && (
+        <PostEditForm item={item} handleCancel={() => setIsEdit(false)} />
+      )}
+      {!isEdit && (
+        <>
+          <Row style={{ overflow: 'auto' }}>
+            <Row style={{ width: '100%' }}>
+              <Typography.Text>{item.contentText}</Typography.Text>
+            </Row>
+            {item.contentImage && (
+            <Row>
+              <Image
+                style={{ maxWidth: '100%' }}
+                alt="logo"
+                src={`http://localhost:8000/${item.contentImage}`}
+              />
+            </Row>
+            )}
           </Row>
-        )}
-      </Row>
-      <Divider style={{ margin: '10px 0px 10px 0px' }} />
-      <Row>
-        <Space split={<Divider type="vertical" />}>
-          <Space>
-            <Col
-              style={{ cursor: 'pointer' }}
-              onClick={handleLike}
-            >
-              { item.isUserLiked ? <HeartFilled /> : <HeartOutlined /> }
-            </Col>
-            <Col>
-              <Typography.Text>{ item.likesCount }</Typography.Text>
-            </Col>
-          </Space>
-          <Space>
-            <Col>
-              <CommentOutlined />
-            </Col>
-            <Col>
-              <Typography.Text>{ item.commentsCount }</Typography.Text>
-            </Col>
-          </Space>
-          {authState.email === item.user.email && (
-            <>
-              <Col>
-                <EditOutlined />
-              </Col>
-              <Col>
-                <DeleteOutlined />
-              </Col>
-            </>
-          )}
-        </Space>
-      </Row>
+          <Divider style={{ margin: '10px 0px 10px 0px' }} />
+          <Row>
+            <Space split={<Divider type="vertical" />}>
+              <Space>
+                <Col
+                  style={{ cursor: 'pointer' }}
+                  onClick={handleLike}
+                >
+                  { item.isUserLiked ? <HeartFilled /> : <HeartOutlined /> }
+                </Col>
+                <Col>
+                  <Typography.Text>{ item.likesCount }</Typography.Text>
+                </Col>
+              </Space>
+              <Space>
+                <Col>
+                  <CommentOutlined />
+                </Col>
+                <Col>
+                  <Typography.Text>{ item.commentsCount }</Typography.Text>
+                </Col>
+              </Space>
+              {authState.email !== item.user.email && (
+              <>
+                <Col>
+                  <EditOutlined onClick={() => setIsEdit(true)} />
+                </Col>
+                <Col>
+                  <DeleteOutlined />
+                </Col>
+              </>
+              )}
+            </Space>
+          </Row>
+        </>
+      )}
     </Card>
   );
 };

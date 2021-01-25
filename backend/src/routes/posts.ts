@@ -2,9 +2,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Router } from 'express';
 import multer from 'multer';
+import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import Like from '../model/Like';
-// import Like from '../model/Like';
 import Post from '../model/Post';
 import User from '../model/User';
 import Comment from '../model/Comment';
@@ -213,22 +213,32 @@ router.put('/id/:id', upload.single('contentImage'), async (req, res) => {
     }
 
     const post = await Post.findById(id);
-
-    if (post.userId !== (req as IUserRequest).userId) {
+    if (post.userId.toString() !== (req as IUserRequest).userId) {
+      if (req.file) {
+        fs.unlinkSync(req.file.path);
+      }
       throw new ErrorJSON(
         403, 'Forbidden', 'You have no access to edit this post.',
       );
     }
 
-    await post.update({
+    const uploadedImage = req.body.contentImage === post.contentImage ? post.contentImage : null;
+    if ((req.file && post.contentImage) || (!uploadedImage && post.contentImage)) {
+      fs.unlinkSync(post.contentImage);
+    }
+    await post.updateOne({
       contentText: req.body.contentText,
-      contentImage: req.file ? req.file.path : null,
+      contentImage: req.file ? req.file.path : uploadedImage,
     });
 
-    return res.send(200).send({
+    return res.status(200).send({
       status: 200,
       message: 'Post edited successfully.',
       description: 'Please, wait a little bit',
+      data: {
+        contentText: req.body.contentText,
+        contentImage: req.file ? req.file.path : uploadedImage,
+      },
     });
   } catch (error) {
     if (error.name !== 'ErrorJSON') {
@@ -245,13 +255,18 @@ router.delete('/id/:id', async (req, res) => {
     const { id } = req.params;
     const post = await Post.findById(id);
 
-    if (post.userId !== (req as IUserRequest).userId) {
+    if (post.userId.toString() !== (req as IUserRequest).userId) {
       throw new ErrorJSON(
         403, 'Forbidden', 'You have no access to edit this post.',
       );
     }
 
-    await post.remove();
+    if (post.contentImage) {
+      fs.unlinkSync(post.contentImage);
+    }
+
+    await post.deleteOne();
+
     return res.send(200).send({
       status: 200,
       message: 'Post deleted successfully.',
