@@ -213,6 +213,13 @@ router.put('/id/:id', upload.single('contentImage'), async (req, res) => {
     }
 
     const post = await Post.findById(id);
+
+    if (!post) {
+      return handleError(new ErrorJSON(
+        400, 'Post not found.', 'Please, try another post id.',
+      ), req, res);
+    }
+
     if (post.userId.toString() !== (req as IUserRequest).userId) {
       if (req.file) {
         fs.unlinkSync(req.file.path);
@@ -255,6 +262,12 @@ router.delete('/id/:id', async (req, res) => {
     const { id } = req.params;
     const post = await Post.findById(id);
 
+    if (!post) {
+      return handleError(new ErrorJSON(
+        400, 'Post not found.', 'Please, try another post id.',
+      ), req, res);
+    }
+
     if (post.userId.toString() !== (req as IUserRequest).userId) {
       throw new ErrorJSON(
         403, 'Forbidden', 'You have no access to edit this post.',
@@ -265,12 +278,15 @@ router.delete('/id/:id', async (req, res) => {
       fs.unlinkSync(post.contentImage);
     }
 
+    await Comment.deleteMany({ postId: post._id });
+    await Like.deleteMany({ postId: post._id });
     await post.deleteOne();
 
-    return res.send(200).send({
+    return res.status(200).send({
       status: 200,
       message: 'Post deleted successfully.',
       description: 'Please, wait a little bit',
+      data: null,
     });
   } catch (error) {
     if (error.name !== 'ErrorJSON') {

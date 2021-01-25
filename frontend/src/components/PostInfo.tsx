@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import {
-  Avatar, Card, Col, Divider, Row, Space, Typography, Image,
+  Avatar, Card, Col, Divider, Row, Space, Typography, Image, notification,
 } from 'antd';
 import {
   CommentOutlined, DeleteOutlined, EditOutlined, HeartFilled, HeartOutlined, UserOutlined,
 } from '@ant-design/icons';
 import { format } from 'timeago.js';
 import { useDispatch, useSelector } from 'react-redux';
-import { IPost } from '../utils/interfaces';
+import { useHistory } from 'react-router-dom';
+import { IPost, IResponse } from '../utils/interfaces';
 import { setIsUserLiked, setLikesCount } from '../slices/postPageSlice';
 import { RootState } from '../store/root';
 import api from '../utils/api';
@@ -16,6 +17,7 @@ import PostEditForm from './PostEditForm';
 const PostInfo = ({ item }: {item: IPost}) => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const dispatch = useDispatch();
+  const history = useHistory();
   const { authState } = useSelector((state: RootState) => state);
 
   const handleLike = () => {
@@ -27,6 +29,28 @@ const PostInfo = ({ item }: {item: IPost}) => {
         dispatch(setLikesCount(item.isUserLiked ? item.likesCount - 1 : item.likesCount + 1));
       });
   };
+
+  const handleDelete = () => api.delete(
+    `/posts/id/${item.id}`,
+  ).then((response: { data: IResponse }) => {
+    notification.success({
+      message: response.data.message,
+      description: response.data.description,
+    });
+    history.push('/');
+  }).catch((reason: { response: { data: IResponse } }) => {
+    if (!reason.response || !reason.response.data) {
+      notification.error({
+        message: 'Internal Error.',
+        description: 'Upps! Sorry, something went wrong in internal server.',
+      });
+      return;
+    }
+    notification.error({
+      message: reason.response.data.message,
+      description: reason.response.data.description,
+    });
+  });
 
   return (
     <Card
@@ -87,13 +111,13 @@ const PostInfo = ({ item }: {item: IPost}) => {
                   <Typography.Text>{ item.commentsCount }</Typography.Text>
                 </Col>
               </Space>
-              {authState.email !== item.user.email && (
+              {authState.email === item.user.email && (
               <>
                 <Col>
                   <EditOutlined onClick={() => setIsEdit(true)} />
                 </Col>
                 <Col>
-                  <DeleteOutlined />
+                  <DeleteOutlined onClick={() => handleDelete()} />
                 </Col>
               </>
               )}
