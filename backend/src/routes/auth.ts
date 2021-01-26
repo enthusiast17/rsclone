@@ -19,10 +19,17 @@ router.post('/register', async (req, res) => {
       ));
     }
 
-    const isUserExists = await User.findOne({ email: req.body.email });
-    if (isUserExists) {
+    const isEmailExists = await User.findOne({ email: req.body.email });
+    if (isEmailExists) {
       throw new ErrorJSON(
         400, 'Email is already exists.', 'Please, choose another email address.',
+      );
+    }
+
+    const isUsernameExists = await User.findOne({ username: req.body.username });
+    if (isUsernameExists) {
+      throw new ErrorJSON(
+        400, 'Username is already exists.', 'Please, choose another username.',
       );
     }
 
@@ -207,7 +214,9 @@ router.get('/me', async (req, res) => {
   try {
     const verifiedUser = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET_CODE);
     const user: IUser = await User.findOne({ _id: (verifiedUser as IJWTSign).userId });
-    const { fullName, email, avatar } = user;
+    const {
+      fullName, email, username, avatar,
+    } = user;
     return res.status(200).send({
       status: 'success',
       statusCode: 200,
@@ -216,6 +225,7 @@ router.get('/me', async (req, res) => {
       data: {
         fullName,
         email,
+        username,
         avatar,
       },
     });

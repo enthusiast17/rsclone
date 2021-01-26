@@ -50,6 +50,7 @@ interface IPostList {
 interface IAuth {
   fullName: string | null,
   email: string | null,
+  username: string | null,
   avatar: string | null,
 }
 

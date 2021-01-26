@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  Avatar, Card, Col, Divider, Row, Space, Typography, Image, notification,
+  Avatar, Card, Col, Divider, Row, Space, Typography, Image, notification, Popconfirm,
 } from 'antd';
 import {
   CommentOutlined, DeleteOutlined, EditOutlined, HeartFilled, HeartOutlined, UserOutlined,
@@ -122,7 +122,14 @@ const PostInfo = ({ item }: {item: IPost}) => {
                   <EditOutlined onClick={() => setIsEdit(true)} />
                 </Col>
                 <Col>
-                  <DeleteOutlined onClick={() => handleDelete()} />
+                  <Popconfirm
+                    title="Are you sure?"
+                    onConfirm={handleDelete}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <DeleteOutlined />
+                  </Popconfirm>
                 </Col>
               </>
               )}

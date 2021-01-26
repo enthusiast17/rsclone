@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  Comment, Avatar, Typography, Divider, Space, notification,
+  Comment, Avatar, Typography, Divider, Space, notification, Popconfirm,
 } from 'antd';
 import { format } from 'timeago.js';
 import { DeleteOutlined, EditOutlined, UserOutlined } from '@ant-design/icons';
@@ -63,7 +63,14 @@ const CommentItem = (props: { item: IComment }) => {
       actions={(!isEdit && authState.email === item.user.email && [
         <Space split={<Divider type="vertical" />}>
           <EditOutlined onClick={() => setIsEdit(true)} />
-          <DeleteOutlined onClick={handleDelete} />
+          <Popconfirm
+            title="Are you sure?"
+            onConfirm={handleDelete}
+            okText="Yes"
+            cancelText="No"
+          >
+            <DeleteOutlined />
+          </Popconfirm>
         </Space>,
       ]) || []}
       author={<Typography.Text strong>{item.user.fullName}</Typography.Text>}

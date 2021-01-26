@@ -80,6 +80,22 @@ const Register = () => {
         <Row>
           <Col flex="100%">
             <Form.Item
+              label="Username"
+              name="username"
+              rules={[
+                { min: 3, message: 'Username should be at least 3 character long.' },
+                { max: 25, message: 'Username should not be longer than 25 character' },
+                { required: true, message: 'Please, input your username!' },
+                { pattern: /^[a-z0-9]*$/, message: 'Username should contain only letter or number' },
+              ]}
+            >
+              <Input placeholder="example" />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row>
+          <Col flex="100%">
+            <Form.Item
               label="Password"
               name="password"
               hasFeedback

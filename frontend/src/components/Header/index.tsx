@@ -71,8 +71,7 @@ const Header = () => {
         <Dropdown overlay={menu} trigger={['click']} placement="bottomRight" arrow>
           <Button className={styles.dropdown} shape="circle" type="default" size="middle">
             <Avatar
-              className={styles.avatar}
-              size={30}
+              size={32}
               src={authState.avatar ? authState.avatar : ''}
               icon={authState.avatar ? '' : <UserOutlined />}
             />
