@@ -28,6 +28,9 @@ const postPageSlice = createSlice({
   name: 'postPage',
   initialState,
   reducers: {
+    updatePost(state: IPostPageState, action: PayloadAction<any>) {
+      return { ...state, ...action.payload };
+    },
     setUser(state: IPostPageState, action: PayloadAction<IUser>) {
       return { ...state, user: action.payload };
     },

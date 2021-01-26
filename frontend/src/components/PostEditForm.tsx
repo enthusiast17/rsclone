@@ -60,6 +60,15 @@ const PostEditForm = (props: { item: IPost, handleCancel: () => void }) => {
       scrollToFirstError
       initialValues={{
         contentText: item.contentText,
+        contentImage: {
+          uid: '1',
+          name: item.contentImage as string,
+          status: 'done',
+          url: `http://localhost:8000/${item.contentImage}`,
+          thumbUrl: `http://localhost:8000/${item.contentImage}`,
+          type: 'picture',
+          size: 0,
+        },
       }}
       onFinish={handleEdit}
     >

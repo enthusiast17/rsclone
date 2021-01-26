@@ -33,7 +33,7 @@ const Header = () => {
     });
 
   const menu = (
-    <Menu>
+    <Menu style={{ width: 200 }}>
       <Menu.Item key={0}>
         <Link to="/">
           <HomeOutlined />
@@ -68,7 +68,7 @@ const Header = () => {
       <Space>
         <Typography.Text className={styles.title}>{authState.fullName}</Typography.Text>
 
-        <Dropdown overlay={menu} trigger={['click']} arrow>
+        <Dropdown overlay={menu} trigger={['click']} placement="bottomRight" arrow>
           <Button className={styles.dropdown} shape="circle" type="default" size="middle">
             <Avatar
               className={styles.avatar}
