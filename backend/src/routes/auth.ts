@@ -19,10 +19,17 @@ router.post('/register', async (req, res) => {
       ));
     }
 
-    const isUserExists = await User.findOne({ email: req.body.email });
-    if (isUserExists) {
+    const isEmailExists = await User.findOne({ email: req.body.email });
+    if (isEmailExists) {
       throw new ErrorJSON(
         400, 'Email is already exists.', 'Please, choose another email address.',
+      );
+    }
+
+    const isUsernameExists = await User.findOne({ username: req.body.username });
+    if (isUsernameExists) {
+      throw new ErrorJSON(
+        400, 'Username is already exists.', 'Please, choose another username.',
       );
     }
 

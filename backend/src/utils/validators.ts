@@ -9,6 +9,8 @@ const registerJoi: IRegisterJoi = {
     .required(),
   email: Joi.string().min(3).max(255).email()
     .required(),
+  username: Joi.string().lowercase().min(3).max(24)
+    .required(),
   birthdayDate: Joi.date(),
   password: passwordJoiComplexity().required(),
 };

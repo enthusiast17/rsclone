@@ -6,7 +6,7 @@ interface IUser extends Document {
   _id: string,
   fullName: string,
   email: string,
-  nickname: string,
+  username: string,
   birthdayDate: Date | null,
   avatar: string | null,
   password: string,
@@ -39,6 +39,7 @@ interface IComment extends Document {
 interface IRegisterJoi {
   fullName: Joi.StringSchema,
   email: Joi.StringSchema,
+  username: Joi.StringSchema,
   birthdayDate: Joi.DateSchema,
   password: Joi.StringSchema,
 }

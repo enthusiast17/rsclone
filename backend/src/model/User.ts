@@ -14,8 +14,11 @@ const userSchema: Schema = new mongoose.Schema({
     min: 3,
     max: 255,
   },
-  nickname: {
+  username: {
     type: String,
+    required: true,
+    min: 3,
+    max: 25,
   },
   birthdayDate: {
     type: Date,
