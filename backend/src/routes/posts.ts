@@ -203,8 +203,6 @@ router.put('/id/:id', upload.single('contentImage'), async (req, res) => {
       );
     }
 
-    delete req.body?.contentImage;
-
     const validate = postValidator.validate(req.body);
     if (validate.error) {
       throw new ErrorJSON(
@@ -229,13 +227,16 @@ router.put('/id/:id', upload.single('contentImage'), async (req, res) => {
       );
     }
 
-    const uploadedImage = req.body.contentImage === post.contentImage ? post.contentImage : null;
-    if ((req.file && post.contentImage) || (!uploadedImage && post.contentImage)) {
+    let contentImage = null;
+
+    if (req.body.contentImage === post.contentImage) contentImage = post.contentImage;
+
+    if ((req.file && post.contentImage) || (!contentImage && post.contentImage)) {
       fs.unlinkSync(post.contentImage);
     }
     await post.updateOne({
       contentText: req.body.contentText,
-      contentImage: req.file ? req.file.path : uploadedImage,
+      contentImage: req.file ? req.file.path : contentImage,
     });
 
     return res.status(200).send({
@@ -244,7 +245,7 @@ router.put('/id/:id', upload.single('contentImage'), async (req, res) => {
       description: 'Please, wait a little bit',
       data: {
         contentText: req.body.contentText,
-        contentImage: req.file ? req.file.path : uploadedImage,
+        contentImage: req.file ? req.file.path : contentImage,
       },
     });
   } catch (error) {

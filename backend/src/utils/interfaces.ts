@@ -50,6 +50,7 @@ interface ILoginJoi {
 
 interface IPostJoi {
   contentText: Joi.StringSchema,
+  contentImage: Joi.StringSchema,
 }
 
 interface ICommentJoi {

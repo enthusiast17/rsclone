@@ -25,6 +25,7 @@ const loginValidator = Joi.object<ILoginJoi>(loginJoi);
 const postJoi: IPostJoi = {
   contentText: Joi.string().trim().min(1).max(1000)
     .required(),
+  contentImage: Joi.string(),
 };
 
 const postValidator = Joi.object<IPostJoi>(postJoi);
