@@ -80,7 +80,12 @@ const PostInfo = ({ item }: {item: IPost}) => {
               <Typography.Text>{item.contentText}</Typography.Text>
             </Row>
             {item.contentImage && (
-            <Row>
+            <Row style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+            >
               <Image
                 style={{ maxWidth: '100%' }}
                 alt="logo"
