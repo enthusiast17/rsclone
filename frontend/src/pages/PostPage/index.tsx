@@ -9,9 +9,7 @@ import CommentList from '../../components/CommentList';
 import PostInfo from '../../components/PostInfo';
 import { ICommentListResponse, IPostResponse, IRouteInfo } from '../../utils/interfaces';
 import {
-  resetPostPageSlice, setComments, setCommentsCount, setContentImage,
-  setContentText, setCreatedDate, setId,
-  setIsUserLiked, setLikesCount, setRefreshComments, setUser,
+  resetPostPageSlice, setComments, updatePostPageSlice, setRefreshComments,
 } from '../../slices/postPageSlice';
 import { RootState } from '../../store/root';
 import api from '../../utils/api';
@@ -28,23 +26,8 @@ const PostPage = ({ match }: RouteComponentProps<IRouteInfo>) => {
       `/posts/id/${id}`,
     )
       .then((response: { data: IPostResponse }) => {
-        const {
-          user,
-          contentText,
-          contentImage,
-          createdDate,
-          likesCount,
-          isUserLiked,
-          commentsCount,
-        } = response.data.data;
-        dispatch(setUser(user));
-        dispatch(setId(id));
-        dispatch(setContentText(contentText));
-        dispatch(setContentImage(contentImage));
-        dispatch(setCreatedDate(createdDate));
-        dispatch(setLikesCount(likesCount));
-        dispatch(setIsUserLiked(isUserLiked));
-        dispatch(setCommentsCount(commentsCount));
+        const { data } = response.data;
+        dispatch(updatePostPageSlice(data));
         setIsLoading(false);
       })
       .catch(() => {

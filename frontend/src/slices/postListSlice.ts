@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IPost } from '../utils/interfaces';
+import { IPost, IPostList } from '../utils/interfaces';
 
 interface IPostListState {
   posts: IPost[],
@@ -23,6 +23,9 @@ const postListSlice = createSlice({
   reducers: {
     resetPostListSlice() {
       return initialState;
+    },
+    updatePostListSlice(state: IPostListState, action: PayloadAction<IPostList>) {
+      return { ...state, ...action.payload };
     },
     setPosts(state: IPostListState, action: PayloadAction<IPost[]>) {
       return { ...state, posts: action.payload };
