@@ -1,18 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IComment, IPost } from '../utils/interfaces';
-
-interface IUser {
-  fullName: string,
-  email: string,
-  avatar: string | null,
-}
+import { IComment, IPost, IUser } from '../utils/interfaces';
 
 interface IPostPageState extends IPost {
   refreshComments: boolean,
 }
 
 const initialState: IPostPageState = {
-  user: { fullName: '', email: '', avatar: null },
+  user: {
+    fullName: '',
+    email: '',
+    username: '',
+    birthdayDate: null,
+    avatar: null,
+    aboutme: null,
+  },
   id: '',
   contentText: '',
   contentImage: null,
@@ -28,7 +29,10 @@ const postPageSlice = createSlice({
   name: 'postPage',
   initialState,
   reducers: {
-    updatePost(state: IPostPageState, action: PayloadAction<any>) {
+    resetPostPageSlice() {
+      return initialState;
+    },
+    updatePostPageSlice(state: IPostPageState, action: PayloadAction<IPost>) {
       return { ...state, ...action.payload };
     },
     setUser(state: IPostPageState, action: PayloadAction<IUser>) {
@@ -67,13 +71,11 @@ const postPageSlice = createSlice({
     setRefreshComments(state: IPostPageState, action: PayloadAction<boolean>) {
       return { ...state, refreshComments: action.payload };
     },
-    resetPostPageSlice() {
-      return initialState;
-    },
   },
 });
 
 export const {
+  updatePostPageSlice,
   setUser,
   setId,
   setContentText,

@@ -9,6 +9,7 @@ interface IUser extends Document {
   username: string,
   birthdayDate: Date | null,
   avatar: string | null,
+  aboutme: string | null,
   password: string,
   createdDate: Date,
 }
@@ -59,6 +60,15 @@ interface ICommentJoi {
   contentText: Joi.StringSchema,
 }
 
+interface IProfileJoi {
+  fullName: Joi.StringSchema,
+  email: Joi.StringSchema,
+  username: Joi.StringSchema,
+  birthdayDate: Joi.DateSchema,
+  avatar: Joi.StringSchema,
+  aboutme: Joi.StringSchema,
+}
+
 interface IUserRequest extends Request {
   userId?: string,
 }
@@ -78,6 +88,7 @@ export {
   ILoginJoi,
   IPostJoi,
   ICommentJoi,
+  IProfileJoi,
   IUserRequest,
   IJWTSign,
 };

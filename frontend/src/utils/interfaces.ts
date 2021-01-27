@@ -10,12 +10,24 @@ interface IRegisterForm {
   confirmPassword: string,
 }
 
+interface IUser {
+  fullName: string,
+  email: string,
+  username: string,
+  birthdayDate: Date | null,
+  avatar: string | null,
+  aboutme: string | null,
+}
+
+interface IProfile extends IUser {
+  postsCount: number,
+  followersCount: number,
+  followingCount: number,
+  groupsCount: number,
+}
+
 interface IComment {
-  user: {
-    fullName: string,
-    email: string,
-    avatar: string | null,
-  },
+  user: IUser,
   id: string,
   postId: string,
   contentText: string,
@@ -23,11 +35,7 @@ interface IComment {
 }
 
 interface IPost {
-  user: {
-    fullName: string,
-    email: string,
-    avatar: string | null,
-  }
+  user: IUser,
   id: string,
   contentText: string,
   contentImage: string | null,
@@ -83,6 +91,10 @@ interface ICommentResponse extends IResponse {
   data: IComment,
 }
 
+interface IProfileResponse extends IResponse {
+  data: IProfile,
+}
+
 interface IRouteInfo {
   id: string;
 }
@@ -90,6 +102,8 @@ interface IRouteInfo {
 export type {
   ILoginForm,
   IRegisterForm,
+  IUser,
+  IProfile,
   IComment,
   IPost,
   IPostList,
@@ -101,5 +115,6 @@ export type {
   IAuthResponse,
   ICommentListResponse,
   ICommentResponse,
+  IProfileResponse,
   IRouteInfo,
 };

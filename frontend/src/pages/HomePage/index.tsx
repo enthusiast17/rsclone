@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Typography } from 'antd';
+import { Layout } from 'antd';
 import {
   Switch, Route,
 } from 'react-router-dom';
@@ -8,6 +8,7 @@ import PostListPage from '../PostListPage';
 import PostPage from '../PostPage';
 import styles from './index.module.scss';
 import NotFound from '../../components/NotFound';
+import ProfilePage from '../ProfilePage';
 
 const { Content } = Layout;
 
@@ -19,9 +20,7 @@ const HomePage = () => (
         <Switch>
           <Route exact path="/" component={PostListPage} />
           <Route exact path="/post/:id" component={PostPage} />
-          <Route exact path="/profile">
-            <Typography.Text>MY PROFILE</Typography.Text>
-          </Route>
+          <Route exact path="/profile/:id" component={ProfilePage} />
           <Route component={NotFound} />
         </Switch>
       </Content>

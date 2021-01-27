@@ -213,9 +213,9 @@ router.put('/id/:id', upload.single('contentImage'), async (req, res) => {
     const post = await Post.findById(id);
 
     if (!post) {
-      return handleError(new ErrorJSON(
+      throw new ErrorJSON(
         400, 'Post not found.', 'Please, try another post id.',
-      ), req, res);
+      );
     }
 
     if (post.userId.toString() !== (req as IUserRequest).userId) {
@@ -264,9 +264,9 @@ router.delete('/id/:id', async (req, res) => {
     const post = await Post.findById(id);
 
     if (!post) {
-      return handleError(new ErrorJSON(
+      throw new ErrorJSON(
         400, 'Post not found.', 'Please, try another post id.',
-      ), req, res);
+      );
     }
 
     if (post.userId.toString() !== (req as IUserRequest).userId) {
