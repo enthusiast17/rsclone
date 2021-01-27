@@ -10,12 +10,17 @@ interface IRegisterForm {
   confirmPassword: string,
 }
 
+interface IUser {
+  fullName: string,
+  email: string,
+  username: string,
+  birthdayDate: Date | null,
+  avatar: string | null,
+  aboutme: string | null,
+}
+
 interface IComment {
-  user: {
-    fullName: string,
-    email: string,
-    avatar: string | null,
-  },
+  user: IUser,
   id: string,
   postId: string,
   contentText: string,
@@ -23,11 +28,7 @@ interface IComment {
 }
 
 interface IPost {
-  user: {
-    fullName: string,
-    email: string,
-    avatar: string | null,
-  }
+  user: IUser,
   id: string,
   contentText: string,
   contentImage: string | null,
@@ -90,6 +91,7 @@ interface IRouteInfo {
 export type {
   ILoginForm,
   IRegisterForm,
+  IUser,
   IComment,
   IPost,
   IPostList,
