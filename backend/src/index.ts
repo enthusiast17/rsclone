@@ -8,6 +8,7 @@ import authRouter from './routes/auth';
 import postsRouter from './routes/posts';
 import likesRouter from './routes/likes';
 import commentsRouter from './routes/comments';
+import profileRouter from './routes/profile';
 import authMiddleware from './middlewares/auth';
 import { ErrorJSON, handleError } from './utils/error';
 
@@ -60,5 +61,7 @@ app.use((err: Error, req :Request, res: Response, next: NextFunction) => {
   }
   return next();
 });
+
+app.use('/api/profile', profileRouter);
 
 app.listen(8000, () => console.log('Server is running on http://localhost:8000/'));

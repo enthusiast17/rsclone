@@ -19,6 +19,13 @@ interface IUser {
   aboutme: string | null,
 }
 
+interface IProfile extends IUser {
+  postsCount: number,
+  followersCount: number,
+  followingCount: number,
+  groupsCount: number,
+}
+
 interface IComment {
   user: IUser,
   id: string,
@@ -84,6 +91,10 @@ interface ICommentResponse extends IResponse {
   data: IComment,
 }
 
+interface IProfileResponse extends IResponse {
+  data: IProfile,
+}
+
 interface IRouteInfo {
   id: string;
 }
@@ -92,6 +103,7 @@ export type {
   ILoginForm,
   IRegisterForm,
   IUser,
+  IProfile,
   IComment,
   IPost,
   IPostList,
@@ -103,5 +115,6 @@ export type {
   IAuthResponse,
   ICommentListResponse,
   ICommentResponse,
+  IProfileResponse,
   IRouteInfo,
 };

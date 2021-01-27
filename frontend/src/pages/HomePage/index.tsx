@@ -20,9 +20,7 @@ const HomePage = () => (
         <Switch>
           <Route exact path="/" component={PostListPage} />
           <Route exact path="/post/:id" component={PostPage} />
-          <Route exact path="/profile">
-            <ProfilePage />
-          </Route>
+          <Route exact path="/profile/:id" component={ProfilePage} />
           <Route component={NotFound} />
         </Switch>
       </Content>

@@ -41,7 +41,7 @@ const Header = () => {
         </Link>
       </Menu.Item>
       <Menu.Item key={1}>
-        <Link to="/profile">
+        <Link to={`/profile/${authState.username}`}>
           <ProfileOutlined />
           My profile
         </Link>
