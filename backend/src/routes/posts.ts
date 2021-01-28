@@ -138,7 +138,8 @@ router.get('/', async (req, res) => {
     );
 
     return res.status(200).send({
-      status: 200,
+      status: 'success',
+      statusCode: 200,
       message: 'Posts received successfully.',
       description: 'Please, wait a little bit.',
       data: {
@@ -172,7 +173,8 @@ router.get('/id/:id', async (req, res) => {
       _id, contentText, contentImage, createdDate,
     } = post;
     return res.status(200).send({
-      status: 200,
+      status: 'success',
+      statusCode: 200,
       message: 'Post received successfully.',
       description: 'Please, wait a little bit.',
       data: {
@@ -199,7 +201,7 @@ router.put('/id/:id', upload.single('contentImage'), async (req, res) => {
 
     if (req.file && !fileFormats.includes(req.file.mimetype)) {
       throw new ErrorJSON(
-        415, 'Unsupported Media Type.', 'Please, load only jpeg or png.',
+        415, 'Unsupported Media Type.', 'Please, load only jpeg, png and gif.',
       );
     }
 
@@ -210,14 +212,12 @@ router.put('/id/:id', upload.single('contentImage'), async (req, res) => {
       );
     }
 
-    const post = await Post.findById(id);
-
+    let post = await Post.findById(id);
     if (!post) {
       throw new ErrorJSON(
         400, 'Post not found.', 'Please, try another post id.',
       );
     }
-
     if (post.userId.toString() !== (req as IUserRequest).userId) {
       if (req.file) {
         fs.unlinkSync(req.file.path);
@@ -228,24 +228,27 @@ router.put('/id/:id', upload.single('contentImage'), async (req, res) => {
     }
 
     let contentImage = null;
-
     if (req.body.contentImage === post.contentImage) contentImage = post.contentImage;
-
     if ((req.file && post.contentImage) || (!contentImage && post.contentImage)) {
       fs.unlinkSync(post.contentImage);
     }
-    await post.updateOne({
-      contentText: req.body.contentText,
-      contentImage: req.file ? req.file.path : contentImage,
-    });
+
+    post = await Post.findByIdAndUpdate(
+      id,
+      {
+        contentText: req.body.contentText,
+        contentImage: req.file ? req.file.path : contentImage,
+      },
+    );
 
     return res.status(200).send({
-      status: 200,
+      status: 'success',
+      statusCode: 200,
       message: 'Post edited successfully.',
       description: 'Please, wait a little bit',
       data: {
-        contentText: req.body.contentText,
-        contentImage: req.file ? req.file.path : contentImage,
+        contentText: post.contentText,
+        contentImage: post.contentImage,
       },
     });
   } catch (error) {
@@ -284,7 +287,8 @@ router.delete('/id/:id', async (req, res) => {
     await post.deleteOne();
 
     return res.status(200).send({
-      status: 200,
+      status: 'success',
+      statusCode: 200,
       message: 'Post deleted successfully.',
       description: 'Please, wait a little bit',
       data: null,

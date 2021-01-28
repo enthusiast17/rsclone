@@ -32,7 +32,8 @@ router.post('/', async (req, res) => {
     }
 
     return res.status(200).send({
-      status: 200,
+      status: 'success',
+      statusCode: 200,
       message: 'Like created successfully.',
       description: null,
     });

@@ -27,7 +27,8 @@ router.post('/', async (req, res) => {
     const { fullName, email, avatar } = user;
     const { postId, contentText, createdDate } = comment;
     return res.status(200).send({
-      status: 200,
+      status: 'success',
+      statusCode: 200,
       message: 'Comment created successfully.',
       description: 'Please, wait a little bit.',
       data: {
@@ -75,7 +76,8 @@ router.get('/', async (req, res) => {
     );
 
     return res.status(200).send({
-      status: 200,
+      status: 'success',
+      statusCode: 200,
       message: 'Comments received successfully.',
       description: 'Please, wait a little bit.',
       data: comments,
@@ -112,7 +114,8 @@ router.put('/id/:id', async (req, res) => {
     });
 
     return res.status(200).send({
-      status: 200,
+      status: 'success',
+      statusCode: 200,
       message: 'Comment edited successfully.',
       description: 'Please, wait a little bit.',
       data: null,
@@ -142,7 +145,8 @@ router.delete('/id/:id', async (req, res) => {
     await comment.deleteOne();
 
     return res.status(200).send({
-      status: 200,
+      status: 'success',
+      statusCode: 200,
       message: 'Comment deleted successfully.',
       description: 'Please, wait a little bit.',
       data: null,
