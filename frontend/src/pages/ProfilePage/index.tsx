@@ -17,6 +17,7 @@ const ProfilePage = ({ match }: RouteComponentProps<IRouteInfo>) => {
   const { profilePageState } = useSelector((state: RootState) => state);
 
   useEffect(() => {
+    setIsLoading(true);
     api.get(`/profile/username/${id}`)
       .then((response: { data: IProfileResponse }) => {
         const { data } = response.data;
@@ -30,7 +31,7 @@ const ProfilePage = ({ match }: RouteComponentProps<IRouteInfo>) => {
     return () => {
       dispatch(resetProfilePageSlice());
     };
-  }, []);
+  }, [id]);
 
   return (
     <>
