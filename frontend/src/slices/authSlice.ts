@@ -12,6 +12,9 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    updateAuthSlice(state: IAuth, action: PayloadAction<IAuth>) {
+      return { ...state, ...action.payload };
+    },
     setFullName(state: IAuth, action: PayloadAction<string | null>) {
       return { ...state, fullName: action.payload };
     },
@@ -28,6 +31,7 @@ const authSlice = createSlice({
 });
 
 export const {
+  updateAuthSlice,
   setFullName,
   setEmail,
   setUsername,

@@ -5,6 +5,7 @@ import {
 import { format } from 'timeago.js';
 import { DeleteOutlined, EditOutlined, UserOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { IComment, ICommentResponse, IResponse } from '../utils/interfaces';
 import { RootState } from '../store/root';
 import { setComments, setCommentsCount } from '../slices/postPageSlice';
@@ -73,9 +74,26 @@ const CommentItem = (props: { item: IComment }) => {
           </Popconfirm>
         </Space>,
       ]) || []}
-      author={<Typography.Text strong>{item.user.fullName}</Typography.Text>}
+      author={(
+        <Link to={`/profile/${item.user.username}`}>
+          <Typography.Text strong ellipsis>{item.user.fullName}</Typography.Text>
+        </Link>
+      )}
       avatar={(
-        <Avatar src={item.user.avatar} icon={!item.user.avatar ? <UserOutlined /> : ''} />
+        <Link to={`/profile/${item.user.username}`}>
+          {item.user.avatar && (
+            <Avatar
+              size={32}
+              src={`http://localhost:8000/${item.user.avatar}`}
+            />
+          )}
+          {!item.user.avatar && (
+            <Avatar
+              size={32}
+              icon={<UserOutlined />}
+            />
+          )}
+        </Link>
       )}
       content={content}
       datetime={(

@@ -21,7 +21,7 @@ const ProfileInfo = (props: { item: IProfile }) => {
       bodyStyle={{ padding: 25 }}
     >
       {isEdit && (
-        <ProfileEdit handleCancel={() => setIsEdit(false)} />
+        <ProfileEdit item={item} handleCancel={() => setIsEdit(false)} />
       )}
 
       {!isEdit && (
@@ -33,7 +33,7 @@ const ProfileInfo = (props: { item: IProfile }) => {
                   {item.avatar && (
                     <Image
                       style={{ width: 150, height: 150, borderRadius: 2 }}
-                      src={item.avatar}
+                      src={`http://localhost:8000/${item.avatar}`}
                     />
                   )}
                   {!item.avatar && (
@@ -77,7 +77,7 @@ const ProfileInfo = (props: { item: IProfile }) => {
               <Row><Text type="secondary">{`@${item.username}`}</Text></Row>
               <Row><Text type="secondary">{item.email}</Text></Row>
               {item.birthdayDate && (
-                <Row><Text>{item.birthdayDate}</Text></Row>
+                <Row><Text>{new Date(item.birthdayDate).toDateString()}</Text></Row>
               )}
               {item.aboutme && (
                 <Row style={{ width: '100%' }}>

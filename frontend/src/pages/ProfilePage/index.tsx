@@ -17,7 +17,7 @@ const ProfilePage = ({ match }: RouteComponentProps<IRouteInfo>) => {
   const { profilePageState } = useSelector((state: RootState) => state);
 
   useEffect(() => {
-    api.get(`/profile/${id}`)
+    api.get(`/profile/username/${id}`)
       .then((response: { data: IProfileResponse }) => {
         const { data } = response.data;
         dispatch(updateProfilePageSlice(data));

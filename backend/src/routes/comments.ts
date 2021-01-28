@@ -24,7 +24,9 @@ router.post('/', async (req, res) => {
     }).save();
 
     const user = await User.findById(comment.userId);
-    const { fullName, email, avatar } = user;
+    const {
+      fullName, email, username, avatar,
+    } = user;
     const { postId, contentText, createdDate } = comment;
     return res.status(200).send({
       status: 'success',
@@ -32,7 +34,9 @@ router.post('/', async (req, res) => {
       message: 'Comment created successfully.',
       description: 'Please, wait a little bit.',
       data: {
-        user: { fullName, email, avatar },
+        user: {
+          fullName, email, username, avatar,
+        },
         postId,
         contentText,
         createdDate,
@@ -63,10 +67,14 @@ router.get('/', async (req, res) => {
     const comments = await Promise.all(
       modelComments.map(async (comment: any) => {
         const user = await User.findById(comment.userId);
-        const { fullName, email, avatar } = user;
+        const {
+          fullName, email, username, avatar,
+        } = user;
         const { postId, contentText, createdDate } = comment;
         return {
-          user: { fullName, email, avatar },
+          user: {
+            fullName, email, username, avatar,
+          },
           id: comment._id,
           postId,
           contentText,

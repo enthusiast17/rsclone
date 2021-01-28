@@ -49,9 +49,10 @@ const profileJoi: IProfileJoi = {
   username: Joi.string().pattern(/^[a-z0-9]*$/).min(3)
     .max(25)
     .required(),
-  birthdayDate: Joi.date(),
-  avatar: Joi.string(),
-  aboutme: Joi.string().trim().min(1).max(150),
+  birthdayDate: Joi.date().allow(null),
+  avatar: Joi.string().allow(null),
+  aboutme: Joi.string().allow(null).trim().min(1)
+    .max(150),
 };
 
 const profileValidator = Joi.object<IProfileJoi>(profileJoi);

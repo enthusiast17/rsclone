@@ -1,14 +1,13 @@
 import React from 'react';
 import {
-  UserOutlined, HeartOutlined, CommentOutlined, HeartFilled,
+  HeartOutlined, CommentOutlined, HeartFilled, UserOutlined,
 } from '@ant-design/icons';
 import {
-  Card, Divider, Space, Image, Typography, Row, Col,
+  Card, Divider, Space, Image, Typography, Row, Col, Avatar,
 } from 'antd';
-import Avatar from 'antd/lib/avatar/avatar';
 import { format } from 'timeago.js';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { IPost } from '../utils/interfaces';
 import { setPost } from '../slices/postListSlice';
 import api from '../utils/api';
@@ -17,10 +16,7 @@ const PostItem = (props: {
   item: IPost,
 }) => {
   const { item } = props;
-  const history = useHistory();
   const dispatch = useDispatch();
-
-  const redirectPage = () => history.push(`/post/${item.id}`);
 
   const handleLike = () => {
     api.post(
@@ -42,11 +38,26 @@ const PostItem = (props: {
     >
       <Row>
         <Col style={{ marginRight: 10 }} flex="35px">
-          <Avatar src={item.user.avatar} icon={!item.user.avatar ? <UserOutlined /> : ''} />
+          <Link to={`/profile/${item.user.username}`}>
+            {item.user.avatar && (
+              <Avatar
+                size={32}
+                src={`http://localhost:8000/${item.user.avatar}`}
+              />
+            )}
+            {!item.user.avatar && (
+              <Avatar
+                size={32}
+                icon={<UserOutlined />}
+              />
+            )}
+          </Link>
         </Col>
         <Col flex="auto">
           <Row>
-            <Typography.Text strong ellipsis>{item.user.fullName}</Typography.Text>
+            <Link to={`/profile/${item.user.username}`}>
+              <Typography.Text strong ellipsis>{item.user.fullName}</Typography.Text>
+            </Link>
           </Row>
           <Row>
             <Typography.Text type="secondary">{`${format(item.createdDate)}`}</Typography.Text>
@@ -54,8 +65,10 @@ const PostItem = (props: {
         </Col>
       </Row>
       <Row style={{ overflow: 'auto' }}>
-        <Row style={{ width: '100%', cursor: 'pointer' }} onClick={redirectPage}>
-          <Typography.Text style={{ width: '100%' }}>{item.contentText}</Typography.Text>
+        <Row style={{ width: '100%', cursor: 'pointer' }}>
+          <Link to={`/post/${item.id}`}>
+            <Typography.Text style={{ width: '100%' }}>{item.contentText}</Typography.Text>
+          </Link>
         </Row>
         {item.contentImage && (
           <Row style={{
@@ -86,20 +99,20 @@ const PostItem = (props: {
               <Typography.Text>{ item.likesCount }</Typography.Text>
             </Col>
           </Space>
-          <Space>
-            <Col
-              style={{ cursor: 'pointer' }}
-              onClick={redirectPage}
-            >
-              <CommentOutlined />
-            </Col>
-            <Col
-              style={{ cursor: 'pointer' }}
-              onClick={redirectPage}
-            >
-              <Typography.Text>{ item.commentsCount }</Typography.Text>
-            </Col>
-          </Space>
+          <Link to={`/post/${item.id}`}>
+            <Space>
+              <Col
+                style={{ cursor: 'pointer' }}
+              >
+                <CommentOutlined style={{ color: 'rgba(0, 0, 0, 0.85)' }} />
+              </Col>
+              <Col
+                style={{ cursor: 'pointer' }}
+              >
+                <Typography.Text>{ item.commentsCount }</Typography.Text>
+              </Col>
+            </Space>
+          </Link>
         </Space>
       </Row>
     </Card>

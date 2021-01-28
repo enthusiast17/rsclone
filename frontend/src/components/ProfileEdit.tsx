@@ -1,22 +1,116 @@
 import React from 'react';
 import {
-  Form, Row, Col, Upload, Input, Button, DatePicker,
+  Form, Row, Col, Upload, Input, Button, DatePicker, notification,
 } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import { useDispatch } from 'react-redux';
+import moment from 'moment';
+import { IProfile, IProfileResponse, IResponse } from '../utils/interfaces';
+import { updateProfilePageSlice } from '../slices/profilePageSlice';
+import { updateAuthSlice } from '../slices/authSlice';
+import api from '../utils/api';
 
-const ProfileEdit = (props: { handleCancel: () => void }) => {
-  const { handleCancel } = props;
+const ProfileEdit = (props: { item: IProfile, handleCancel: () => void }) => {
+  const { item, handleCancel } = props;
   const [form] = Form.useForm();
+  const dispatch = useDispatch();
+
+  const handleEdit = (values: {
+    fullName: string,
+    email: string,
+    username: string,
+    birthdayDate: Date | null,
+    avatar: any | null,
+    aboutme: string | null,
+  }) => {
+    const formData = new FormData();
+    Object.entries(values).forEach(([k, v]) => {
+      if (k === 'avatar') return;
+      if (k === 'aboutme' && v === '') {
+        formData.append(k, 'null');
+        return;
+      }
+      formData.append(k, v);
+    });
+    if (!values.avatar?.file) {
+      if (values.avatar?.name) {
+        formData.append('avatar', values.avatar.name);
+      }
+    } else {
+      formData.append('avatar', values.avatar.file.originFileObj);
+    }
+    api.put(
+      `/profile/username/${item.username}`,
+      formData,
+    ).then((response: { data: IProfileResponse }) => {
+      notification.success({
+        message: response.data.message,
+        description: response.data.description,
+      });
+      dispatch(updateProfilePageSlice(response.data.data));
+      const {
+        fullName,
+        email,
+        username,
+        avatar,
+      } = response.data.data;
+      dispatch(updateAuthSlice({
+        fullName,
+        email,
+        username,
+        avatar,
+      }));
+      handleCancel();
+    }).catch((reason: { response: { data: IResponse } }) => {
+      if (!reason.response || !reason.response.data) {
+        notification.error({
+          message: 'Internal Error.',
+          description: 'Upps! Sorry, something went wrong in internal server.',
+        });
+        return;
+      }
+      notification.error({
+        message: reason.response.data.message,
+        description: reason.response.data.description,
+      });
+    });
+  };
 
   return (
     <Form
       form={form}
+      onFinish={handleEdit}
+      initialValues={{
+        ...item,
+        avatar: {
+          uid: '1',
+          name: item.avatar as string,
+          status: 'done',
+          url: `http://localhost:8000/${item.avatar}`,
+          thumbUrl: `http://localhost:8000/${item.avatar}`,
+          type: 'picture',
+          size: 0,
+        },
+        birthdayDate: item.birthdayDate ? moment(item.birthdayDate) : null,
+      }}
     >
       <Row justify="center">
         <Col flex="104px" style={{ marginRight: 25 }}>
-          <Form.Item>
+          <Form.Item
+            name="avatar"
+          >
             <Upload
-              name="avatar"
+              defaultFileList={(item.avatar && [
+                {
+                  uid: '1',
+                  name: item.avatar as string,
+                  status: 'done',
+                  url: `http://localhost:8000/${item.avatar}`,
+                  thumbUrl: `http://localhost:8000/${item.avatar}`,
+                  type: 'picture',
+                  size: 0,
+                },
+              ]) || []}
               listType="picture-card"
               maxCount={1}
             >
