@@ -24,14 +24,19 @@ router.post('/', async (req, res) => {
     }).save();
 
     const user = await User.findById(comment.userId);
-    const { fullName, email, avatar } = user;
+    const {
+      fullName, email, username, avatar,
+    } = user;
     const { postId, contentText, createdDate } = comment;
     return res.status(200).send({
-      status: 200,
+      status: 'success',
+      statusCode: 200,
       message: 'Comment created successfully.',
       description: 'Please, wait a little bit.',
       data: {
-        user: { fullName, email, avatar },
+        user: {
+          fullName, email, username, avatar,
+        },
         postId,
         contentText,
         createdDate,
@@ -62,10 +67,14 @@ router.get('/', async (req, res) => {
     const comments = await Promise.all(
       modelComments.map(async (comment: any) => {
         const user = await User.findById(comment.userId);
-        const { fullName, email, avatar } = user;
+        const {
+          fullName, email, username, avatar,
+        } = user;
         const { postId, contentText, createdDate } = comment;
         return {
-          user: { fullName, email, avatar },
+          user: {
+            fullName, email, username, avatar,
+          },
           id: comment._id,
           postId,
           contentText,
@@ -75,7 +84,8 @@ router.get('/', async (req, res) => {
     );
 
     return res.status(200).send({
-      status: 200,
+      status: 'success',
+      statusCode: 200,
       message: 'Comments received successfully.',
       description: 'Please, wait a little bit.',
       data: comments,
@@ -112,7 +122,8 @@ router.put('/id/:id', async (req, res) => {
     });
 
     return res.status(200).send({
-      status: 200,
+      status: 'success',
+      statusCode: 200,
       message: 'Comment edited successfully.',
       description: 'Please, wait a little bit.',
       data: null,
@@ -142,7 +153,8 @@ router.delete('/id/:id', async (req, res) => {
     await comment.deleteOne();
 
     return res.status(200).send({
-      status: 200,
+      status: 'success',
+      statusCode: 200,
       message: 'Comment deleted successfully.',
       description: 'Please, wait a little bit.',
       data: null,

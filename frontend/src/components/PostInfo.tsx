@@ -7,7 +7,7 @@ import {
 } from '@ant-design/icons';
 import { format } from 'timeago.js';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { IPost, IResponse } from '../utils/interfaces';
 import { setIsUserLiked, setLikesCount } from '../slices/postPageSlice';
 import { RootState } from '../store/root';
@@ -59,11 +59,26 @@ const PostInfo = ({ item }: {item: IPost}) => {
     >
       <Row>
         <Col style={{ marginRight: 10 }} flex="35px">
-          <Avatar src={item.user.avatar} icon={!item.user.avatar ? <UserOutlined /> : ''} />
+          <Link to={`/profile/${item.user.username}`}>
+            {item.user.avatar && (
+              <Avatar
+                size={32}
+                src={`http://localhost:8000/${item.user.avatar}`}
+              />
+            )}
+            {!item.user.avatar && (
+              <Avatar
+                size={32}
+                icon={<UserOutlined />}
+              />
+            )}
+          </Link>
         </Col>
         <Col flex="auto">
           <Row>
-            <Typography.Text strong ellipsis>{item.user.fullName}</Typography.Text>
+            <Link to={`/profile/${item.user.username}`}>
+              <Typography.Text strong ellipsis>{item.user.fullName}</Typography.Text>
+            </Link>
           </Row>
           <Row>
             <Typography.Text type="secondary">{`${format(item.createdDate)}`}</Typography.Text>

@@ -70,11 +70,18 @@ const Header = () => {
 
         <Dropdown overlay={menu} trigger={['click']} placement="bottomRight" arrow>
           <Button className={styles.dropdown} shape="circle" type="default" size="middle">
-            <Avatar
-              size={32}
-              src={authState.avatar ? authState.avatar : ''}
-              icon={authState.avatar ? '' : <UserOutlined />}
-            />
+            {authState.avatar && (
+              <Avatar
+                size={32}
+                src={`http://localhost:8000/${authState.avatar}`}
+              />
+            )}
+            {!authState.avatar && (
+              <Avatar
+                size={32}
+                icon={<UserOutlined />}
+              />
+            )}
           </Button>
         </Dropdown>
       </Space>

@@ -18,8 +18,10 @@ dotenv.config({ path: '.env' });
 
 mongoose.connect(
   process.env.DB_CONNECT || '',
-  { useUnifiedTopology: true, useNewUrlParser: true },
+  { useUnifiedTopology: true, useNewUrlParser: true, useFindAndModify: false },
 ).catch((error) => console.log(error));
+
+mongoose.set('returnOriginal', false);
 
 app.use(cors({ origin: true, credentials: true }));
 
@@ -62,6 +64,6 @@ app.use((err: Error, req :Request, res: Response, next: NextFunction) => {
   return next();
 });
 
-app.use('/api/profile', profileRouter);
+app.use('/api/profile', authMiddleware, profileRouter);
 
 app.listen(8000, () => console.log('Server is running on http://localhost:8000/'));
