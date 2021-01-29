@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Breadcrumb } from 'antd';
+import { Breadcrumb, notification, Typography } from 'antd';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import ProfileInfo from '../../components/ProfileInfo';
-import api from '../../utils/api';
-import { IRouteInfo, IProfileResponse } from '../../utils/interfaces';
-import { resetProfilePageSlice, updateProfilePageSlice } from '../../slices/profilePageSlice';
+import {
+  IRouteInfo, IProfileResponse, IPostListResponse, IResponse,
+} from '../../utils/interfaces';
+import {
+  resetProfilePageSlice, updateProfilePageSlice, updateProfilePostList, resetProfilePostListSlice,
+} from '../../slices/profilePageSlice';
 import { RootState } from '../../store/root';
 import Loading from '../../components/Loading';
 import NotFound from '../../components/NotFound';
+import PostList from '../../components/PostList';
+import api from '../../utils/api';
+import styles from './index.module.scss';
 
 const ProfilePage = ({ match }: RouteComponentProps<IRouteInfo>) => {
   const { id } = match.params;
@@ -16,8 +22,47 @@ const ProfilePage = ({ match }: RouteComponentProps<IRouteInfo>) => {
   const dispatch = useDispatch();
   const { profilePageState } = useSelector((state: RootState) => state);
 
+  const fetchPosts = () => {
+    const url = profilePageState.postList.currentPage === 1
+      ? `/posts/?page=${profilePageState.postList.currentPage}&username=${id}`
+      : `/posts/?page=${profilePageState.postList.currentPage}&total=${profilePageState.postList.totalPostCount}&username=${id}`;
+    api.get(url)
+      .then((response: { data: IPostListResponse }) => {
+        const {
+          posts, nextPage, totalPostCount,
+        } = response.data.data;
+        dispatch(updateProfilePostList({
+          posts: [...profilePageState.postList.posts, ...posts],
+          nextPage,
+        }));
+        if (profilePageState.postList.currentPage === 1) {
+          dispatch(updateProfilePostList({
+            totalPostCount,
+          }));
+        }
+      })
+      .catch((reason: { response: { data: IResponse } }) => {
+        if (!reason.response || !reason.response.data) {
+          notification.error({
+            message: 'Internal Error.',
+            description: 'Upps! Sorry, something went wrong in internal server.',
+          });
+          return;
+        }
+        notification.error({
+          message: reason.response.data.message,
+          description: reason.response.data.description,
+        });
+      });
+  };
+
   useEffect(() => {
     setIsLoading(true);
+    if (profilePageState.postList.posts.length !== 0) {
+      dispatch(updateProfilePostList({
+        currentPage: -1,
+      }));
+    }
     api.get(`/profile/username/${id}`)
       .then((response: { data: IProfileResponse }) => {
         const { data } = response.data;
@@ -30,8 +75,17 @@ const ProfilePage = ({ match }: RouteComponentProps<IRouteInfo>) => {
 
     return () => {
       dispatch(resetProfilePageSlice());
+      dispatch(resetProfilePostListSlice());
     };
   }, [id]);
+
+  useEffect(() => {
+    if (profilePageState.postList.currentPage < 1) {
+      dispatch(resetProfilePostListSlice());
+      return;
+    }
+    fetchPosts();
+  }, [profilePageState.postList.currentPage]);
 
   return (
     <>
@@ -40,7 +94,7 @@ const ProfilePage = ({ match }: RouteComponentProps<IRouteInfo>) => {
       )}
 
       {!isLoading && profilePageState.username && (
-        <>
+        <div className={styles.container}>
           <Breadcrumb style={{ marginBottom: 10 }}>
             <Breadcrumb.Item><Link to="/">Home</Link></Breadcrumb.Item>
             <Breadcrumb.Item>
@@ -48,7 +102,17 @@ const ProfilePage = ({ match }: RouteComponentProps<IRouteInfo>) => {
             </Breadcrumb.Item>
           </Breadcrumb>
           <ProfileInfo item={profilePageState} />
-        </>
+          <Typography.Text>
+            {`${profilePageState.fullName}'s activity`}
+          </Typography.Text>
+          <PostList
+            posts={profilePageState.postList.posts}
+            nextPage={profilePageState.postList.nextPage}
+            handleLoadMore={() => dispatch(updateProfilePostList({
+              currentPage: profilePageState.postList.currentPage + 1,
+            }))}
+          />
+        </div>
       )}
 
       {!isLoading && !profilePageState.username && (

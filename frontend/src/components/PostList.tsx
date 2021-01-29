@@ -1,15 +1,14 @@
 import React from 'react';
 import { List, Button } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store/root';
 import PostItem from './PostItem';
 import { IPost } from '../utils/interfaces';
-import { setCurrentPage } from '../slices/postListSlice';
 
-const PostList = (props: { posts: IPost[] }) => {
-  const { posts } = props;
-  const dispatch = useDispatch();
-  const { postListState } = useSelector((state: RootState) => state);
+const PostList = (props: {
+  posts: IPost[],
+  nextPage: number | null,
+  handleLoadMore: () => void,
+}) => {
+  const { posts, nextPage, handleLoadMore } = props;
 
   return (
     <List
@@ -17,8 +16,8 @@ const PostList = (props: { posts: IPost[] }) => {
       grid={{ gutter: 10, column: 1 }}
       itemLayout="vertical"
       size="small"
-      loadMore={postListState.nextPage && (
-        <Button type="primary" onClick={() => dispatch(setCurrentPage(postListState.currentPage + 1))} block>Load more</Button>
+      loadMore={nextPage && (
+        <Button type="primary" onClick={() => handleLoadMore()} block>Load more</Button>
       )}
       dataSource={posts}
       renderItem={(item: IPost, index: number) => (

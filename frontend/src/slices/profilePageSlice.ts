@@ -1,7 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IProfile } from '../utils/interfaces';
+import { IProfile, IPost, IPostList } from '../utils/interfaces';
 
-const initialState: IProfile = {
+interface IProfileState extends IProfile {
+  postList: IPostList
+}
+
+const initialState: IProfileState = {
   fullName: '',
   email: '',
   username: '',
@@ -12,6 +16,14 @@ const initialState: IProfile = {
   followersCount: 0,
   followingCount: 0,
   groupsCount: 0,
+  postList: {
+    posts: [],
+    currentPage: 1,
+    nextPage: null,
+    totalPostCount: 0,
+    pageCount: 0,
+    newPosts: [],
+  },
 };
 
 const profilePageSlice = createSlice({
@@ -21,15 +33,29 @@ const profilePageSlice = createSlice({
     resetProfilePageSlice() {
       return initialState;
     },
-    updateProfilePageSlice(state: IProfile, action: PayloadAction<IProfile>) {
+    resetProfilePostListSlice(state: IProfileState) {
+      return { ...state, postList: { ...initialState.postList, posts: [] } };
+    },
+    updateProfilePageSlice(state: IProfileState, action: PayloadAction<IProfile>) {
       return { ...state, ...action.payload };
+    },
+    updateProfilePostList(state: IProfileState, action: PayloadAction<{
+      posts?: IPost[],
+      currentPage?: number,
+      nextPage?: number | null,
+      totalPostCount?: number,
+      pageCount?: number,
+    }>) {
+      return { ...state, postList: { ...state.postList, ...action.payload } };
     },
   },
 });
 
 export const {
+  resetProfilePostListSlice,
   resetProfilePageSlice,
   updateProfilePageSlice,
+  updateProfilePostList,
 } = profilePageSlice.actions;
 
 export default profilePageSlice.reducer;
