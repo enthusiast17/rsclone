@@ -2,17 +2,19 @@ import React, { useState } from 'react';
 import {
   Card, Row, Col, Image, Avatar, Typography, Divider, Button, Space,
 } from 'antd';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { UserOutlined } from '@ant-design/icons';
 import ProfileEdit from './ProfileEdit';
 import { IProfile } from '../utils/interfaces';
 import { RootState } from '../store/root';
+import { resetProfilePostListSlice, updateProfilePostList } from '../slices/profilePageSlice';
 
 const { Text } = Typography;
 
 const ProfileInfo = (props: { item: IProfile }) => {
   const { item } = props;
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const dispatch = useDispatch();
   const { authState } = useSelector((state: RootState) => state);
 
   return (
@@ -21,7 +23,16 @@ const ProfileInfo = (props: { item: IProfile }) => {
       bodyStyle={{ padding: 25 }}
     >
       {isEdit && (
-        <ProfileEdit item={item} handleCancel={() => setIsEdit(false)} />
+        <ProfileEdit
+          item={item}
+          handleCancel={() => {
+            setIsEdit(false);
+            dispatch(resetProfilePostListSlice());
+            dispatch(updateProfilePostList({
+              currentPage: -1,
+            }));
+          }}
+        />
       )}
 
       {!isEdit && (

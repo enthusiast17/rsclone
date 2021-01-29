@@ -18,7 +18,9 @@ const PostListPage = () => {
   const { postListState } = useSelector((state: RootState) => state);
 
   const fetchPosts = () => {
-    const url = postListState.currentPage === 1 ? `/posts/?page=${postListState.currentPage}` : `/posts/?page=${postListState.currentPage}&total=${postListState.totalPostCount}`;
+    const url = postListState.currentPage === 1
+      ? `/posts/?page=${postListState.currentPage}`
+      : `/posts/?page=${postListState.currentPage}&total=${postListState.totalPostCount}`;
     api.get(url)
       .then((response: { data: IPostListResponse }) => {
         const {
@@ -65,7 +67,11 @@ const PostListPage = () => {
         <PostListSkeleton />
       )}
       {!isLoading && (
-        <PostList posts={postListState.posts} />
+        <PostList
+          posts={postListState.posts}
+          nextPage={postListState.nextPage}
+          handleLoadMore={() => dispatch(setCurrentPage(postListState.currentPage + 1))}
+        />
       )}
     </div>
   );

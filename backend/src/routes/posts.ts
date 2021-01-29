@@ -97,23 +97,38 @@ router.get('/', async (req, res) => {
     const { page } = req.query;
     const currentPage = parseFloat(page as string);
     const limit = 5;
-    const totalPostCount: number = await Post.countDocuments();
+    let currentUser = null;
+    if (req.query.username) {
+      currentUser = await User.findOne({ username: req.query.username as string });
+    }
+    const totalPostCount: number = await Post.countDocuments(
+      currentUser ? { userId: currentUser } : {},
+    );
     const total = req.query.total ? parseFloat(req.query.total as string) : totalPostCount;
     const startIdx = ((currentPage - 1) * limit) + (totalPostCount - total);
     const endIdx = currentPage * limit;
     const nextPage = endIdx < totalPostCount ? currentPage + 1 : null;
     const pageCount = Math.ceil(totalPostCount / limit);
-    const modelPosts = await Post.find()
-      .sort({ _id: -1 })
-      .limit(limit)
-      .skip(startIdx);
 
-    const modelNewPosts = totalPostCount === total ? null : await Post.find()
+    let posts = [];
+    if (req.query.username) {
+      posts = await Post.find({ userId: currentUser })
+        .sort({ _id: -1 })
+        .limit(limit)
+        .skip(startIdx);
+    } else {
+      posts = await Post.find()
+        .sort({ _id: -1 })
+        .limit(limit)
+        .skip(startIdx);
+    }
+
+    const newPosts = totalPostCount === total ? null : await Post.find()
       .sort({ _id: -1 })
       .limit(totalPostCount - total);
 
-    const posts = await Promise.all(
-      modelPosts.map(async (post: any) => {
+    posts = await Promise.all(
+      posts.map(async (post: any) => {
         const user = await User.findById(post.userId);
         const isLiked = await Like
           .findOne({})
@@ -152,7 +167,7 @@ router.get('/', async (req, res) => {
         nextPage,
         totalPostCount,
         pageCount,
-        newPosts: modelNewPosts,
+        newPosts,
       },
     });
   } catch (error) {
