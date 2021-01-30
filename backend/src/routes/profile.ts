@@ -8,6 +8,7 @@ import User from '../model/User';
 import { handleError, ErrorJSON } from '../utils/error';
 import { IUserRequest } from '../utils/interfaces';
 import { profileValidator } from '../utils/validators';
+import Follower from '../model/Follower';
 
 const router = Router();
 
@@ -16,10 +17,16 @@ router.get('/username/:username', async (req, res) => {
     const user = await User.findOne({ username: req.params.username });
     if (!user) {
       throw new ErrorJSON(
-        400, 'Profile not found.', 'Please, try another prfoile username.',
+        400, 'Profile not found.', 'Please, try another profile username.',
       );
     }
+    const isFollowing = await Follower.findOne({
+      followingId: user._id,
+      followerId: (req as IUserRequest).userId,
+    });
     const postsCount = await Post.countDocuments({ userId: user._id });
+    const followersCount = await Follower.countDocuments({ followingId: user._id });
+    const followingCount = await Follower.countDocuments({ followerId: user._id });
     const {
       fullName,
       email,
@@ -41,9 +48,10 @@ router.get('/username/:username', async (req, res) => {
         avatar,
         aboutme,
         postsCount,
-        followersCount: 0,
-        followingCount: 0,
+        followersCount,
+        followingCount,
         groupsCount: 0,
+        isFollowing: !!isFollowing,
       },
     });
   } catch (error) {

@@ -37,6 +37,12 @@ interface IComment extends Document {
   createdDate: Date,
 }
 
+interface IFollower extends Document {
+  _id: string,
+  followingId: string,
+  followerId: string,
+}
+
 interface IRegisterJoi {
   fullName: Joi.StringSchema,
   email: Joi.StringSchema,
@@ -84,6 +90,7 @@ export {
   IPost,
   ILike,
   IComment,
+  IFollower,
   IRegisterJoi,
   ILoginJoi,
   IPostJoi,

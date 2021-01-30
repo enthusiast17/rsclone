@@ -24,6 +24,7 @@ interface IProfile extends IUser {
   followersCount: number,
   followingCount: number,
   groupsCount: number,
+  isFollowing: boolean,
 }
 
 interface IComment {
