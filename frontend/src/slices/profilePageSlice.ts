@@ -16,6 +16,7 @@ const initialState: IProfileState = {
   followersCount: 0,
   followingCount: 0,
   groupsCount: 0,
+  isFollowing: false,
   postList: {
     posts: [],
     currentPage: 1,
@@ -48,6 +49,12 @@ const profilePageSlice = createSlice({
     }>) {
       return { ...state, postList: { ...state.postList, ...action.payload } };
     },
+    setFollowersCount(state: IProfileState, action: PayloadAction<number>) {
+      return { ...state, followersCount: action.payload };
+    },
+    setIsFollowing(state: IProfileState, action: PayloadAction<boolean>) {
+      return { ...state, isFollowing: action.payload };
+    },
   },
 });
 
@@ -56,6 +63,8 @@ export const {
   resetProfilePageSlice,
   updateProfilePageSlice,
   updateProfilePostList,
+  setFollowersCount,
+  setIsFollowing,
 } = profilePageSlice.actions;
 
 export default profilePageSlice.reducer;

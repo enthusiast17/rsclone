@@ -7,7 +7,10 @@ import { UserOutlined } from '@ant-design/icons';
 import ProfileEdit from './ProfileEdit';
 import { IProfile } from '../utils/interfaces';
 import { RootState } from '../store/root';
-import { resetProfilePostListSlice, updateProfilePostList } from '../slices/profilePageSlice';
+import {
+  resetProfilePostListSlice, setIsFollowing, updateProfilePostList, setFollowersCount,
+} from '../slices/profilePageSlice';
+import api from '../utils/api';
 
 const { Text } = Typography;
 
@@ -15,7 +18,21 @@ const ProfileInfo = (props: { item: IProfile }) => {
   const { item } = props;
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const dispatch = useDispatch();
-  const { authState } = useSelector((state: RootState) => state);
+  const { authState, profilePageState } = useSelector((state: RootState) => state);
+
+  const handleFollow = () => {
+    api.post(
+      `/followers/?username=${item.username}`,
+    )
+      .then(() => {
+        dispatch(setIsFollowing(!item.isFollowing));
+        dispatch(setFollowersCount(
+          item.isFollowing
+            ? profilePageState.followersCount - 1
+            : profilePageState.followersCount + 1,
+        ));
+      });
+  };
 
   return (
     <Card
@@ -74,10 +91,11 @@ const ProfileInfo = (props: { item: IProfile }) => {
 
                   {authState.username !== item.username && (
                     <Button
-                      type="primary"
+                      type={item.isFollowing ? 'default' : 'primary'}
                       block
+                      onClick={handleFollow}
                     >
-                      Follow
+                      {item.isFollowing ? 'Unfollow' : 'Follow'}
                     </Button>
                   )}
                 </Row>

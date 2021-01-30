@@ -9,6 +9,7 @@ import postsRouter from './routes/posts';
 import likesRouter from './routes/likes';
 import commentsRouter from './routes/comments';
 import profileRouter from './routes/profile';
+import followersRouter from './routes/followers';
 import authMiddleware from './middlewares/auth';
 import { ErrorJSON, handleError } from './utils/error';
 
@@ -65,5 +66,7 @@ app.use((err: Error, req :Request, res: Response, next: NextFunction) => {
 });
 
 app.use('/api/profile', authMiddleware, profileRouter);
+
+app.use('/api/followers', authMiddleware, followersRouter);
 
 app.listen(8000, () => console.log('Server is running on http://localhost:8000/'));
