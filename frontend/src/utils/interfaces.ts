@@ -96,6 +96,10 @@ interface IProfileResponse extends IResponse {
   data: IProfile,
 }
 
+interface IFollowersResponse extends IResponse {
+  data: IUser[],
+}
+
 interface IRouteInfo {
   id: string;
 }
@@ -117,5 +121,6 @@ export type {
   ICommentListResponse,
   ICommentResponse,
   IProfileResponse,
+  IFollowersResponse,
   IRouteInfo,
 };

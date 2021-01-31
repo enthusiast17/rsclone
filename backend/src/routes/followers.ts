@@ -44,7 +44,7 @@ router.post('/', async (req, res) => {
       status: 'success',
       statusCode: 200,
       message: 'Follower created successfully.',
-      description: null,
+      description: 'Please, wait a little bit.',
     });
   } catch (error) {
     if (error.name !== 'ErrorJSON') {
@@ -58,28 +58,42 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const { username } = req.query;
-
-    if (!username) {
+    if (!req.query.username) {
       throw new ErrorJSON(
         400, 'Bad Request', 'Please, correct http query.',
       );
     }
 
-    const user = await User.findOne({ username: username as string });
-    if (!user) {
+    const followingUser = await User.findOne({ username: req.query.username as string });
+    if (!followingUser) {
       throw new ErrorJSON(
         400, 'User not found.', 'Please, try another username.',
       );
     }
 
-    const followers = await Follower.find({ followingId: user._id });
+    let followers = await Follower.find({ followingId: followingUser._id });
+
+    followers = await Promise.all(
+      followers.map(async (follower: any) => {
+        const user = await User.findById(follower.followerId);
+        const {
+          fullName, email, username, avatar,
+        } = user;
+        return {
+          fullName,
+          email,
+          username,
+          avatar,
+        };
+      }),
+    );
 
     return res.status(200).send({
       status: 'success',
       statusCode: 200,
       message: 'Followers received successfully.',
-      description: followers,
+      description: 'Please, wait a little bit.',
+      data: followers,
     });
   } catch (error) {
     if (error.name !== 'ErrorJSON') {
@@ -93,28 +107,41 @@ router.get('/', async (req, res) => {
 
 router.get('/following/', async (req, res) => {
   try {
-    const { username } = req.query;
-
-    if (!username) {
+    if (!req.query.username) {
       throw new ErrorJSON(
         400, 'Bad Request', 'Please, correct http query.',
       );
     }
 
-    const user = await User.findOne({ username: username as string });
-    if (!user) {
+    const followerUser = await User.findOne({ username: req.query.username as string });
+    if (!followerUser) {
       throw new ErrorJSON(
         400, 'User not found.', 'Please, try another username.',
       );
     }
 
-    const followers = await Follower.find({ followerId: user._id });
+    let following = await Follower.find({ followerId: followerUser._id });
+    following = await Promise.all(
+      following.map(async (follower: any) => {
+        const user = await User.findById(follower.followingId);
+        const {
+          fullName, email, username, avatar,
+        } = user;
+        return {
+          fullName,
+          email,
+          username,
+          avatar,
+        };
+      }),
+    );
 
     return res.status(200).send({
       status: 'success',
       statusCode: 200,
       message: 'Following received successfully.',
-      description: followers,
+      description: 'Please, wait a little bit.',
+      data: following,
     });
   } catch (error) {
     if (error.name !== 'ErrorJSON') {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  Card, Row, Col, Image, Avatar, Typography, Divider, Button, Space,
+  Card, Row, Col, Image, Avatar, Typography, Divider, Button, Space, Modal,
 } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { UserOutlined } from '@ant-design/icons';
@@ -11,14 +11,22 @@ import {
   resetProfilePostListSlice, setIsFollowing, updateProfilePostList, setFollowersCount,
 } from '../slices/profilePageSlice';
 import api from '../utils/api';
+import Followers from './Followers';
+import Following from './Following';
 
 const { Text } = Typography;
 
 const ProfileInfo = (props: { item: IProfile }) => {
   const { item } = props;
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [isFollowersVisible, setIsFollowersVisible] = useState<boolean>(false);
+  const [isFollowingVisible, setIsFollowingVisible] = useState<boolean>(false);
   const dispatch = useDispatch();
   const { authState, profilePageState } = useSelector((state: RootState) => state);
+
+  const followersModalAction = () => setIsFollowersVisible(!isFollowersVisible);
+
+  const followingModalAction = () => setIsFollowingVisible(!isFollowingVisible);
 
   const handleFollow = () => {
     api.post(
@@ -123,11 +131,11 @@ const ProfileInfo = (props: { item: IProfile }) => {
               <Text style={{ textAlign: 'center' }} strong>{item.postsCount}</Text>
               <Text type="secondary" style={{ textAlign: 'center' }}>posts</Text>
             </Col>
-            <Col style={{ display: 'flex', flexDirection: 'column' }}>
+            <Col onClick={() => setIsFollowersVisible(true)} style={{ display: 'flex', flexDirection: 'column', cursor: 'pointer' }}>
               <Text style={{ textAlign: 'center' }} strong>{item.followersCount}</Text>
               <Text type="secondary" style={{ textAlign: 'center' }}>followers</Text>
             </Col>
-            <Col style={{ display: 'flex', flexDirection: 'column' }}>
+            <Col onClick={() => setIsFollowingVisible(true)} style={{ display: 'flex', flexDirection: 'column', cursor: 'pointer' }}>
               <Text style={{ textAlign: 'center' }} strong>{item.followingCount}</Text>
               <Text type="secondary" style={{ textAlign: 'center' }}>following</Text>
             </Col>
@@ -136,6 +144,24 @@ const ProfileInfo = (props: { item: IProfile }) => {
               <Text type="secondary" style={{ textAlign: 'center' }}>groups</Text>
             </Col>
           </Row>
+          <Modal
+            visible={isFollowersVisible}
+            footer={null}
+            width={420}
+            onCancel={followersModalAction}
+            centered
+          >
+            <Followers username={item.username} />
+          </Modal>
+          <Modal
+            visible={isFollowingVisible}
+            footer={null}
+            width={420}
+            onCancel={followingModalAction}
+            centered
+          >
+            <Following username={item.username} />
+          </Modal>
         </>
       )}
     </Card>
