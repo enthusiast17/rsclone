@@ -43,41 +43,57 @@ const Header = () => {
       });
     });
 
-  const handleSelect = (value: string) => history.push(`/profile/${value}`);
+  const handleSelect = (value: string) => {
+    if (value === '') return;
+    history.push(`/profile/${value}`);
+  };
 
   const handleSearch = (value: string) => api.get(
     `/search/?value=${value}`,
   )
     .then((response: { data: ISearchResponse }) => {
-      setSearchResult(
-        response.data.data.map((user: IUser) => ({
-          value: user.username,
-          label: (
-            <Row style={{ width: '100%' }}>
-              <Col style={{ marginRight: 10 }} flex="35px">
-                {user.avatar && (
-                <Avatar
-                  size={32}
-                  src={`/${user.avatar}`}
-                />
-                )}
-                {!user.avatar && (
-                <Avatar
-                  size={32}
-                  icon={<UserOutlined />}
-                />
-                )}
-              </Col>
-              <Col flex="150px" style={{ display: 'flex', alignItems: 'center' }}>
-                <Space style={{ width: '150px', overflow: 'hidden' }} direction="vertical" size={0}>
-                  <Typography.Text strong ellipsis>{user.fullName}</Typography.Text>
-                  <Typography.Text strong ellipsis>{`@${user.username}`}</Typography.Text>
-                </Space>
-              </Col>
-            </Row>
-          ),
-        })),
-      );
+      if (response.data.data.length === 0) {
+        setSearchResult([
+          {
+            value: '',
+            label: (
+              <Row style={{ width: '100%' }}>
+                <Typography.Text>Not Found</Typography.Text>
+              </Row>
+            ),
+          },
+        ]);
+      } else {
+        setSearchResult(
+          response.data.data.map((user: IUser) => ({
+            value: user.username,
+            label: (
+              <Row style={{ width: '100%' }}>
+                <Col style={{ marginRight: 10 }} flex="35px">
+                  {user.avatar && (
+                  <Avatar
+                    size={32}
+                    src={`/${user.avatar}`}
+                  />
+                  )}
+                  {!user.avatar && (
+                  <Avatar
+                    size={32}
+                    icon={<UserOutlined />}
+                  />
+                  )}
+                </Col>
+                <Col flex="150px" style={{ display: 'flex', alignItems: 'center' }}>
+                  <Space style={{ width: '150px', overflow: 'hidden' }} direction="vertical" size={0}>
+                    <Typography.Text strong ellipsis>{user.fullName}</Typography.Text>
+                    <Typography.Text strong ellipsis>{`@${user.username}`}</Typography.Text>
+                  </Space>
+                </Col>
+              </Row>
+            ),
+          })),
+        );
+      }
     });
 
   const menu = (
@@ -113,10 +129,11 @@ const Header = () => {
       <AutoComplete
         options={searchResult}
         onSelect={handleSelect}
-        onSearch={(value: string) => handleSearch(value)}
       >
         <Input.Search
           className={styles.search}
+          placeholder="Search user (username/full name)"
+          onSearch={handleSearch}
           allowClear
         />
       </AutoComplete>
