@@ -44,7 +44,7 @@ const Following = (props: { username: string }) => {
                       {item.avatar && (
                         <Avatar
                           size={32}
-                          src={`http://localhost:8000/${item.avatar}`}
+                          src={`/${item.avatar}`}
                         />
                       )}
                       {!item.avatar && (

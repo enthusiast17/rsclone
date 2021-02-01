@@ -58,7 +58,7 @@ const Header = () => {
                 {user.avatar && (
                 <Avatar
                   size={32}
-                  src={`http://localhost:8000/${user.avatar}`}
+                  src={`/${user.avatar}`}
                 />
                 )}
                 {!user.avatar && (
@@ -94,6 +94,11 @@ const Header = () => {
           My profile
         </Link>
       </Menu.Item>
+      <Menu.Item key={2}>
+        <Link to="/messages">
+          Messages
+        </Link>
+      </Menu.Item>
       <Menu.Item key={3} onClick={logOut}>
         <Link to="/logout">
           <LogoutOutlined />
@@ -124,7 +129,7 @@ const Header = () => {
             {authState.avatar && (
               <Avatar
                 size={32}
-                src={`http://localhost:8000/${authState.avatar}`}
+                src={`/${authState.avatar}`}
               />
             )}
             {!authState.avatar && (
