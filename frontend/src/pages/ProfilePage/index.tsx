@@ -22,22 +22,28 @@ const ProfilePage = ({ match }: RouteComponentProps<IRouteInfo>) => {
   const dispatch = useDispatch();
   const { profilePageState } = useSelector((state: RootState) => state);
 
-  const fetchPosts = () => {
-    const url = profilePageState.postList.currentPage === 1
-      ? `/posts/?page=${profilePageState.postList.currentPage}&username=${id}`
-      : `/posts/?page=${profilePageState.postList.currentPage}&total=${profilePageState.postList.totalPostCount}&username=${id}`;
+  const fetchPosts = (currentPage: number) => {
+    const url = currentPage === 1
+      ? `/posts/?page=${currentPage}&username=${id}`
+      : `/posts/?page=${currentPage}&total=${profilePageState.postList.totalPostCount}&username=${id}`;
     api.get(url)
       .then((response: { data: IPostListResponse }) => {
         const {
           posts, nextPage, totalPostCount,
         } = response.data.data;
-        dispatch(updateProfilePostList({
-          posts: [...profilePageState.postList.posts, ...posts],
-          nextPage,
-        }));
-        if (profilePageState.postList.currentPage === 1) {
+        if (currentPage === 1) {
+          dispatch(updateProfilePostList({
+            posts: [...posts],
+            currentPage: 1,
+            nextPage,
+          }));
           dispatch(updateProfilePostList({
             totalPostCount,
+          }));
+        } else {
+          dispatch(updateProfilePostList({
+            posts: [...profilePageState.postList.posts, ...posts],
+            nextPage,
           }));
         }
       })
@@ -58,11 +64,7 @@ const ProfilePage = ({ match }: RouteComponentProps<IRouteInfo>) => {
 
   useEffect(() => {
     setIsLoading(true);
-    if (profilePageState.postList.posts.length !== 0) {
-      dispatch(updateProfilePostList({
-        currentPage: -1,
-      }));
-    }
+    fetchPosts(1);
     api.get(`/profile/username/${id}`)
       .then((response: { data: IProfileResponse }) => {
         const { data } = response.data;
@@ -72,7 +74,6 @@ const ProfilePage = ({ match }: RouteComponentProps<IRouteInfo>) => {
       .catch(() => {
         setIsLoading(false);
       });
-
     return () => {
       dispatch(resetProfilePageSlice());
       dispatch(resetProfilePostListSlice());
@@ -80,11 +81,9 @@ const ProfilePage = ({ match }: RouteComponentProps<IRouteInfo>) => {
   }, [id]);
 
   useEffect(() => {
-    if (profilePageState.postList.currentPage < 1) {
-      dispatch(resetProfilePostListSlice());
-      return;
+    if (profilePageState.postList.currentPage > 1) {
+      fetchPosts(profilePageState.postList.currentPage);
     }
-    fetchPosts();
   }, [profilePageState.postList.currentPage]);
 
   return (
