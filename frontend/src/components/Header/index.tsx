@@ -1,21 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  Layout, Input, Avatar, Dropdown, Menu, Button, notification, Typography, Space,
+  Layout, Input, Avatar, Dropdown,
+  Menu, Button, notification, Typography,
+  Space, AutoComplete, Col, Row,
 } from 'antd';
+import { SelectProps } from 'antd/lib/select';
 import {
   HomeOutlined,
-  LogoutOutlined, ProfileOutlined, SettingOutlined, UserOutlined,
+  LogoutOutlined, ProfileOutlined, UserOutlined,
 } from '@ant-design/icons';
-import { AxiosError } from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import styles from './index.module.scss';
 import api from '../../utils/api';
-import { IResponse } from '../../utils/interfaces';
+import { IResponse, ISearchResponse, IUser } from '../../utils/interfaces';
 import { RootState } from '../../store/root';
 
 const Header = () => {
   const { authState } = useSelector((state: RootState) => state);
+  const history = useHistory();
+  const [searchResult, setSearchResult] = useState<SelectProps<object>['options']>([]);
 
   const logOut = () => api.get('auth/logout')
     .then((response: { data: IResponse }) => {
@@ -25,11 +29,55 @@ const Header = () => {
       });
       window.location.reload();
     })
-    .catch((reason: AxiosError) => {
+    .catch((reason: { response: { data: IResponse } }) => {
+      if (!reason.response || !reason.response.data) {
+        notification.error({
+          message: 'Internal Error.',
+          description: 'Upps! Sorry, something went wrong in internal server.',
+        });
+        return;
+      }
       notification.error({
-        message: reason.response?.data.message,
-        description: reason.response?.data.description,
+        message: reason.response.data.message,
+        description: reason.response.data.description,
       });
+    });
+
+  const handleSelect = (value: string) => history.push(`/profile/${value}`);
+
+  const handleSearch = (value: string) => api.get(
+    `/search/?value=${value}`,
+  )
+    .then((response: { data: ISearchResponse }) => {
+      setSearchResult(
+        response.data.data.map((user: IUser) => ({
+          value: user.username,
+          label: (
+            <Row style={{ width: '100%' }}>
+              <Col style={{ marginRight: 10 }} flex="35px">
+                {user.avatar && (
+                <Avatar
+                  size={32}
+                  src={`http://localhost:8000/${user.avatar}`}
+                />
+                )}
+                {!user.avatar && (
+                <Avatar
+                  size={32}
+                  icon={<UserOutlined />}
+                />
+                )}
+              </Col>
+              <Col flex="150px" style={{ display: 'flex', alignItems: 'center' }}>
+                <Space style={{ width: '150px', overflow: 'hidden' }} direction="vertical" size={0}>
+                  <Typography.Text strong ellipsis>{user.fullName}</Typography.Text>
+                  <Typography.Text strong ellipsis>{`@${user.username}`}</Typography.Text>
+                </Space>
+              </Col>
+            </Row>
+          ),
+        })),
+      );
     });
 
   const menu = (
@@ -46,12 +94,6 @@ const Header = () => {
           My profile
         </Link>
       </Menu.Item>
-      <Menu.Item key={2}>
-        <Link to="/settings">
-          <SettingOutlined />
-          Settings
-        </Link>
-      </Menu.Item>
       <Menu.Item key={3} onClick={logOut}>
         <Link to="/logout">
           <LogoutOutlined />
@@ -63,7 +105,16 @@ const Header = () => {
 
   return (
     <Layout.Header className={styles.container}>
-      <Input.Search className={styles.search} allowClear />
+      <AutoComplete
+        options={searchResult}
+        onSelect={handleSelect}
+        onSearch={(value: string) => handleSearch(value)}
+      >
+        <Input.Search
+          className={styles.search}
+          allowClear
+        />
+      </AutoComplete>
 
       <Space>
         <Typography.Text className={styles.title}>{authState.fullName}</Typography.Text>
