@@ -84,7 +84,7 @@ const CommentItem = (props: { item: IComment }) => {
           {item.user.avatar && (
             <Avatar
               size={32}
-              src={`http://localhost:8000/${item.user.avatar}`}
+              src={`/${item.user.avatar}`}
             />
           )}
           {!item.user.avatar && (

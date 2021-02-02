@@ -63,6 +63,13 @@ interface IAuth {
   avatar: string | null,
 }
 
+interface IMessage {
+  id: string,
+  user: IUser,
+  contentText: string,
+  createdDate: string,
+}
+
 interface IResponse {
   message: string,
   description: string,
@@ -104,6 +111,10 @@ interface ISearchResponse extends IResponse {
   data: IUser[],
 }
 
+interface IMessagesResponse extends IResponse {
+  data: IMessage[],
+}
+
 interface IRouteInfo {
   id: string;
 }
@@ -117,6 +128,7 @@ export type {
   IPost,
   IPostList,
   IAuth,
+  IMessage,
   IResponse,
   IPostListResponse,
   IPostResponse,
@@ -127,5 +139,6 @@ export type {
   IProfileResponse,
   IFollowersResponse,
   ISearchResponse,
+  IMessagesResponse,
   IRouteInfo,
 };

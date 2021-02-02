@@ -69,7 +69,7 @@ const ProfileInfo = (props: { item: IProfile }) => {
                   {item.avatar && (
                     <Image
                       style={{ width: 150, height: 150, borderRadius: 2 }}
-                      src={`http://localhost:8000/${item.avatar}`}
+                      src={`/${item.avatar}`}
                     />
                   )}
                   {!item.avatar && (

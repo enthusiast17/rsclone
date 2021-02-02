@@ -1,15 +1,15 @@
 import mongoose, { Schema } from 'mongoose';
-import { IComment } from '../utils/interfaces';
+import { IMessage } from '../utils/interfaces';
 
-const commentSchema: Schema = new mongoose.Schema({
+const messageSchema: Schema = new mongoose.Schema({
+  roomId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Room',
+    required: true,
+  },
   userId: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
-  },
-  postId: {
-    type: Schema.Types.ObjectId,
-    ref: 'Post',
     required: true,
   },
   contentText: {
@@ -22,6 +22,6 @@ const commentSchema: Schema = new mongoose.Schema({
   },
 });
 
-const Comment: mongoose.Model<IComment> = mongoose.model('Comment', commentSchema);
+const Message: mongoose.Model<IMessage> = mongoose.model('Message', messageSchema);
 
-export default Comment;
+export default Message;

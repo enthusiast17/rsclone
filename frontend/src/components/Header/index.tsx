@@ -7,7 +7,7 @@ import {
 import { SelectProps } from 'antd/lib/select';
 import {
   HomeOutlined,
-  LogoutOutlined, ProfileOutlined, UserOutlined,
+  LogoutOutlined, MessageOutlined, ProfileOutlined, UserOutlined,
 } from '@ant-design/icons';
 import { Link, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -43,41 +43,57 @@ const Header = () => {
       });
     });
 
-  const handleSelect = (value: string) => history.push(`/profile/${value}`);
+  const handleSelect = (value: string) => {
+    if (value === '') return;
+    history.push(`/profile/${value}`);
+  };
 
   const handleSearch = (value: string) => api.get(
     `/search/?value=${value}`,
   )
     .then((response: { data: ISearchResponse }) => {
-      setSearchResult(
-        response.data.data.map((user: IUser) => ({
-          value: user.username,
-          label: (
-            <Row style={{ width: '100%' }}>
-              <Col style={{ marginRight: 10 }} flex="35px">
-                {user.avatar && (
-                <Avatar
-                  size={32}
-                  src={`http://localhost:8000/${user.avatar}`}
-                />
-                )}
-                {!user.avatar && (
-                <Avatar
-                  size={32}
-                  icon={<UserOutlined />}
-                />
-                )}
-              </Col>
-              <Col flex="150px" style={{ display: 'flex', alignItems: 'center' }}>
-                <Space style={{ width: '150px', overflow: 'hidden' }} direction="vertical" size={0}>
-                  <Typography.Text strong ellipsis>{user.fullName}</Typography.Text>
-                  <Typography.Text strong ellipsis>{`@${user.username}`}</Typography.Text>
-                </Space>
-              </Col>
-            </Row>
-          ),
-        })),
-      );
+      if (response.data.data.length === 0) {
+        setSearchResult([
+          {
+            value: '',
+            label: (
+              <Row style={{ width: '100%' }}>
+                <Typography.Text>Not Found</Typography.Text>
+              </Row>
+            ),
+          },
+        ]);
+      } else {
+        setSearchResult(
+          response.data.data.map((user: IUser) => ({
+            value: user.username,
+            label: (
+              <Row style={{ width: '100%' }}>
+                <Col style={{ marginRight: 10 }} flex="35px">
+                  {user.avatar && (
+                  <Avatar
+                    size={32}
+                    src={`/${user.avatar}`}
+                  />
+                  )}
+                  {!user.avatar && (
+                  <Avatar
+                    size={32}
+                    icon={<UserOutlined />}
+                  />
+                  )}
+                </Col>
+                <Col flex="150px" style={{ display: 'flex', alignItems: 'center' }}>
+                  <Space style={{ width: '150px', overflow: 'hidden' }} direction="vertical" size={0}>
+                    <Typography.Text strong ellipsis>{user.fullName}</Typography.Text>
+                    <Typography.Text strong ellipsis>{`@${user.username}`}</Typography.Text>
+                  </Space>
+                </Col>
+              </Row>
+            ),
+          })),
+        );
+      }
     });
 
   const menu = (
@@ -94,6 +110,12 @@ const Header = () => {
           My profile
         </Link>
       </Menu.Item>
+      <Menu.Item key={2}>
+        <Link to="/messages">
+          <MessageOutlined />
+          Messages
+        </Link>
+      </Menu.Item>
       <Menu.Item key={3} onClick={logOut}>
         <Link to="/logout">
           <LogoutOutlined />
@@ -108,10 +130,11 @@ const Header = () => {
       <AutoComplete
         options={searchResult}
         onSelect={handleSelect}
-        onSearch={(value: string) => handleSearch(value)}
       >
         <Input.Search
           className={styles.search}
+          placeholder="Search user (username/full name)"
+          onSearch={handleSearch}
           allowClear
         />
       </AutoComplete>
@@ -124,7 +147,7 @@ const Header = () => {
             {authState.avatar && (
               <Avatar
                 size={32}
-                src={`http://localhost:8000/${authState.avatar}`}
+                src={`/${authState.avatar}`}
               />
             )}
             {!authState.avatar && (

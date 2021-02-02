@@ -15,7 +15,7 @@ const CommentForm = (props: { postId: string }) => {
   const { postId } = props;
   const [form] = Form.useForm();
   const dispatch = useDispatch();
-  const { postPageState } = useSelector((state: RootState) => state);
+  const { authState, postPageState } = useSelector((state: RootState) => state);
 
   const onFinish = (values: { contentText: string }) => {
     api.post(
@@ -63,7 +63,18 @@ const CommentForm = (props: { postId: string }) => {
       >
         <Row>
           <Col style={{ marginRight: 10 }} flex="35px">
-            <Avatar icon={<UserOutlined />} />
+            {authState.avatar && (
+              <Avatar
+                size={32}
+                src={`/${authState.avatar}`}
+              />
+            )}
+            {!authState.avatar && (
+              <Avatar
+                size={32}
+                icon={<UserOutlined />}
+              />
+            )}
           </Col>
           <Col flex="auto">
             <Row>

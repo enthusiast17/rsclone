@@ -43,6 +43,20 @@ interface IFollower extends Document {
   followerId: string,
 }
 
+interface IRoom extends Document {
+  _id: string,
+  users: string[],
+  createdDate: Date,
+}
+
+interface IMessage extends Document {
+  _id: string,
+  roomId: string,
+  userId: string,
+  contentText: string,
+  createdDate: Date,
+}
+
 interface IRegisterJoi {
   fullName: Joi.StringSchema,
   email: Joi.StringSchema,
@@ -91,6 +105,8 @@ export {
   ILike,
   IComment,
   IFollower,
+  IRoom,
+  IMessage,
   IRegisterJoi,
   ILoginJoi,
   IPostJoi,

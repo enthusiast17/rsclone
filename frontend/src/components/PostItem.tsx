@@ -42,7 +42,7 @@ const PostItem = (props: {
             {item.user.avatar && (
               <Avatar
                 size={32}
-                src={`http://localhost:8000/${item.user.avatar}`}
+                src={`/${item.user.avatar}`}
               />
             )}
             {!item.user.avatar && (
@@ -80,7 +80,7 @@ const PostItem = (props: {
             <Image
               style={{ maxWidth: '100%' }}
               alt="logo"
-              src={`http://localhost:8000/${item.contentImage}`}
+              src={`/${item.contentImage}`}
             />
           </Row>
         )}

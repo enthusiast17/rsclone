@@ -9,6 +9,8 @@ import PostPage from '../PostPage';
 import styles from './index.module.scss';
 import NotFound from '../../components/NotFound';
 import ProfilePage from '../ProfilePage';
+import RoomListPage from '../RoomListPage';
+import MessagesPage from '../MessagesPage';
 
 const { Content } = Layout;
 
@@ -21,6 +23,8 @@ const HomePage = () => (
           <Route exact path="/" component={PostListPage} />
           <Route exact path="/post/:id" component={PostPage} />
           <Route exact path="/profile/:id" component={ProfilePage} />
+          <Route exact path="/messages" component={RoomListPage} />
+          <Route exact path="/messages/:id" component={MessagesPage} />
           <Route component={NotFound} />
         </Switch>
       </Content>
