@@ -7,7 +7,7 @@ import {
 import { SelectProps } from 'antd/lib/select';
 import {
   HomeOutlined,
-  LogoutOutlined, ProfileOutlined, UserOutlined,
+  LogoutOutlined, MessageOutlined, ProfileOutlined, UserOutlined,
 } from '@ant-design/icons';
 import { Link, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -112,6 +112,7 @@ const Header = () => {
       </Menu.Item>
       <Menu.Item key={2}>
         <Link to="/messages">
+          <MessageOutlined />
           Messages
         </Link>
       </Menu.Item>

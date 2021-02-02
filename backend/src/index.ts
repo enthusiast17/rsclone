@@ -118,6 +118,7 @@ io.on('connection', async (socket: any) => {
     if (!data.username) {
       socket.disconnect();
     }
+    console.log('User is connected, ', senderUserModel.username, socket.id);
     const receiverUserModel = await User.findOne({ username: data.username });
     let room = await Room.findOne().or([
       { users: [senderUserModel, receiverUserModel] },
@@ -168,6 +169,7 @@ io.on('connection', async (socket: any) => {
     socket.removeAllListeners('ROOM:NEW_MESSAGE');
     socket.removeAllListeners('ROOM:JOIN');
     socket.disconnect();
+    console.log('User is disconnected, ', senderUserModel.username, socket.id);
   });
 });
 

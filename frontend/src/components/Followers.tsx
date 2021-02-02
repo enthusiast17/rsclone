@@ -57,7 +57,7 @@ const Followers = (props: { username: string }) => {
                   </Col>
                   <Col flex="auto" style={{ display: 'flex', alignItems: 'center' }}>
                     <Link to={`/profile/${item.username}`}>
-                      <Typography.Text strong ellipsis>{item.fullName}</Typography.Text>
+                      <Typography.Text ellipsis>{item.fullName}</Typography.Text>
                     </Link>
                   </Col>
                 </Row>
