@@ -86,9 +86,23 @@ var app = express_1.default();
 dotenv.config({ path: '.env' });
 mongoose_1.default.connect(process.env.DB_CONNECT || '', { useUnifiedTopology: true, useNewUrlParser: true, useFindAndModify: false }).catch(function (error) { return console.log(error); });
 mongoose_1.default.set('returnOriginal', false);
-app.use(cors_1.default({ origin: '*', credentials: true }));
+var whitelist = ['http://localhost:3000', 'http://localhost:8080', 'https://rsclone-enthusiast17.herokuapp.com'];
+var corsOptions = {
+    origin: function (origin, callback) {
+        console.log("** Origin of request " + origin);
+        if (whitelist.indexOf(origin) !== -1 || !origin) {
+            console.log('Origin acceptable');
+            callback(null, true);
+        }
+        else {
+            console.log('Origin rejected');
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+};
+app.use(cors_1.default(corsOptions));
 app.use(cookie_parser_1.default());
-app.use('/', function (req, res) { return res.send({
+app.use('/upserver', function (req, res) { return res.send({
     status: 'success',
     statusCode: 200,
     message: 'Thank you so much for running me!',
@@ -122,10 +136,7 @@ app.use('/api/search', auth_2.default, search_1.default);
 app.use('/api/rooms/', auth_2.default, rooms_1.default);
 var server = http_1.default.createServer(app);
 var io = new socket_io_1.default.Server(server, {
-    cors: {
-        origin: '*',
-        credentials: true,
-    },
+    cors: corsOptions,
 });
 io.on('connection', function (socket) { return __awaiter(void 0, void 0, void 0, function () {
     var cookies, refreshToken, verifiedUser, senderUserModel;
@@ -167,7 +178,6 @@ io.on('connection', function (socket) { return __awaiter(void 0, void 0, void 0,
                                     ])];
                             case 2:
                                 room = _a.sent();
-                                socket.leave(room._id.toString());
                                 if (!!room) return [3 /*break*/, 4];
                                 room = new Room_1.default({
                                     users: [senderUserModel, receiverUserModel],
@@ -212,7 +222,7 @@ io.on('connection', function (socket) { return __awaiter(void 0, void 0, void 0,
                                         avatar: senderUserModel.avatar,
                                     },
                                     contentText: message.contentText,
-                                    createdDate: message.createdDate,
+                                    createdAt: message.createdAt,
                                 });
                                 return [2 /*return*/];
                         }

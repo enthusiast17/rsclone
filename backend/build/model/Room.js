@@ -22,10 +22,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = __importStar(require("mongoose"));
 var roomSchema = new mongoose_1.default.Schema({
     users: [mongoose_1.Schema.Types.ObjectId],
-    createdDate: {
-        type: Date,
-        default: new Date(Date.now()),
-    },
-});
+}, { timestamps: {} });
 var Room = mongoose_1.default.model('Room', roomSchema);
 exports.default = Room;

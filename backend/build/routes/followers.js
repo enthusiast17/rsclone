@@ -42,15 +42,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /* eslint-disable no-underscore-dangle */
 var express_1 = require("express");
 var Follower_1 = __importDefault(require("../model/Follower"));
+var Room_1 = __importDefault(require("../model/Room"));
 var User_1 = __importDefault(require("../model/User"));
 var error_1 = require("../utils/error");
 var router = express_1.Router();
 router.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var username, followerId, followingUser, followingId, follower, error_2;
+    var username, followerId, followingUser, followingId, follower, room, error_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 7, , 8]);
+                _a.trys.push([0, 9, , 10]);
                 username = req.query.username;
                 followerId = req.userId;
                 if (!username) {
@@ -69,31 +70,45 @@ router.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, 
                     })];
             case 2:
                 follower = _a.sent();
-                if (!!follower) return [3 /*break*/, 4];
+                return [4 /*yield*/, Room_1.default.findOne().or([
+                        { users: [followerId, followingId] },
+                        { users: [followingId, followerId] },
+                    ])];
+            case 3:
+                room = _a.sent();
+                if (!!follower) return [3 /*break*/, 5];
                 return [4 /*yield*/, new Follower_1.default({
                         followingId: followingId,
                         followerId: followerId,
                     }).save()];
-            case 3:
+            case 4:
                 _a.sent();
-                return [3 /*break*/, 6];
-            case 4: return [4 /*yield*/, follower.deleteOne()];
-            case 5:
+                if (!room) {
+                    new Room_1.default({
+                        users: [followerId, followingId],
+                    }).save();
+                }
+                return [3 /*break*/, 8];
+            case 5: return [4 /*yield*/, follower.deleteOne()];
+            case 6:
                 _a.sent();
-                _a.label = 6;
-            case 6: return [2 /*return*/, res.status(200).send({
+                return [4 /*yield*/, room.deleteOne()];
+            case 7:
+                _a.sent();
+                _a.label = 8;
+            case 8: return [2 /*return*/, res.status(200).send({
                     status: 'success',
                     statusCode: 200,
                     message: 'Follower created successfully.',
                     description: 'Please, wait a little bit.',
                 })];
-            case 7:
+            case 9:
                 error_2 = _a.sent();
                 if (error_2.name !== 'ErrorJSON') {
                     return [2 /*return*/, error_1.handleError(new error_1.ErrorJSON(500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.'), req, res)];
                 }
                 return [2 /*return*/, error_1.handleError(error_2, req, res)];
-            case 8: return [2 /*return*/];
+            case 10: return [2 /*return*/];
         }
     });
 }); });

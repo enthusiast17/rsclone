@@ -115,6 +115,17 @@ interface IMessagesResponse extends IResponse {
   data: IMessage[],
 }
 
+interface ILoginResponse extends IResponse {
+  data: {
+    refreshToken: string,
+    accessToken: string,
+  }
+}
+
+interface IReNewAccessToken extends IResponse {
+  data: string,
+}
+
 interface IRouteInfo {
   id: string;
 }
@@ -140,5 +151,7 @@ export type {
   IFollowersResponse,
   ISearchResponse,
   IMessagesResponse,
+  ILoginResponse,
+  IReNewAccessToken,
   IRouteInfo,
 };

@@ -34,6 +34,6 @@ var likeSchema = new mongoose_1.default.Schema({
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'Post',
     },
-});
+}, { timestamps: {} });
 var Like = mongoose_1.default.model('Like', likeSchema);
 exports.default = Like;

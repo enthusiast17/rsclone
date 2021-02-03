@@ -109,30 +109,34 @@ router.post('/login', async (req, res) => {
       process.env.REFRESH_TOKEN_SECRET_CODE,
       { expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN },
     );
-    res.cookie('refresh-token', refreshToken, {
-      httpOnly: true,
-      // secure: true,
-      // sameSite: 'strict',
-      expires: new Date(Number(new Date()) + parseFloat(process.env.REFRESH_TOKEN_MAX_AGE)),
-    });
+    // res.cookie('refresh-token', refreshToken, {
+    //   httpOnly: true,
+    //   // secure: true,
+    //   // sameSite: 'strict',
+    //   expires: new Date(Number(new Date()) + parseFloat(process.env.REFRESH_TOKEN_MAX_AGE)),
+    // });
 
     const accessToken = jwt.sign(
       { userId: user.id },
       process.env.ACCESS_TOKEN_SECRET_CODE,
       { expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN },
     );
-    res.cookie('access-token', accessToken, {
-      httpOnly: true,
-      // secure: true,
-      // sameSite: 'strict',
-      expires: new Date(Number(new Date()) + parseFloat(process.env.ACCESS_TOKEN_MAX_AGE)),
-    });
+    // res.cookie('access-token', accessToken, {
+    //   httpOnly: true,
+    //   // secure: true,
+    //   // sameSite: 'strict',
+    //   expires: new Date(Number(new Date()) + parseFloat(process.env.ACCESS_TOKEN_MAX_AGE)),
+    // });
 
     return res.status(200).send({
       status: 'success',
       statusCode: 200,
       message: 'Logged in successfully.',
       description: 'Please, wait a little bit.',
+      data: {
+        refreshToken,
+        accessToken,
+      },
     });
   } catch (error: any) {
     if (error.name !== 'ErrorJSON') {
@@ -162,7 +166,11 @@ router.get('/logout', async (req, res) => {
 });
 
 router.get('/newaccesstoken', async (req, res) => {
-  const refreshToken = req.cookies['refresh-token'];
+  if (!req.headers.authorization) {
+    throw new Error();
+  }
+  const tokens = req.headers.authorization.split(' ');
+  const refreshToken = tokens[1];
   if (!process.env.REFRESH_TOKEN_SECRET_CODE
     || !process.env.ACCESS_TOKEN_SECRET_CODE
     || !process.env.ACCESS_TOKEN_MAX_AGE) {
@@ -190,6 +198,7 @@ router.get('/newaccesstoken', async (req, res) => {
       statusCode: 200,
       message: 'Your access token updated successfully.',
       description: '',
+      data: accessToken,
     });
   } catch (error) {
     if (error.name !== 'ErrorJSON') {
@@ -203,8 +212,6 @@ router.get('/newaccesstoken', async (req, res) => {
 });
 
 router.get('/me', async (req, res) => {
-  const refreshToken = req.cookies['refresh-token'];
-
   if (!process.env.REFRESH_TOKEN_SECRET_CODE) {
     return handleError(new ErrorJSON(
       500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.',
@@ -212,6 +219,11 @@ router.get('/me', async (req, res) => {
   }
 
   try {
+    if (!req.headers.authorization) {
+      throw new Error();
+    }
+    const tokens = req.headers.authorization.split(' ');
+    const refreshToken = tokens[1];
     const verifiedUser = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET_CODE);
     const user: IUser = await User.findOne({ _id: (verifiedUser as IJWTSign).userId });
     const {
