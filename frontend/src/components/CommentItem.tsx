@@ -97,7 +97,7 @@ const CommentItem = (props: { item: IComment }) => {
       )}
       content={content}
       datetime={(
-        <Typography.Text type="secondary">{`${format(item.createdDate)}`}</Typography.Text>
+        <Typography.Text type="secondary">{`${format(new Date(item.createdAt))}`}</Typography.Text>
       )}
     />
   );

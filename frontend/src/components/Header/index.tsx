@@ -121,7 +121,7 @@ const Header = () => {
         </Link>
       </Menu.Item>
       <Menu.Item key={4} onClick={logOut}>
-        <Link to="/logout">
+        <Link to="/">
           <LogoutOutlined />
           Log out
         </Link>

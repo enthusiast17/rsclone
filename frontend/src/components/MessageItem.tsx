@@ -34,7 +34,7 @@ const MessageItem = (props: { item: IMessage }) => {
             </Link>
           </Row>
           <Row>
-            <Typography.Text type="secondary">{`${new Date(item.createdDate).toLocaleString()}`}</Typography.Text>
+            <Typography.Text type="secondary">{`${new Date(item.createdAt).toLocaleString()}`}</Typography.Text>
           </Row>
         </Col>
       </Row>

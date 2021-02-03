@@ -60,13 +60,13 @@ const PostItem = (props: {
             </Link>
           </Row>
           <Row>
-            <Typography.Text type="secondary">{`${format(item.createdDate)}`}</Typography.Text>
+            <Typography.Text type="secondary">{`${format(new Date(item.createdAt))}`}</Typography.Text>
           </Row>
         </Col>
       </Row>
       <Row style={{ overflow: 'auto' }}>
         <Row style={{ width: '100%', cursor: 'pointer' }}>
-          <Link to={`/post/${item.id}`}>
+          <Link style={{ width: '100%' }} to={`/post/${item.id}`}>
             <Typography.Text style={{ width: '100%' }}>{item.contentText}</Typography.Text>
           </Link>
         </Row>

@@ -81,7 +81,7 @@ const PostInfo = ({ item }: {item: IPost}) => {
             </Link>
           </Row>
           <Row>
-            <Typography.Text type="secondary">{`${format(item.createdDate)}`}</Typography.Text>
+            <Typography.Text type="secondary">{`${format(new Date(item.createdAt))}`}</Typography.Text>
           </Row>
         </Col>
       </Row>
