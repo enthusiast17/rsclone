@@ -81,6 +81,11 @@ const ProfilePage = ({ match }: RouteComponentProps<IRouteInfo>) => {
   }, [id]);
 
   useEffect(() => {
+    if (profilePageState.postList.currentPage < 1) {
+      dispatch(resetProfilePostListSlice());
+      fetchPosts(1);
+      return;
+    }
     if (profilePageState.postList.currentPage > 1) {
       fetchPosts(profilePageState.postList.currentPage);
     }
