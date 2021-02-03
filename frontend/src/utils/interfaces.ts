@@ -32,7 +32,7 @@ interface IComment {
   id: string,
   postId: string,
   contentText: string,
-  createdDate: string,
+  createdAt: string,
 }
 
 interface IPost {
@@ -40,7 +40,7 @@ interface IPost {
   id: string,
   contentText: string,
   contentImage: string | null,
-  createdDate: string,
+  createdAt: string,
   likesCount: number,
   isUserLiked: boolean,
   commentsCount: number,
@@ -67,7 +67,7 @@ interface IMessage {
   id: string,
   user: IUser,
   contentText: string,
-  createdDate: string,
+  createdAt: string,
 }
 
 interface IResponse {

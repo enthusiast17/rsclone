@@ -16,8 +16,7 @@ import {
 } from '../../utils/interfaces';
 import styles from './index.module.scss';
 
-const socketUrl = 'http://localhost:8000/';
-const createSocket = () => io(socketUrl, { withCredentials: true, forceNew: true });
+const createSocket = () => io({ withCredentials: true, forceNew: true });
 
 let socket = createSocket();
 
@@ -95,7 +94,7 @@ const MessagesPage = ({ match }: RouteComponentProps<IRouteInfo>) => {
               aboutme: null,
             },
             contentText,
-            createdDate: new Date(Date.now()).toString(),
+            createdAt: new Date(Date.now()).toString(),
           }));
         }}
         />

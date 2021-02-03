@@ -130,7 +130,6 @@ io.on('connection', async (socket: any) => {
       { users: [senderUserModel, receiverUserModel] },
       { users: [receiverUserModel, senderUserModel] },
     ]);
-    socket.leave(room._id.toString());
     if (!room) {
       room = new Room({
         users: [senderUserModel, receiverUserModel],
@@ -161,7 +160,7 @@ io.on('connection', async (socket: any) => {
         avatar: senderUserModel.avatar,
       },
       contentText: message.contentText,
-      createdDate: message.createdDate,
+      createdAt: message.createdAt,
     });
   });
 

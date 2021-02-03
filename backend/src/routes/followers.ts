@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import { Router } from 'express';
 import Follower from '../model/Follower';
+import Room from '../model/Room';
 import User from '../model/User';
 import { ErrorJSON, handleError } from '../utils/error';
 import { IUserRequest } from '../utils/interfaces';
@@ -30,14 +31,23 @@ router.post('/', async (req, res) => {
       followingId,
       followerId,
     });
-
+    const room = await Room.findOne().or([
+      { users: [followerId, followingId] },
+      { users: [followingId, followerId] },
+    ]);
     if (!follower) {
       await new Follower({
         followingId,
         followerId,
       }).save();
+      if (!room) {
+        new Room({
+          users: [followerId, followingId],
+        }).save();
+      }
     } else {
       await follower.deleteOne();
+      await room.deleteOne();
     }
 
     return res.status(200).send({

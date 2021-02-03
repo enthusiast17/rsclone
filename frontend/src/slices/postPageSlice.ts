@@ -17,7 +17,7 @@ const initialState: IPostPageState = {
   id: '',
   contentText: '',
   contentImage: null,
-  createdDate: '',
+  createdAt: '',
   likesCount: 0,
   isUserLiked: false,
   commentsCount: 0,
