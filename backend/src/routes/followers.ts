@@ -1,0 +1,166 @@
+/* eslint-disable no-underscore-dangle */
+import { Router } from 'express';
+import Follower from '../model/Follower';
+import Room from '../model/Room';
+import User from '../model/User';
+import { ErrorJSON, handleError } from '../utils/error';
+import { IUserRequest } from '../utils/interfaces';
+
+const router = Router();
+
+router.post('/', async (req, res) => {
+  try {
+    const { username } = req.query;
+    const followerId = (req as IUserRequest).userId;
+
+    if (!username) {
+      throw new ErrorJSON(
+        400, 'Bad Request', 'Please, correct http query.',
+      );
+    }
+
+    const followingUser = await User.findOne({ username: username as string });
+    if (!followingUser) {
+      throw new ErrorJSON(
+        400, 'User not found.', 'Please, try another username.',
+      );
+    }
+
+    const followingId = followingUser._id;
+    const follower = await Follower.findOne({
+      followingId,
+      followerId,
+    });
+    const room = await Room.findOne().or([
+      { users: [followerId, followingId] },
+      { users: [followingId, followerId] },
+    ]);
+    if (!follower) {
+      await new Follower({
+        followingId,
+        followerId,
+      }).save();
+      if (!room) {
+        new Room({
+          users: [followerId, followingId],
+        }).save();
+      }
+    } else {
+      await follower.deleteOne();
+      await room.deleteOne();
+    }
+
+    return res.status(200).send({
+      status: 'success',
+      statusCode: 200,
+      message: 'Follower created successfully.',
+      description: 'Please, wait a little bit.',
+    });
+  } catch (error) {
+    if (error.name !== 'ErrorJSON') {
+      return handleError(new ErrorJSON(
+        500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.',
+      ), req, res);
+    }
+    return handleError(error, req, res);
+  }
+});
+
+router.get('/', async (req, res) => {
+  try {
+    if (!req.query.username) {
+      throw new ErrorJSON(
+        400, 'Bad Request', 'Please, correct http query.',
+      );
+    }
+
+    const followingUser = await User.findOne({ username: req.query.username as string });
+    if (!followingUser) {
+      throw new ErrorJSON(
+        400, 'User not found.', 'Please, try another username.',
+      );
+    }
+
+    let followers = await Follower.find({ followingId: followingUser._id });
+
+    followers = await Promise.all(
+      followers.map(async (follower: any) => {
+        const user = await User.findById(follower.followerId);
+        const {
+          fullName, email, username, avatar,
+        } = user;
+        return {
+          fullName,
+          email,
+          username,
+          avatar,
+        };
+      }),
+    );
+
+    return res.status(200).send({
+      status: 'success',
+      statusCode: 200,
+      message: 'Followers received successfully.',
+      description: 'Please, wait a little bit.',
+      data: followers,
+    });
+  } catch (error) {
+    if (error.name !== 'ErrorJSON') {
+      return handleError(new ErrorJSON(
+        500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.',
+      ), req, res);
+    }
+    return handleError(error, req, res);
+  }
+});
+
+router.get('/following/', async (req, res) => {
+  try {
+    if (!req.query.username) {
+      throw new ErrorJSON(
+        400, 'Bad Request', 'Please, correct http query.',
+      );
+    }
+
+    const followerUser = await User.findOne({ username: req.query.username as string });
+    if (!followerUser) {
+      throw new ErrorJSON(
+        400, 'User not found.', 'Please, try another username.',
+      );
+    }
+
+    let following = await Follower.find({ followerId: followerUser._id });
+    following = await Promise.all(
+      following.map(async (follower: any) => {
+        const user = await User.findById(follower.followingId);
+        const {
+          fullName, email, username, avatar,
+        } = user;
+        return {
+          fullName,
+          email,
+          username,
+          avatar,
+        };
+      }),
+    );
+
+    return res.status(200).send({
+      status: 'success',
+      statusCode: 200,
+      message: 'Following received successfully.',
+      description: 'Please, wait a little bit.',
+      data: following,
+    });
+  } catch (error) {
+    if (error.name !== 'ErrorJSON') {
+      return handleError(new ErrorJSON(
+        500, 'Internal Error.', 'Upps! Sorry, something went wrong in internal server.',
+      ), req, res);
+    }
+    return handleError(error, req, res);
+  }
+});
+
+export default router;

@@ -1,0 +1,77 @@
+import React from 'react';
+import {
+  Typography, Form, Input, Button, notification,
+} from 'antd';
+import { useHistory } from 'react-router-dom';
+import { ILoginForm, IResponse, ILoginResponse } from '../utils/interfaces';
+import api from '../utils/api';
+
+const Login = () => {
+  const [form] = Form.useForm();
+  const history = useHistory();
+  const onFinish = (values: ILoginForm) => api.post(
+    '/auth/login',
+    values,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  ).then((response: { data: ILoginResponse }) => {
+    notification.success({
+      message: response.data.message,
+      description: response.data.description,
+    });
+    localStorage.setItem('refresh-token', response.data.data.refreshToken);
+    localStorage.setItem('access-token', response.data.data.accessToken);
+    form.resetFields();
+    history.push('/');
+    window.location.reload();
+  }).catch((reason: { response: { data: IResponse } }) => {
+    if (!reason.response || !reason.response.data) {
+      notification.error({
+        message: 'Internal Error.',
+        description: 'Upps! Sorry, something went wrong in internal server.',
+      });
+      return;
+    }
+    notification.error({
+      message: reason.response.data.message,
+      description: reason.response.data.description,
+    });
+  });
+
+  return (
+    <div style={{ width: '100%' }}>
+      <Typography.Title level={3}>Log in</Typography.Title>
+      <Form form={form} name="login" layout="vertical" scrollToFirstError onFinish={onFinish}>
+        <Form.Item
+          label="E-mail Address"
+          name="email"
+          rules={[
+            { type: 'email', message: 'The input is not valid e-mail' },
+            { required: true, message: 'Please, input your e-mail!' },
+          ]}
+        >
+          <Input placeholder="example@email.com" />
+        </Form.Item>
+        <Form.Item
+          label="Password"
+          name="password"
+          rules={[
+            { required: true, message: 'Please, input your password!' },
+          ]}
+        >
+          <Input.Password placeholder="********" type="password" />
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit" block>
+            Login
+          </Button>
+        </Form.Item>
+      </Form>
+    </div>
+  );
+};
+
+export default Login;

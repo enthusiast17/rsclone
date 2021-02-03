@@ -1,0 +1,32 @@
+.container {
+  padding: 15px calc(calc(100% - 1024px) / 2) 15px calc(calc(100% - 1024px) / 2);
+  background-color: #F4F4F4;
+
+  .content {
+    padding: 0px calc(calc(100% - 624px) / 2) 0px calc(calc(100% - 624px) / 2);
+  }
+
+  .navigation {
+    background-color: #ffffff;
+    border: 0.5px solid #BFBFBF;
+  }
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #F4F4F4;
+
+  .logo {
+    height: 50px !important;
+    width: 80px !important;
+  }
+}
+
+
+@media (max-width: 1044px) {
+  .container {
+    padding: 10px 10px;
+  }
+}

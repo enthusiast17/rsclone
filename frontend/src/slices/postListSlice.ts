@@ -1,0 +1,64 @@
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { IPost, IPostList } from '../utils/interfaces';
+
+interface IPostListState {
+  posts: IPost[],
+  currentPage: number,
+  nextPage: number | null,
+  totalPostCount: number,
+  pageCount: number
+}
+
+const initialState: IPostListState = {
+  posts: [],
+  currentPage: 1,
+  nextPage: null,
+  totalPostCount: 0,
+  pageCount: 0,
+};
+
+const postListSlice = createSlice({
+  name: 'postList',
+  initialState,
+  reducers: {
+    resetPostListSlice() {
+      return initialState;
+    },
+    updatePostListSlice(state: IPostListState, action: PayloadAction<IPostList>) {
+      return { ...state, ...action.payload };
+    },
+    setPosts(state: IPostListState, action: PayloadAction<IPost[]>) {
+      return { ...state, posts: action.payload };
+    },
+    setPost(state: IPostListState, action: PayloadAction<IPost>) {
+      const posts = [...state.posts];
+      const index = posts.findIndex((post) => post.id === action.payload.id);
+      if (index !== -1) posts[index] = action.payload;
+      return { ...state, posts };
+    },
+    setCurrentPage(state: IPostListState, action: PayloadAction<number>) {
+      return { ...state, currentPage: action.payload };
+    },
+    setNextPage(state: IPostListState, action: PayloadAction<number | null>) {
+      return { ...state, nextPage: action.payload };
+    },
+    setTotalPostCount(state: IPostListState, action: PayloadAction<number>) {
+      return { ...state, totalPostCount: action.payload };
+    },
+    setPageCount(state: IPostListState, action: PayloadAction<number>) {
+      return { ...state, pageCount: action.payload };
+    },
+  },
+});
+
+export const {
+  resetPostListSlice,
+  setPosts,
+  setPost,
+  setCurrentPage,
+  setNextPage,
+  setTotalPostCount,
+  setPageCount,
+} = postListSlice.actions;
+
+export default postListSlice.reducer;

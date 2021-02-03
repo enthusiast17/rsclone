@@ -1,0 +1,27 @@
+.page {
+  padding: 10px;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .card {
+    padding: 30px 10px;
+    width: 350px;
+    border: 1px solid #D9D9D9;
+    border-radius: 2px;
+
+    .title {
+      margin: 0px;
+    }
+    
+    .loginBtn {
+      margin: 40px 0px 0px 0px;
+    }
+
+    .registerBtn {
+      margin: 20px 0px 0px 0px;
+    }
+  }
+}
