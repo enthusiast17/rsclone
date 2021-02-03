@@ -36,9 +36,15 @@ mongoose.connect(
 
 mongoose.set('returnOriginal', false);
 
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(cors({ origin: '*', credentials: true }));
 
 app.use(cookieParser());
+
+app.use('/upserver', (req, res) => res.send({
+  status: 'success',
+  statusCode: 200,
+  message: 'Thank you so much for running me!',
+}));
 
 app.use('/uploads', express.static('uploads'));
 
@@ -88,7 +94,7 @@ app.use('/api/rooms/', authMiddleware, roomRouter);
 const server = http.createServer(app);
 const io = new socketio.Server(server, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: '*',
     credentials: true,
   },
 });

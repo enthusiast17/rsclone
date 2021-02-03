@@ -37,11 +37,7 @@ const userSchema: Schema = new mongoose.Schema({
     min: 8,
     max: 1024,
   },
-  createdDate: {
-    type: Date,
-    default: new Date(Date.now()),
-  },
-});
+}, { timestamps: {} });
 
 const User: mongoose.Model<IUser> = mongoose.model('User', userSchema);
 

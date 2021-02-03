@@ -66,7 +66,7 @@ router.post('/', upload.single('contentImage'), async (req, res) => {
     const user = await User.findById(savedPost.userId);
     const { fullName, avatar } = user;
     const {
-      _id, contentText, contentImage, createdDate,
+      _id, contentText, contentImage, createdAt,
     } = savedPost;
 
     return res.status(200).send({
@@ -79,7 +79,7 @@ router.post('/', upload.single('contentImage'), async (req, res) => {
         id: _id,
         contentText,
         contentImage,
-        createdDate,
+        createdAt,
       },
     });
   } catch (error) {
@@ -139,7 +139,7 @@ router.get('/', async (req, res) => {
           fullName, email, username, avatar,
         } = user;
         const {
-          _id, contentText, contentImage, createdDate,
+          _id, contentText, contentImage, createdAt,
         } = post;
         return {
           user: {
@@ -148,7 +148,7 @@ router.get('/', async (req, res) => {
           id: _id,
           contentText,
           contentImage,
-          createdDate,
+          createdAt,
           likesCount: likes.length || 0,
           isUserLiked: !!isLiked,
           commentsCount: comments.length || 0,
@@ -191,7 +191,7 @@ router.get('/id/:id', async (req, res) => {
       fullName, email, username, avatar,
     } = user;
     const {
-      _id, contentText, contentImage, createdDate,
+      _id, contentText, contentImage, createdAt,
     } = post;
     return res.status(200).send({
       status: 'success',
@@ -205,7 +205,7 @@ router.get('/id/:id', async (req, res) => {
         id: _id,
         contentText,
         contentImage,
-        createdDate,
+        createdAt,
         likesCount: likes.length || 0,
         isUserLiked: !!isLiked,
         commentsCount: comments.length || 0,

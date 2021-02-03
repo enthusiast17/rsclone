@@ -15,7 +15,7 @@ const likeSchema: Schema = new mongoose.Schema({
     type: Schema.Types.ObjectId,
     ref: 'Post',
   },
-});
+}, { timestamps: {} });
 
 const Like: mongoose.Model<ILike> = mongoose.model('Like', likeSchema);
 

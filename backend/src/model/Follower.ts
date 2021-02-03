@@ -12,7 +12,7 @@ const followerSchema: Schema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
-});
+}, { timestamps: {} });
 
 const Follower: mongoose.Model<IFollower> = mongoose.model('Follower', followerSchema);
 

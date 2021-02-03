@@ -11,7 +11,8 @@ interface IUser extends Document {
   avatar: string | null,
   aboutme: string | null,
   password: string,
-  createdDate: Date,
+  createdAt: Date,
+  updatedAt: Date,
 }
 
 interface IPost extends Document {
@@ -19,7 +20,8 @@ interface IPost extends Document {
   userId: string,
   contentText: string,
   contentImage: string,
-  createdDate: Date,
+  createdAt: Date,
+  updatedAt: Date,
 }
 
 interface ILike extends Document {
@@ -27,6 +29,8 @@ interface ILike extends Document {
   userId: string,
   postId: string | null,
   commentId: string | null,
+  createdAt: Date,
+  updatedAt: Date,
 }
 
 interface IComment extends Document {
@@ -35,18 +39,24 @@ interface IComment extends Document {
   postId: string,
   contentText: string,
   createdDate: Date,
+  createdAt: Date,
+  updatedAt: Date,
 }
 
 interface IFollower extends Document {
   _id: string,
   followingId: string,
   followerId: string,
+  createdAt: Date,
+  updatedAt: Date,
 }
 
 interface IRoom extends Document {
   _id: string,
   users: string[],
   createdDate: Date,
+  createdAt: Date,
+  updatedAt: Date,
 }
 
 interface IMessage extends Document {
@@ -55,6 +65,8 @@ interface IMessage extends Document {
   userId: string,
   contentText: string,
   createdDate: Date,
+  createdAt: Date,
+  updatedAt: Date,
 }
 
 interface IRegisterJoi {

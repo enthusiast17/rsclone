@@ -16,11 +16,7 @@ const messageSchema: Schema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  createdDate: {
-    type: Date,
-    default: new Date(Date.now()),
-  },
-});
+}, { timestamps: {} });
 
 const Message: mongoose.Model<IMessage> = mongoose.model('Message', messageSchema);
 
