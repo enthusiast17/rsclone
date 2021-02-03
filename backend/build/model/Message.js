@@ -35,10 +35,6 @@ var messageSchema = new mongoose_1.default.Schema({
         type: String,
         required: true,
     },
-    createdDate: {
-        type: Date,
-        default: new Date(Date.now()),
-    },
-});
+}, { timestamps: {} });
 var Message = mongoose_1.default.model('Message', messageSchema);
 exports.default = Message;

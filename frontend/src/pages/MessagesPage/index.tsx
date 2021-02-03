@@ -16,7 +16,13 @@ import {
 } from '../../utils/interfaces';
 import styles from './index.module.scss';
 
-const createSocket = () => io({ withCredentials: true, forceNew: true });
+const createSocket = () => io({
+  withCredentials: true,
+  forceNew: true,
+  extraHeaders: {
+    Authorization: `Basic ${localStorage.getItem('refresh-token')} ${localStorage.getItem('access-token')}`,
+  },
+});
 
 let socket = createSocket();
 

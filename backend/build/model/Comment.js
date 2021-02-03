@@ -35,10 +35,6 @@ var commentSchema = new mongoose_1.default.Schema({
         type: String,
         required: true,
     },
-    createdDate: {
-        type: Date,
-        default: new Date(Date.now()),
-    },
-});
+}, { timestamps: {} });
 var Comment = mongoose_1.default.model('Comment', commentSchema);
 exports.default = Comment;

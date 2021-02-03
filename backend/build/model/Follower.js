@@ -31,6 +31,6 @@ var followerSchema = new mongoose_1.default.Schema({
         ref: 'User',
         required: true,
     },
-});
+}, { timestamps: {} });
 var Follower = mongoose_1.default.model('Follower', followerSchema);
 exports.default = Follower;

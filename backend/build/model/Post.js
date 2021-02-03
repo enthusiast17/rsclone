@@ -36,10 +36,6 @@ var postSchema = new mongoose_1.default.Schema({
         type: String,
         required: false,
     },
-    createdDate: {
-        type: Date,
-        default: new Date(Date.now()),
-    },
-});
+}, { timestamps: {} });
 var Post = mongoose_1.default.model('Post', postSchema);
 exports.default = Post;

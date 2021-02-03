@@ -96,7 +96,7 @@ router.get('/messages', function (req, res) { return __awaiter(void 0, void 0, v
                             id: message._id,
                             user: user,
                             contentText: message.contentText,
-                            createdDate: message.createdDate,
+                            createdAt: message.createdAt,
                         };
                     }))];
             case 5:

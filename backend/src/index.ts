@@ -8,7 +8,6 @@ import cookieParser from 'cookie-parser';
 import { MulterError } from 'multer';
 import socketio from 'socket.io';
 import http from 'http';
-import cookie from 'cookie';
 import jwt from 'jsonwebtoken';
 import authRouter from './routes/auth';
 import postsRouter from './routes/posts';
@@ -36,7 +35,7 @@ mongoose.connect(
 
 mongoose.set('returnOriginal', false);
 
-app.use(cors({ origin: '*', credentials: true }));
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 
 app.use(cookieParser());
 
@@ -94,15 +93,19 @@ app.use('/api/rooms/', authMiddleware, roomRouter);
 const server = http.createServer(app);
 const io = new socketio.Server(server, {
   cors: {
-    origin: '*',
+    origin: 'http://localhost:3000',
     credentials: true,
   },
 });
 
 io.on('connection', async (socket: any) => {
-  const cookies = cookie.parse(socket.handshake.headers.cookie || '');
-  const refreshToken = cookies['refresh-token'];
+  if (!socket.handshake.headers.authorization) {
+    socket.disconnect();
+    return;
+  }
 
+  const tokens = socket.handshake.headers.authorization.split(' ');
+  const refreshToken = tokens[1];
   if (!process.env.REFRESH_TOKEN_SECRET_CODE) {
     socket.disconnect();
     return;

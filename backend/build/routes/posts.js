@@ -77,7 +77,7 @@ var upload = multer_1.default({
     },
 });
 router.post('/', upload.single('contentImage'), function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var validate, post, savedPost, user, fullName, avatar, _id, contentText, contentImage, createdDate, error_2;
+    var validate, post, savedPost, user, fullName, avatar, _id, contentText, contentImage, createdAt, error_2;
     var _a, _b;
     return __generator(this, function (_c) {
         switch (_c.label) {
@@ -103,7 +103,7 @@ router.post('/', upload.single('contentImage'), function (req, res) { return __a
             case 2:
                 user = _c.sent();
                 fullName = user.fullName, avatar = user.avatar;
-                _id = savedPost._id, contentText = savedPost.contentText, contentImage = savedPost.contentImage, createdDate = savedPost.createdDate;
+                _id = savedPost._id, contentText = savedPost.contentText, contentImage = savedPost.contentImage, createdAt = savedPost.createdAt;
                 return [2 /*return*/, res.status(200).send({
                         status: 'success',
                         statusCode: 200,
@@ -114,7 +114,7 @@ router.post('/', upload.single('contentImage'), function (req, res) { return __a
                             id: _id,
                             contentText: contentText,
                             contentImage: contentImage,
-                            createdDate: createdDate,
+                            createdAt: createdAt,
                         },
                     })];
             case 3:
@@ -179,7 +179,7 @@ router.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, f
             case 10:
                 newPosts = _a;
                 return [4 /*yield*/, Promise.all(posts.map(function (post) { return __awaiter(void 0, void 0, void 0, function () {
-                        var user, isLiked, likes, comments, fullName, email, username, avatar, _id, contentText, contentImage, createdDate;
+                        var user, isLiked, likes, comments, fullName, email, username, avatar, _id, contentText, contentImage, createdAt;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0: return [4 /*yield*/, User_1.default.findById(post.userId)];
@@ -197,7 +197,7 @@ router.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, f
                                 case 4:
                                     comments = _a.sent();
                                     fullName = user.fullName, email = user.email, username = user.username, avatar = user.avatar;
-                                    _id = post._id, contentText = post.contentText, contentImage = post.contentImage, createdDate = post.createdDate;
+                                    _id = post._id, contentText = post.contentText, contentImage = post.contentImage, createdAt = post.createdAt;
                                     return [2 /*return*/, {
                                             user: {
                                                 fullName: fullName, email: email, username: username, avatar: avatar,
@@ -205,7 +205,7 @@ router.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, f
                                             id: _id,
                                             contentText: contentText,
                                             contentImage: contentImage,
-                                            createdDate: createdDate,
+                                            createdAt: createdAt,
                                             likesCount: likes.length || 0,
                                             isUserLiked: !!isLiked,
                                             commentsCount: comments.length || 0,
@@ -237,7 +237,7 @@ router.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, f
     });
 }); });
 router.get('/id/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, post, user, isLiked, likes, comments, fullName, email, username, avatar, _id, contentText, contentImage, createdDate, error_4;
+    var id, post, user, isLiked, likes, comments, fullName, email, username, avatar, _id, contentText, contentImage, createdAt, error_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -261,7 +261,7 @@ router.get('/id/:id', function (req, res) { return __awaiter(void 0, void 0, voi
             case 5:
                 comments = _a.sent();
                 fullName = user.fullName, email = user.email, username = user.username, avatar = user.avatar;
-                _id = post._id, contentText = post.contentText, contentImage = post.contentImage, createdDate = post.createdDate;
+                _id = post._id, contentText = post.contentText, contentImage = post.contentImage, createdAt = post.createdAt;
                 return [2 /*return*/, res.status(200).send({
                         status: 'success',
                         statusCode: 200,
@@ -274,7 +274,7 @@ router.get('/id/:id', function (req, res) { return __awaiter(void 0, void 0, voi
                             id: _id,
                             contentText: contentText,
                             contentImage: contentImage,
-                            createdDate: createdDate,
+                            createdAt: createdAt,
                             likesCount: likes.length || 0,
                             isUserLiked: !!isLiked,
                             commentsCount: comments.length || 0,

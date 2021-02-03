@@ -40,10 +40,6 @@ var userSchema = new mongoose_1.default.Schema({
         min: 8,
         max: 1024,
     },
-    createdDate: {
-        type: Date,
-        default: new Date(Date.now()),
-    },
-});
+}, { timestamps: {} });
 var User = mongoose_1.default.model('User', userSchema);
 exports.default = User;

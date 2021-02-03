@@ -47,7 +47,7 @@ var Comment_1 = __importDefault(require("../model/Comment"));
 var User_1 = __importDefault(require("../model/User"));
 var router = express_1.Router();
 router.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var validate, comment, user, fullName, email, username, avatar, postId, contentText, createdDate, error_2;
+    var validate, comment, user, fullName, email, username, avatar, postId, contentText, createdAt, error_2;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -68,7 +68,7 @@ router.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, 
             case 2:
                 user = _b.sent();
                 fullName = user.fullName, email = user.email, username = user.username, avatar = user.avatar;
-                postId = comment.postId, contentText = comment.contentText, createdDate = comment.createdDate;
+                postId = comment.postId, contentText = comment.contentText, createdAt = comment.createdAt;
                 return [2 /*return*/, res.status(200).send({
                         status: 'success',
                         statusCode: 200,
@@ -80,7 +80,7 @@ router.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, 
                             },
                             postId: postId,
                             contentText: contentText,
-                            createdDate: createdDate,
+                            createdAt: createdAt,
                         },
                     })];
             case 3:
@@ -107,14 +107,14 @@ router.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, f
             case 1:
                 modelComments = _a.sent();
                 return [4 /*yield*/, Promise.all(modelComments.map(function (comment) { return __awaiter(void 0, void 0, void 0, function () {
-                        var user, fullName, email, username, avatar, postId, contentText, createdDate;
+                        var user, fullName, email, username, avatar, postId, contentText, createdAt;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0: return [4 /*yield*/, User_1.default.findById(comment.userId)];
                                 case 1:
                                     user = _a.sent();
                                     fullName = user.fullName, email = user.email, username = user.username, avatar = user.avatar;
-                                    postId = comment.postId, contentText = comment.contentText, createdDate = comment.createdDate;
+                                    postId = comment.postId, contentText = comment.contentText, createdAt = comment.createdAt;
                                     return [2 /*return*/, {
                                             user: {
                                                 fullName: fullName, email: email, username: username, avatar: avatar,
@@ -122,7 +122,7 @@ router.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, f
                                             id: comment._id,
                                             postId: postId,
                                             contentText: contentText,
-                                            createdDate: createdDate,
+                                            createdAt: createdAt,
                                         }];
                             }
                         });

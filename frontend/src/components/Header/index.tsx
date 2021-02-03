@@ -27,6 +27,7 @@ const Header = () => {
         message: response.data.message,
         description: response.data.description,
       });
+      localStorage.clear();
       window.location.reload();
     })
     .catch((reason: { response: { data: IResponse } }) => {

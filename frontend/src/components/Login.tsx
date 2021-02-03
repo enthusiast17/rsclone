@@ -3,7 +3,7 @@ import {
   Typography, Form, Input, Button, notification,
 } from 'antd';
 import { useHistory } from 'react-router-dom';
-import { ILoginForm, IResponse } from '../utils/interfaces';
+import { ILoginForm, IResponse, ILoginResponse } from '../utils/interfaces';
 import api from '../utils/api';
 
 const Login = () => {
@@ -17,11 +17,13 @@ const Login = () => {
         'Content-Type': 'application/json',
       },
     },
-  ).then((response: { data: IResponse }) => {
+  ).then((response: { data: ILoginResponse }) => {
     notification.success({
       message: response.data.message,
       description: response.data.description,
     });
+    localStorage.setItem('refresh-token', response.data.data.refreshToken);
+    localStorage.setItem('access-token', response.data.data.accessToken);
     form.resetFields();
     history.push('/');
     window.location.reload();
