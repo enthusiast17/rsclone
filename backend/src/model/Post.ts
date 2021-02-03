@@ -17,11 +17,7 @@ const postSchema: Schema = new mongoose.Schema({
     type: String,
     required: false,
   },
-  createdDate: {
-    type: Date,
-    default: new Date(Date.now()),
-  },
-});
+}, { timestamps: {} });
 
 const Post: mongoose.Model<IPost> = mongoose.model('Post', postSchema);
 

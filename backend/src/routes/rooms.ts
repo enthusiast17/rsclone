@@ -54,7 +54,7 @@ router.get('/messages', async (req, res) => {
           id: message._id,
           user,
           contentText: message.contentText,
-          createdDate: message.createdDate,
+          createdAt: message.createdAt,
         };
       }),
     );

@@ -27,7 +27,7 @@ router.post('/', async (req, res) => {
     const {
       fullName, email, username, avatar,
     } = user;
-    const { postId, contentText, createdDate } = comment;
+    const { postId, contentText, createdAt } = comment;
     return res.status(200).send({
       status: 'success',
       statusCode: 200,
@@ -39,7 +39,7 @@ router.post('/', async (req, res) => {
         },
         postId,
         contentText,
-        createdDate,
+        createdAt,
       },
     });
   } catch (error) {
@@ -70,7 +70,7 @@ router.get('/', async (req, res) => {
         const {
           fullName, email, username, avatar,
         } = user;
-        const { postId, contentText, createdDate } = comment;
+        const { postId, contentText, createdAt } = comment;
         return {
           user: {
             fullName, email, username, avatar,
@@ -78,7 +78,7 @@ router.get('/', async (req, res) => {
           id: comment._id,
           postId,
           contentText,
-          createdDate,
+          createdAt,
         };
       }),
     );
