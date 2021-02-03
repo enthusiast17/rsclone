@@ -150,6 +150,8 @@ const ProfileInfo = (props: { item: IProfile }) => {
             width={420}
             onCancel={followersModalAction}
             centered
+            destroyOnClose
+            closable
           >
             <Followers username={item.username} />
           </Modal>
@@ -159,6 +161,8 @@ const ProfileInfo = (props: { item: IProfile }) => {
             width={420}
             onCancel={followingModalAction}
             centered
+            destroyOnClose
+            closable
           >
             <Following username={item.username} />
           </Modal>

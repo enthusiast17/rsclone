@@ -69,7 +69,7 @@ const Header = () => {
             value: user.username,
             label: (
               <Row style={{ width: '100%' }}>
-                <Col style={{ marginRight: 10 }} flex="35px">
+                <Col style={{ marginRight: 10 }} flex="10%">
                   {user.avatar && (
                   <Avatar
                     size={32}
@@ -83,10 +83,10 @@ const Header = () => {
                   />
                   )}
                 </Col>
-                <Col flex="150px" style={{ display: 'flex', alignItems: 'center' }}>
-                  <Space style={{ width: '150px', overflow: 'hidden' }} direction="vertical" size={0}>
-                    <Typography.Text strong ellipsis>{user.fullName}</Typography.Text>
-                    <Typography.Text strong ellipsis>{`@${user.username}`}</Typography.Text>
+                <Col flex="70%" style={{ display: 'flex', alignItems: 'center' }}>
+                  <Space style={{ width: '100%', overflow: 'hidden' }} direction="vertical" size={0}>
+                    <Typography.Text ellipsis>{user.fullName}</Typography.Text>
+                    <Typography.Text ellipsis>{`@${user.username}`}</Typography.Text>
                   </Space>
                 </Col>
               </Row>
@@ -97,26 +97,30 @@ const Header = () => {
     });
 
   const menu = (
-    <Menu style={{ width: 200 }}>
-      <Menu.Item key={0}>
+    <Menu style={{ width: 180 }}>
+      <Menu.ItemGroup
+        key={0}
+        title={`Signed as @${authState.username}`}
+      />
+      <Menu.Item key={1}>
         <Link to="/">
           <HomeOutlined />
           Home
         </Link>
       </Menu.Item>
-      <Menu.Item key={1}>
+      <Menu.Item key={2}>
         <Link to={`/profile/${authState.username}`}>
           <ProfileOutlined />
           My profile
         </Link>
       </Menu.Item>
-      <Menu.Item key={2}>
+      <Menu.Item key={3}>
         <Link to="/messages">
           <MessageOutlined />
           Messages
         </Link>
       </Menu.Item>
-      <Menu.Item key={3} onClick={logOut}>
+      <Menu.Item key={4} onClick={logOut}>
         <Link to="/logout">
           <LogoutOutlined />
           Log out
@@ -128,19 +132,27 @@ const Header = () => {
   return (
     <Layout.Header className={styles.container}>
       <AutoComplete
+        style={{
+          width: 200,
+        }}
         options={searchResult}
         onSelect={handleSelect}
       >
         <Input.Search
-          className={styles.search}
-          placeholder="Search user (username/full name)"
+          placeholder="Search user"
           onSearch={handleSearch}
           allowClear
         />
       </AutoComplete>
 
-      <Space>
-        <Typography.Text className={styles.title}>{authState.fullName}</Typography.Text>
+      <Row
+        className={styles.dropdownContainer}
+      >
+        <Typography.Text
+          className={styles.title}
+        >
+          {authState.fullName}
+        </Typography.Text>
 
         <Dropdown overlay={menu} trigger={['click']} placement="bottomRight" arrow>
           <Button className={styles.dropdown} shape="circle" type="default" size="middle">
@@ -158,7 +170,7 @@ const Header = () => {
             )}
           </Button>
         </Dropdown>
-      </Space>
+      </Row>
     </Layout.Header>
   );
 };

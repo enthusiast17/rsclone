@@ -13,6 +13,7 @@ const Followers = (props: { username: string }) => {
   const [followers, setFollowers] = useState<IUser[]>([]);
 
   useEffect(() => {
+    setLoading(true);
     api.get(
       `/followers/?username=${username}`,
     )

@@ -9,17 +9,22 @@
   border-bottom: 0.5px solid #BFBFBF;
   overflow: hidden;
 
-  .search {
-    width: 250px;
-  }
-
-  .dropdown {
-    height: 34px;
-    width: 34px;
+  .dropdownContainer {
     display: flex;
-    flex-direction: row;
     align-items: center;
-    justify-content: center;
+
+    .title {
+      margin: 0px 10px 0px 0px;
+    }
+  
+    .dropdown {
+      height: 34px;
+      width: 34px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+    }
   }
 }
 
@@ -33,16 +38,10 @@
 
 @media (max-width: 768px) {
   .container {
-    .search {
-      width: 200px;
-    }
-  }
-}
-
-@media (max-width: 480px) {
-  .container {
-    .search {
-      width: 150px;
+    .dropdownContainer {
+      .title {
+        display: none;
+      }
     }
   }
 }
